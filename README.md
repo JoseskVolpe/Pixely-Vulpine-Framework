@@ -10,6 +10,7 @@ I want it to be usable in J2ME SDK Mobile, so i can't use .jar libraries on this
 ## To be universal<br>
 It should be compatible with QWERTY, Candybar and Touchscreen devices. Compatible with atleast 90% of MIDP 2.0+ CLDC 1.1 phones, from lower to higher end devices<br>
 The UIs shall also be automatically adjustable to the screen's resolution<br>
+It shall be cool to use on Android devices with J2ME Loader aswell like it were a native Android app<br>
 ## To be touch optimized<br>
 There's few J2ME apps that works great on touch, it should be well optimized for touch devices, but still, it needs to be 100% compatible with non-touchscreen devices<br>
 ## To be lightweight<br>
