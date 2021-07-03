@@ -4,6 +4,9 @@ Powerful, modern and lightweight framework library for J2ME MIDlets
 # Objectives<br>
 ## To be beautiful<br>
 The framework shall follow modern's minimalist standards with some smooth animations<br>
+## To be independent<br>
+No use of third-party libraries, unless they are open-source and accepts the MIT license (Code shall be merged, .jar must not be used)<br>
+I want it to be usable in J2ME SDK Mobile, so i can't use .jar libraries on this<br>
 ## To be universal<br>
 It should be compatible with QWERTY, Candybar and Touchscreen devices. Compatible with atleast 90% of MIDP 2.0+ CLDC 1.1 phones, from lower to higher end devices<br>
 The UIs shall also be automatically adjustable to the screen's resolution<br>
