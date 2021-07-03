@@ -1,0 +1,13 @@
+MIDlet-Version: 0.0.1
+MIDlet-Touch-Support: true
+Navi-Key-Hidden: true
+MicroEdition-Configuration: CLDC-1.1
+MIDlet-Name: Pixely Vulpine Layout
+ATT-MIDlet-VirtualKeypad-Use: No
+Nokia-MIDlet-On-Screen-Keypad: no
+MIDlet-Vendor: Josesk Volpe
+LGE-MIDlet-Display-Nav-Keypad: no
+MIDxlet-Touch: Y
+MIDlet-1: App,,pixelyvulpine.test.App
+MicroEdition-Profile: MIDP-2.0
+MIDlet-Jar-URL: Pixely_Vulpine_Layout.jar
