@@ -6,85 +6,159 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import pixelyvulpine.api.lcdui.Content;
+import pixelyvulpine.api.lcdui.ImageTransform;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.util.ThreadFlag;
 
 public class ImageView extends Content{
 	
-	private Image originalI, image;
-	private int width, height;
+	private final static byte ERRORSIZE=60;
+	
+	private int[] data, renderData;
+	private int owidth, oheight, width, height;
 	private boolean fit, error;
-	private ThreadFlag threadFlag;
-	private CircularProgressBar loading;
 	private ImageView me;
 	
 	public ImageView(Layout layout, Image image, int[] x, int[] y) {
 		super(layout, x, y, new int[] {0,imageWidth(image)}, new int[] {0,imageHeight(image)});
 		
-		this.image = image;
-		originalI=this.image;
-		if(image==null) error=true;
-		this.width=imageWidth(image);
-		this.height = imageHeight(image);
 		me=this;
 		
-		loading=new CircularProgressBar(layout, new int[] {0,0}, new int[] {0,0}, new int[] {100,0});
+		if(image==null) {
+			error=true;
+			owidth=ERRORSIZE;
+			oheight=ERRORSIZE;
+			return;
+		}
+		
+		try {
+			data=new int[image.getWidth()*image.getHeight()];
+			image.getRGB(data, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
+			renderData=data;
+		}catch(Exception e) {
+			error=true;
+			owidth=ERRORSIZE;
+			oheight=ERRORSIZE;
+			return;
+		}catch(Error e) {
+			error=true;
+			owidth=ERRORSIZE;
+			oheight=ERRORSIZE;
+			return;
+		}
+			
+		this.owidth=image.getWidth();
+		this.oheight = image.getHeight();
+		this.width=owidth;
+		this.height=oheight;
 		
 	}
 	
 	public ImageView(Layout layout, Image image, int[] x, int[] y, int[] width, int[] height) {
 		super(layout, x, y, width, height);
 		
-		originalI=image;
 		me=this;
-		if(image==null) error=true;
+		if(image==null) {
+			error=true;
+			owidth=ERRORSIZE;
+			oheight=ERRORSIZE;
+			return;
+		}
 		
-		loading=new CircularProgressBar(layout, new int[] {0,0}, new int[] {0,0}, new int[] {100,0});
+		try {
+			data=new int[image.getWidth()*image.getHeight()];
+			renderData=null;
+			image.getRGB(data, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
+		}catch(Exception e) {
+			error=true;
+			owidth=ERRORSIZE;
+			oheight=ERRORSIZE;
+			return;
+		}catch(Error e) {
+			error=true;
+			owidth=ERRORSIZE;
+			oheight=ERRORSIZE;
+			return;
+		}
+		
+		this.owidth = image.getWidth();
+		this.oheight = image.getHeight();
 		
 	}
 	
 	public ImageView(Layout layout, Image image, int[] x, int[] y, int[] width, int[] height, boolean fit) {
 		super(layout, x, y, width, height);
 		
-		me=this;
-		originalI=image;
-		this.fit = fit;
-		if(image==null) error=true;
 		
-		loading=new CircularProgressBar(layout, new int[] {0,0}, new int[] {0,0}, new int[] {100,0});
+		me=this;
+		this.fit=fit;
+		if(image==null) {
+			error=true;
+			owidth=ERRORSIZE;
+			oheight=ERRORSIZE;
+			return;
+		}
+		
+		try {
+			data=new int[image.getWidth()*image.getHeight()];
+			renderData=null;
+			image.getRGB(data, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
+		}catch(Exception e) {
+			error=true;
+			owidth=ERRORSIZE;
+			oheight=ERRORSIZE;
+			return;
+		}catch(Error e) {
+			error=true;
+			owidth=ERRORSIZE;
+			oheight=ERRORSIZE;
+			return;
+		}
+		
+		this.owidth = image.getWidth();
+		this.oheight = image.getHeight();
 		
 	}
 	
 	private static int imageWidth(Image image) {
-		if(image == null) return 20;
+		if(image == null) return 90;
 		
 		try {
 			return image.getWidth();
 		}catch(Exception e) {
-			return 20;
+			return ERRORSIZE;
 		}
 	}
 	
 	private static int imageHeight(Image image) {
-		if(image == null) return 20;
+		if(image == null) return 90;
 		
 		try {
 			return image.getHeight();
 		}catch(Exception e) {
-			return 20;
-		}
-	}
-	
-	public void Stopped() {
-		if(threadFlag!=null) {
-			threadFlag.Terminate();
-			threadFlag=null;
+			return ERRORSIZE;
 		}
 	}
 	
 	public int[] prepaint(int width, int height) {
 		
 		rescale(width, height);
+		
+		if(renderData==null) {
+			try {
+				renderData = ImageTransform.resize(data, owidth, oheight, this.width, this.height);
+			}catch(OutOfMemoryError e) {
+				try {
+					data = ImageTransform.resize(data, owidth, oheight, this.width, this.height); //Substitute original data. Image may look weird if the ImageView is resized again, but that's ok
+					renderData = data; //Pointer renderData to data
+				}catch(OutOfMemoryError e2) {
+					data=null;
+					renderData=null;
+					error=true; //Can't show this ImageView :c
+					return new int[] {ERRORSIZE, ERRORSIZE};
+				}
+			}
+		}
 		
 		return new int[] {this.width, this.height};
 		
@@ -94,29 +168,29 @@ public class ImageView extends Content{
 		
 		if(error) {
 			g.setColor(0xffffff);
-			g.drawRect(0, 0, width, height);
+			g.drawRect(0, 0, owidth, oheight);
 			g.setColor(0xff0000);
-			g.drawLine(0, 0, width, height);
-			g.drawLine(0, height, width, 0);
+			g.drawLine(0, 0, owidth, oheight);
+			g.drawLine(0, oheight, owidth, 0);
 			Font font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_SMALL);
 			g.setColor(0xffffff);
 			g.setFont(font);
-			g.drawString("Image Error", width/2, (height/2)-(font.getHeight()/2), Graphics.HCENTER|Graphics.TOP);
+			g.drawString("Image Error", owidth/2, (oheight/2)-(font.getHeight()/2), Graphics.HCENTER|Graphics.TOP);
 			font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL);
 			g.setColor(0xff0000);
 			g.setFont(font);
-			g.drawString("Image Error", width/2, (height/2)-(font.getHeight()/2), Graphics.HCENTER|Graphics.TOP);
+			g.drawString("Image Error", owidth/2, (oheight/2)-(font.getHeight()/2), Graphics.HCENTER|Graphics.TOP);
 			return;
 		}
 		
-		if(image==null) {
-			loading.prepaint(width, height);
-			
-			loading.paint(g);
+		int width = g.getClipWidth();
+		int height = g.getClipHeight();
+		
+		if(renderData==null) {
 			return;
 		}
 		
-		g.drawImage(image, 0, 0, Graphics.LEFT|Graphics.TOP);
+		g.drawRGB(renderData, 0, width, 0, 0, width, height, true);
 		
 	}
 	
@@ -132,19 +206,11 @@ public class ImageView extends Content{
 		return error;
 	}
 	
-	public final boolean isLoaded() {
-		return (threadFlag==null&&image!=null&&!error);
-	}
-	
-	protected void onError(Throwable e) {}
-	
-	protected void onLoad() {}
-	
 	public void rescale(int width, int height) {
 		
 		if(width==this.width && height==this.height) return;
 		
-		if(originalI==null) {
+		if(data==null) {
 			this.width=width;
 			this.height=height;
 			return;
@@ -157,21 +223,22 @@ public class ImageView extends Content{
 				
 				switch(scale) {
 					case 0: //height
-						width=(int) (originalI.getHeight()*(height/(float)(originalI.getHeight())));
+						width=(int) (oheight*(height/(float)(oheight)));
 					break;
 					
 					case 1: //width
-						height = (int)(originalI.getWidth()*(width/(float)(originalI.getHeight())));
+						height = (int)(owidth*(width/(float)(owidth)));
 					break;
 				}
 			}
 			
 			if(width==this.width && height==this.height) return;
-			image=null;
+			renderData=null;
 		}catch(Exception e0) {
 			this.width=width;
 			this.height=height;
 			error=true;
+			renderData=null;
 			return;
 		}
 		
@@ -179,112 +246,6 @@ public class ImageView extends Content{
 		this.height=height;
 		
 		error=false;
-		if(threadFlag!=null) 
-			threadFlag.Terminate();
-		
-		threadFlag = new ThreadFlag();
-		Thread t = new Thread(new resizeThread());
-		t.setPriority(Thread.MAX_PRIORITY);
-		t.start();
-		
-	}
-	
-	public final static Image resizeImage(Image image, int width, int height) {
-		return resizeImage(image, width, height, null, null);
-	}
-	
-	//TODO: Support for simple progress bar
-	//TODO: Move to pixelyulpine.api.lcdui
-	public final static Image resizeImage(Image image, int width, int height, CircularProgressBar progress, ThreadFlag tf) {
-		
-		if(image==null) return null;
-		if(width==image.getWidth() && height==image.getHeight()) return image;
-		
-		System.gc();
-		try {
-		
-			int[] data = new int[width*height];
-			
-			if(progress!=null) {
-				progress.setMin(0);
-				progress.setMax((width/2)*(height/2));
-				progress.setProgress(0);
-			}
-			
-			for(long y=0; y<height/2; y++) {
-				for(long x=0; x<width/2; x++) {
-					
-					if(tf!=null && tf.isTerminated()) return null;
-					
-					//image.getRGB(data, width*y+x, 1, (int)(image.getWidth()*(x/(double)width)), (int)(image.getHeight()*(y/(double)height)),1,1);
-					
-					long rx=x;
-					long ry=y;
-					image.getRGB(data, (int)(width*ry+rx), 1, (int)(image.getWidth()*(rx/(double)width)), (int)(image.getHeight()*(ry/(double)height)),1,1);
-					rx=(width/2)+x;
-					ry=y;
-					image.getRGB(data, (int) (width*ry+rx), 1, (int)(image.getWidth()*(rx/(double)width)), (int)(image.getHeight()*(ry/(double)height)),1,1);
-					rx=x;
-					ry=(height/2)+y;
-					image.getRGB(data, (int) (width*ry+rx), 1, (int)(image.getWidth()*(rx/(double)width)), (int)(image.getHeight()*(ry/(double)height)),1,1);
-					rx=(width/2)+x;
-					ry=(height/2)+y;
-					image.getRGB(data, (int) (width*ry+rx), 1, (int)(image.getWidth()*(rx/(double)width)), (int)(image.getHeight()*(ry/(double)height)),1,1);
-					
-					if(progress!=null)
-						progress.setProgress(progress.getProgress()+1);
-					
-				}
-			}
-			
-			
-			image = Image.createRGBImage(data, width, height, true);
-			data=null;
-			
-		}catch(Error e) {
-			image=null;
-			e.printStackTrace();
-		}catch(Exception e) {
-			image=null;
-			e.printStackTrace();
-		}
-		return image;
-		
-	}
-	
-	private class resizeThread implements Runnable{
-		
-		public void run() {
-			try {
-				
-				ThreadFlag tf = threadFlag;
-				
-				Image i = ImageView.resizeImage(originalI, width, height, loading, threadFlag);
-				if(tf.isTerminated()) return;
-				if(i==null) {
-					error=true;
-					getContentListener().onContentError(me, new NullPointerException());
-					onError(new NullPointerException());
-				}else {
-					getContentListener().onContentLoad(me);
-					onLoad();
-				}
-				image=i;
-				threadFlag=null;
-			}catch(Error e) {
-				image=null;
-				e.printStackTrace();
-				threadFlag=null;
-				getContentListener().onContentError(me, e);
-				onError(new NullPointerException());
-			}catch(Exception e) {
-				image=null;
-				e.printStackTrace();
-				threadFlag=null;
-				getContentListener().onContentError(me, e);
-				onError(new NullPointerException());
-			}
-		}
 		
 	}
 

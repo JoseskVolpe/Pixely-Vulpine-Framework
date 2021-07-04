@@ -11,7 +11,7 @@ import pixelyvulpine.api.lcdui.LayoutLoader;
 import pixelyvulpine.api.util.Sleep;
 import pixelyvulpine.contents.ImageView;
 
-public class Logo extends Layout implements Runnable, ContentListener{
+public class Logo extends Layout implements Runnable{
 	
 	private ImageView logo;
 	private Image logoI;
@@ -23,7 +23,7 @@ public class Logo extends Layout implements Runnable, ContentListener{
 		
 		super(app);
 		
-		animation = NO_ANIMATION;
+		animation = Layout.ANIMATION_SMOOTH_SLIDE_UP;
 		
 		this.logoI=logo;
 		this.layout=layoutName;
@@ -32,7 +32,6 @@ public class Logo extends Layout implements Runnable, ContentListener{
 		this.logo.setPositioning(Content.POSITIONING_ANCHORED);
 		this.logo.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
 		this.logo.setVerticalAnchor(Content.VERTICAL_ANCHOR_CENTER);
-		this.logo.assign(this);
 		
 		
 		this.addContent(this.logo);
@@ -71,12 +70,6 @@ public class Logo extends Layout implements Runnable, ContentListener{
 		Layout l = ls.loadLayout(layout);
 		l.preloadLayout(getWidth(), getHeight());
 		
-		if(!logo.isLoaded() && !logo.isError()) {
-			while(!logo.isLoaded() && !logo.isError()) { //Wait until the logo loads, or errors
-				Sleep.sleep(1);
-			}
-			start=System.currentTimeMillis();
-		}
 		
 		if(!logo.isError()) {
 		
@@ -101,20 +94,6 @@ public class Logo extends Layout implements Runnable, ContentListener{
 	public boolean contentPressed(Content content) {
 		
 		return false;
-	}
-
-	public boolean onContentLoad(Content content) {
-		
-		if(content!=logo) return true;
-		
-		animation = Layout.ANIMATION_SMOOTH_SLIDE_UP;
-		Layout.setCurrent(this.getMIDlet(), this);
-		return true;
-	}
-
-	public boolean onContentError(Content content, Throwable e) {
-		
-		return true;
 	}
 
 }
