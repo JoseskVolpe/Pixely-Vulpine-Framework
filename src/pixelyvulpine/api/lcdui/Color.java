@@ -6,6 +6,18 @@ public final class Color {
 	
 	private byte a,r,g,b;
 	
+	public Color (int hex, boolean alpha) {
+		
+		a=255+Byte.MIN_VALUE;
+		if(alpha)
+			a = (byte) (((hex & 0xFF000000) >> 24)+Byte.MIN_VALUE);
+		
+		r = (byte) (((hex & 0xFF0000) >> 16)+Byte.MIN_VALUE);
+	    g = (byte) (((hex & 0xFF00) >> 8)+Byte.MIN_VALUE);
+	    b = (byte) ((hex & 0xFF)+Byte.MIN_VALUE);
+		
+	}
+	
 	public Color(int a, int r, int g, int b) {
 		
 		this.a=(byte) (a+Byte.MIN_VALUE);

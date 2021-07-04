@@ -9,6 +9,7 @@ import javax.microedition.lcdui.Graphics;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.Layout;
+import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.Controls;
 
 public class Canvas extends Content{
@@ -45,7 +46,13 @@ public class Canvas extends Content{
 	
 	public void Stopped() {
 		for(short i=0; i<contents.capacity(); i++) {
-			((Content)contents.elementAt(i)).Stopped();
+			try {
+				((Content)contents.elementAt(i)).Stopped();
+			}catch(NullPointerException e) {
+				Crash.showCrashMessage(getLayout().getMIDlet(), e, "There was an exception trying to stop activity "+getLayout().getTitle()+"\nElement is NULL", Crash.FRAMEWORK_CRASH);
+			}catch(ClassCastException e) {
+				Crash.showCrashMessage(getLayout().getMIDlet(), e, "There was an exception trying to stop activity "+getLayout().getTitle()+"\nElement is not a Contest", Crash.FRAMEWORK_CRASH);
+			}
 		}
 	}
 	
@@ -70,7 +77,7 @@ public class Canvas extends Content{
 				
 				Content c = (Content)contents.elementAt(i);
 				
-				if(c.getPositioning()!=positioning) continue;
+				if(c.getPositioning()!=positioning || !c.isVisible()) continue;
 				
 				//Insert ID, size and pos data in renderData
 				renderData[0].addElement(new Short(i)); //ID

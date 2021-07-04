@@ -10,6 +10,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.LayoutLoader;
 import pixelyvulpine.layouts.Loading;
@@ -56,7 +57,7 @@ public class App extends MIDlet implements CommandListener, LayoutLoader {
 				logoI=Image.createImage("/joseskvolpe.png");
 			}catch(IOException e) {}
 			
-			Logo logo = new Logo(this, logoI, layoutName);
+			Logo logo = new Logo(this, logoI, layoutName, new Color(0,0,0));
 			logo.loadLayout(this);
 			//Layout.setCurrent(this, logo);
 			

@@ -13,6 +13,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 
+import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.Controls;
 
 public class Layout extends Canvas implements CommandListener{
@@ -70,10 +71,20 @@ public class Layout extends Canvas implements CommandListener{
 	
 	public final void setup() {
 		
-		Setup();
+		try {
+			Setup();
+		}catch(Exception e) {
+			Crash.showCrashMessage(app, e, "Couldn't setup activity "+getTitle(), Crash.APPLICATION_CRASH);
+		}catch(Error e) {
+			Crash.showCrashMessage(app, e, "Couldn't setup activity "+getTitle(), Crash.APPLICATION_CRASH);
+		}
 		
-		canvas.setBackgroundColor(null);
-		canvas.setForegroundColor(null);
+		try {
+			canvas.setBackgroundColor(null);
+			canvas.setForegroundColor(null);
+		}catch(NullPointerException e) {
+			Crash.showCrashMessage(app, e, "Couldn't setup activity "+getTitle()+"\nCanvas is NULL", Crash.FRAMEWORK_CRASH);
+		}
 		
 		started=false;
 		
@@ -81,9 +92,21 @@ public class Layout extends Canvas implements CommandListener{
 	}
 	private final void stop() {
 		
-		canvas.Stopped();
+		try {
+			canvas.Stopped();
+		}catch(Exception e) {
+			Crash.showCrashMessage(app, e, "Couldn't stop activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+		}catch(Error e) {
+			Crash.showCrashMessage(app, e, "Couldn't stop activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+		}
 		
-		Stopped();
+		try {
+			Stopped();
+		}catch(Exception e) {
+			Crash.showCrashMessage(app, e, "There was an exception trying to stop activity "+this.getTitle(), Crash.APPLICATION_CRASH);
+		}catch(Error e) {
+			Crash.showCrashMessage(app, e, "There was an error trying to stop activity "+this.getTitle(), Crash.APPLICATION_CRASH);
+		}
 		
 	}
 	protected void Setup() {}
@@ -91,135 +114,170 @@ public class Layout extends Canvas implements CommandListener{
 	protected void Stopped() {}
 	
 	public final void preloadLayout(int w, int h) {
-		canvas.prepaint(w, h);
+		try {
+			canvas.prepaint(w, h);
+		}catch(Exception e) {
+			Crash.showCrashMessage(app, e, "There was an exception trying to preload activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+		}catch(Error e) {
+			Crash.showCrashMessage(app, e, "There was an error trying to preload activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+		}
 	}
 	
 	private long lastT;
 	protected final void paint(Graphics g) {
 		
-		if(current!=this) {
-			return;
-		}
-		
-		g.translate(-g.getTranslateX(), -g.getTranslateY());
-		
 		try {
 		
-			if(!started) 
-				timeStart=System.currentTimeMillis();
-				
-			animate(animation);
-			
-			backgroundColor.updateColor(g);
-			if(started)
-				g.fillRect(xToAnimation(0), yToAnimation(0), getWidth(), getHeight());
-				
-			int tw=0, th=0;
-			if(navigationBar) {
-					
-				double p = NAVHEIGHT/100.f;
-				navheight = (short)(Math.max(getHeight(), getWidth())*p);
-					
-				tw = getWidth();
-				th = getHeight()-navheight;
-				
-				
-					
-			}else {
-				tw = getWidth();
-				th = getHeight();
+			if(current!=this) {
+				return;
 			}
-				
-			g.translate(xToAnimation(0), yToAnimation(0));
-			g.setClip(0, 0, tw, th);
-				
-			canvas.prepaint(tw, th);
-			if(!started) {
-				timeStart=System.currentTimeMillis();
-				started=true;
-				posSetup();
-			}
-			canvas.paint(g);
 			
-			g.translate(xToAnimation(0) - g.getTranslateX(), yToAnimation(0) - g.getTranslateY());
-			g.setClip(0, 0, getWidth(), getHeight());
-			paintLayout(g);
+			g.translate(-g.getTranslateX(), -g.getTranslateY());
 			
-			g.translate(0 - g.getTranslateX(), 0 - g.getTranslateY());
-			g.setClip(0, 0, getWidth(), getHeight());
-			if(navigationBar) {
+			try {
+			
+				if(!started) 
+					timeStart=System.currentTimeMillis();
+					
+				animate(animation);
 				
+				backgroundColor.updateColor(g);
+				if(started)
+					g.fillRect(xToAnimation(0), yToAnimation(0), getWidth(), getHeight());
+					
+				int tw=0, th=0;
+				if(navigationBar) {
+						
+					double p = NAVHEIGHT/100.f;
+					navheight = (short)(Math.max(getHeight(), getWidth())*p);
+						
+					tw = getWidth();
+					th = getHeight()-navheight;
+					
+					
+						
+				}else {
+					tw = getWidth();
+					th = getHeight();
+				}
+					
+				g.translate(xToAnimation(0), yToAnimation(0));
+				g.setClip(0, 0, tw, th);
+					
+				try {
+					canvas.prepaint(tw, th);
+				}catch(Exception e) {
+					Crash.showCrashMessage(app, e, "There was an exception trying to prepaint activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+				}catch(Error e) {
+					Crash.showCrashMessage(app, e, "There was an error trying to prepaint activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+				}
+					
+				if(!started) {
+					timeStart=System.currentTimeMillis();
+					started=true;
+					posSetup();
+				}
 				
-				g.translate(0, th);
-				g.setClip(0, 0, getWidth(), navheight);
-				navbar.prepaint(getWidth(), g.getClipHeight());
-				navbar.paint(g);
-				g.translate(0, -th);
+				try {
+					canvas.paint(g);
+				}catch(Exception e) {
+					Crash.showCrashMessage(app, e, "There was an exception trying to render activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+				}catch(Error e) {
+					Crash.showCrashMessage(app, e, "There was an error trying to render activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+				}
+				
+				g.translate(xToAnimation(0) - g.getTranslateX(), yToAnimation(0) - g.getTranslateY());
 				g.setClip(0, 0, getWidth(), getHeight());
 				
-				
-				//double p = (NAVHEIGHT*(Math.min(getHeight(), getWidth())/(float)(Math.max(getHeight(), getWidth()))))/100.f;
-				
-						
-				/*g.setColor(navigationBarColor.getRed(), navigationBarColor.getGreen(), navigationBarColor.getBlue());
-				g.fillRect(0, getHeight()-((int)(navheight)), getWidth(), navheight);
-				
-				g.setColor(navigationPressColor.getRed(), navigationPressColor.getGreen(), navigationPressColor.getBlue());*/
-				
-				
-				int nx, ny;
-				
-				/*
-				if(CACHE_NAVICONS[0]!=null) {
-					nx=7;
-					ny = (int)(getHeight()-navheight+((navheight-CACHE_NAVICONS[0].getHeight())/2));
-					if(navPress[0]) {
-						g.fillRect(nx, getHeight()-navheight, CACHE_NAVICONS[0].getWidth(), navheight);
-						g.fillArc(nx-(navheight/2), getHeight()-navheight, navheight, navheight, 270, -180);
-						g.fillArc(nx+(CACHE_NAVICONS[0].getWidth())-(navheight/2), getHeight()-navheight, navheight, navheight, 270, 180);
-					}
-					CACHE_NAVICONS[0].drawOnGraphics(g, nx, ny, 0); //Left soft key
+				try {
+					paintLayout(g);
+				}catch(Exception e) {
+					Crash.showCrashMessage(app, e, "Couldn't paint activity "+getTitle(), Crash.APPLICATION_CRASH);
+				}catch(Error e) {
+					Crash.showCrashMessage(app, e, "Couldn't paint activity "+getTitle(), Crash.APPLICATION_CRASH);
 				}
 				
-				if(CACHE_NAVICONS[1]!=null) {
-					nx=getWidth()/2-(CACHE_NAVICONS[1].getWidth()/2);
-					ny = (int)(getHeight()-navheight+((navheight-CACHE_NAVICONS[1].getHeight())/2));
-					if(navPress[1]) {
-						g.fillRect(nx, getHeight()-navheight, CACHE_NAVICONS[1].getWidth(), navheight);
-						g.fillArc(nx-(navheight/2), getHeight()-navheight, navheight, navheight, 270, -180);
-						g.fillArc(nx+(CACHE_NAVICONS[1].getWidth())-(navheight/2), getHeight()-navheight, navheight, navheight, 270, 180);
+				g.translate(0 - g.getTranslateX(), 0 - g.getTranslateY());
+				g.setClip(0, 0, getWidth(), getHeight());
+				if(navigationBar) {
+					
+					
+					g.translate(0, th);
+					g.setClip(0, 0, getWidth(), navheight);
+					navbar.prepaint(getWidth(), g.getClipHeight());
+					navbar.paint(g);
+					g.translate(0, -th);
+					g.setClip(0, 0, getWidth(), getHeight());
+					
+					
+					//double p = (NAVHEIGHT*(Math.min(getHeight(), getWidth())/(float)(Math.max(getHeight(), getWidth()))))/100.f;
+					
+							
+					/*g.setColor(navigationBarColor.getRed(), navigationBarColor.getGreen(), navigationBarColor.getBlue());
+					g.fillRect(0, getHeight()-((int)(navheight)), getWidth(), navheight);
+					
+					g.setColor(navigationPressColor.getRed(), navigationPressColor.getGreen(), navigationPressColor.getBlue());*/
+					
+					
+					int nx, ny;
+					
+					/*
+					if(CACHE_NAVICONS[0]!=null) {
+						nx=7;
+						ny = (int)(getHeight()-navheight+((navheight-CACHE_NAVICONS[0].getHeight())/2));
+						if(navPress[0]) {
+							g.fillRect(nx, getHeight()-navheight, CACHE_NAVICONS[0].getWidth(), navheight);
+							g.fillArc(nx-(navheight/2), getHeight()-navheight, navheight, navheight, 270, -180);
+							g.fillArc(nx+(CACHE_NAVICONS[0].getWidth())-(navheight/2), getHeight()-navheight, navheight, navheight, 270, 180);
+						}
+						CACHE_NAVICONS[0].drawOnGraphics(g, nx, ny, 0); //Left soft key
 					}
-					CACHE_NAVICONS[1].drawOnGraphics(g, nx, ny, 0); //Center soft key
+					
+					if(CACHE_NAVICONS[1]!=null) {
+						nx=getWidth()/2-(CACHE_NAVICONS[1].getWidth()/2);
+						ny = (int)(getHeight()-navheight+((navheight-CACHE_NAVICONS[1].getHeight())/2));
+						if(navPress[1]) {
+							g.fillRect(nx, getHeight()-navheight, CACHE_NAVICONS[1].getWidth(), navheight);
+							g.fillArc(nx-(navheight/2), getHeight()-navheight, navheight, navheight, 270, -180);
+							g.fillArc(nx+(CACHE_NAVICONS[1].getWidth())-(navheight/2), getHeight()-navheight, navheight, navheight, 270, 180);
+						}
+						CACHE_NAVICONS[1].drawOnGraphics(g, nx, ny, 0); //Center soft key
+					}
+					
+					if(CACHE_NAVICONS[2]!=null) {
+						nx=getWidth()-7-CACHE_NAVICONS[2].getWidth();
+						ny = (int)(getHeight()-navheight+((navheight-CACHE_NAVICONS[2].getHeight())/2));
+						if(navPress[2]) {
+							g.fillRect(nx, getHeight()-navheight, CACHE_NAVICONS[2].getWidth(), navheight);
+							g.fillArc(nx-(navheight/2), getHeight()-navheight, navheight, navheight, 270, -180);
+							g.fillArc(nx+(CACHE_NAVICONS[2].getWidth())-(navheight/2), getHeight()-navheight, navheight, navheight, 270, 180);
+						}
+						CACHE_NAVICONS[2].drawOnGraphics(g, nx, ny, 0); //Right soft key
+					}
+					
+					*/
 				}
 				
-				if(CACHE_NAVICONS[2]!=null) {
-					nx=getWidth()-7-CACHE_NAVICONS[2].getWidth();
-					ny = (int)(getHeight()-navheight+((navheight-CACHE_NAVICONS[2].getHeight())/2));
-					if(navPress[2]) {
-						g.fillRect(nx, getHeight()-navheight, CACHE_NAVICONS[2].getWidth(), navheight);
-						g.fillArc(nx-(navheight/2), getHeight()-navheight, navheight, navheight, 270, -180);
-						g.fillArc(nx+(CACHE_NAVICONS[2].getWidth())-(navheight/2), getHeight()-navheight, navheight, navheight, 270, 180);
-					}
-					CACHE_NAVICONS[2].drawOnGraphics(g, nx, ny, 0); //Right soft key
-				}
+			}catch(Exception e) {
 				
-				*/
-			}
+			}catch(Error e) {}
+			
+			g.setColor(0xffffff);
+			g.setFont(Font.getDefaultFont());
+			long sub=System.currentTimeMillis()-lastT;
+			if(sub<=0) sub=1;
+			g.drawString((1000/(sub))+" FPS", 0, 0, Graphics.LEFT|Graphics.TOP);
+			
+			lastT=System.currentTimeMillis();
+			
+			painted=true;
+			repaint();
 			
 		}catch(Exception e) {
-			
-		}catch(Error e) {}
-		
-		g.setColor(0xffffff);
-		g.setFont(Font.getDefaultFont());
-		long sub=System.currentTimeMillis()-lastT;
-		if(sub<=0) sub=1;
-		g.drawString((1000/(sub))+" FPS", 0, 0, Graphics.LEFT|Graphics.TOP);
-		
-		lastT=System.currentTimeMillis();
-		
-		painted=true;
-		repaint();
+			Crash.showCrashMessage(app, e, "Exception rendering activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+		}catch(Error e) {
+			Crash.showCrashMessage(app, e, "Error rendering activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+		}
 		
 	}
 	
@@ -275,16 +333,25 @@ public class Layout extends Canvas implements CommandListener{
 	}
 	
 	public final static void setCurrent(MIDlet midlet, Layout layout) {
+		
+		if(layout==null) {
+			Crash.showCrashMessage(midlet, new NullPointerException(), "Couldn't set current\nActivity is NULL", Crash.APPLICATION_CRASH);
+			return;
+		}
+		
 		if(current!=null)
 			current.stop();
 			
 		current=layout;
+		System.gc();
 		layout.setup();
-		Display.getDisplay(midlet).setCurrent(layout);
-		layout.serviceRepaints();
-		/*while(!layout.isLoaded()) { //Wait for the first prepaint
-			Sleep.sleep(1);
-		}*/
+		try {
+			Display.getDisplay(midlet).setCurrent(layout);
+		}catch(Exception e) {
+			Crash.showCrashMessage(midlet, e, "Couldn't set current", Crash.FRAMEWORK_CRASH);
+		}catch(Error e) {
+			Crash.showCrashMessage(midlet, e, "Couldn't set current", Crash.FRAMEWORK_CRASH);
+		}
 	}
 	
 	public final MIDlet getMIDlet() {

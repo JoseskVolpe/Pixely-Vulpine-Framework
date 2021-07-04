@@ -6,6 +6,7 @@ import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.TextFont;
+import pixelyvulpine.api.system.Crash;
 
 public class Label extends Content{
 	
@@ -93,17 +94,27 @@ public class Label extends Content{
 	 */
 	public final boolean impact() {
 		
-		if(font==null || font.getMultiline()) return false;
+		try {
 		
-		int w=0, h=0;
+			if(font==null || font.getMultiline()) return false;
+			
+			int w=0, h=0;
+			
+			w=font.getFont().stringWidth(text.toString());
+			h=font.getFont().getHeight();
+			
+			this.setWidth(new int[] {0, w});
+			this.setHeight(new int[] {0, h});
+			
+			return true;
 		
-		w=font.getFont().stringWidth(text.toString());
-		h=font.getFont().getHeight();
+		}catch(Exception e) {
+			Crash.showCrashMessage(this.getLayout().getMIDlet(), e, "Could not impact Label '"+this.getText()+"'", Crash.FRAMEWORK_CRASH);
+		}catch(Error e) {
+			Crash.showCrashMessage(this.getLayout().getMIDlet(), e, "Could not impact Label '"+this.getText()+"'", Crash.FRAMEWORK_CRASH);
+		}
 		
-		this.setWidth(new int[] {0, w});
-		this.setHeight(new int[] {0, h});
-		
-		return true;
+		return false;
 		
 	}
 
