@@ -103,8 +103,9 @@ public class Logo extends Layout implements Runnable{
 		
 		this.ls = layoutLoader;
 		
-		new Thread(this).start();
-		Thread.yield();
+		Thread t = new Thread(this);
+		t.setPriority(Thread.MAX_PRIORITY);
+		t.start();
 	}
 	
 	public void run() {

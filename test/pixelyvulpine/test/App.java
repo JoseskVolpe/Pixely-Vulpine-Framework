@@ -78,6 +78,17 @@ public class App extends MIDlet implements CommandListener, LayoutLoader {
 
 	public Layout loadLayout(String layoutName) {
 		
+		/*// Force delay test
+		try {
+			Thread.sleep(9000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		/*// Force error
+		int a =0/0;
+		*/
+		
 		if(layoutName.equals("canvasTest")){
 			return new CanvasTest(this);
 		}

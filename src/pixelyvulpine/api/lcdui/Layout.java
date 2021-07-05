@@ -59,6 +59,49 @@ public class Layout extends Canvas implements CommandListener{
 	private CommandListener listener;
 	private Vector commands = new Vector();
 	
+	private paintThreadClass paintThread;
+	private class paintThreadClass implements Runnable{
+		private Thread thread;
+		private boolean terminated;
+		private boolean repaint=true;
+		
+		public paintThreadClass() {
+			thread=new Thread(this);
+			thread.setPriority(Thread.NORM_PRIORITY);
+			thread.start();
+		}
+		
+		public void run() {
+			
+			try {
+			
+				while(!terminated) {
+					
+					do {
+						Thread.sleep(1);
+					}while(!repaint);
+					
+					repaint=false;
+					
+					repaint();
+				}
+			
+			}catch(InterruptedException e) {
+				Crash.showCrashMessage(app, e, "Paint Thread unexpected interrupted", Crash.FRAMEWORK_CRASH);
+			}
+			
+		}
+		
+		public void askRepaint() {
+			repaint=true;
+		}
+		
+		public void terminate() {
+			terminated=true;
+		}
+		
+	}
+	
 	protected static double x, y;
 	
 	public Layout(MIDlet app) {
@@ -88,9 +131,12 @@ public class Layout extends Canvas implements CommandListener{
 		
 		started=false;
 		
+		paintThread = new paintThreadClass();
 		
 	}
 	private final void stop() {
+		
+		paintThread.terminate();
 		
 		try {
 			canvas.Stopped();
@@ -126,9 +172,15 @@ public class Layout extends Canvas implements CommandListener{
 	private long lastT;
 	protected final void paint(Graphics g) {
 		
+		if(paintThread==null) {
+			Crash.showCrashMessage(app, new IllegalStateException(), "No Paint Thread found\n¿Was the Activity changed by setCurrent() method?", Crash.FRAMEWORK_CRASH);
+			return;
+		}
+			
 		try {
 		
 			if(current!=this) {
+				paintThread.askRepaint();
 				return;
 			}
 			
@@ -182,8 +234,10 @@ public class Layout extends Canvas implements CommandListener{
 					canvas.paint(g);
 				}catch(Exception e) {
 					Crash.showCrashMessage(app, e, "There was an exception trying to render activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+					return;
 				}catch(Error e) {
 					Crash.showCrashMessage(app, e, "There was an error trying to render activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+					return;
 				}
 				
 				g.translate(xToAnimation(0) - g.getTranslateX(), yToAnimation(0) - g.getTranslateY());
@@ -193,8 +247,10 @@ public class Layout extends Canvas implements CommandListener{
 					paintLayout(g);
 				}catch(Exception e) {
 					Crash.showCrashMessage(app, e, "Couldn't paint activity "+getTitle(), Crash.APPLICATION_CRASH);
+					return;
 				}catch(Error e) {
 					Crash.showCrashMessage(app, e, "Couldn't paint activity "+getTitle(), Crash.APPLICATION_CRASH);
+					return;
 				}
 				
 				g.translate(0 - g.getTranslateX(), 0 - g.getTranslateY());
@@ -271,13 +327,16 @@ public class Layout extends Canvas implements CommandListener{
 			lastT=System.currentTimeMillis();
 			
 			painted=true;
-			repaint();
 			
 		}catch(Exception e) {
 			Crash.showCrashMessage(app, e, "Exception rendering activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+			return;
 		}catch(Error e) {
 			Crash.showCrashMessage(app, e, "Error rendering activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+			return;
 		}
+		
+		paintThread.askRepaint();
 		
 	}
 	
