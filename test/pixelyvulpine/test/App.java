@@ -22,7 +22,7 @@ import pixelyvulpine.test.scenes.ScrollTest;
 
 public class App extends MIDlet implements CommandListener, LayoutLoader {
 
-	private static final String layoutName="AlphaBlendingTest";
+	private static final String layoutName="scrollTest";
 	
 	private boolean started = false;
 	
