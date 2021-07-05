@@ -48,8 +48,6 @@ public class Content {
 	private Layout layout;
 	private boolean selected=false;
 	
-	private static Image selectNavbarIconSource;
-	
 	/**
 	 * Scalable - Defines value according to screen's resolutions, in percent
 	 * Offset - Defines value absolutely, in pixels
@@ -85,79 +83,6 @@ public class Content {
 	}
 	
 	public void paint(Graphics g) {
-		
-		
-		
-	}
-	
-	/**
-	 * Sets the center navbar icon for when any content is selected
-	 * @param source
-	 * @throws IOException 
-	 */
-	public final static void setNavbarIcon(String source) throws IOException {
-		
-		setNavbarIcon(Image.createImage(source));
-		
-	}
-	
-	/**
-	 * Sets the center navbar icon for when any content is selected
-	 * @param icon
-	 */
-	public final static void setNavbarIcon(Image icon) {
-		
-		Content.selectNavbarIconSource = icon;
-		
-	}
-	
-	/**
-	 * Returns the navbar icon for when any content is selected
-	 * @return icon
-	 */
-	public final static Image getNavbarIcon() {
-		return selectNavbarIconSource;
-	}
-	
-	/**When getting pressed by key or touch
-	 @return true if ignore Layout command
-	 */
-	public boolean pressed() {
-		
-		if(listenner==null) return true;
-		
-		return listenner.contentPressed(this);
-		
-	}
-	
-	
-	public final boolean onSelect() {
-		if(selected()) {
-			selected=true;
-			return true;
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * When getting selected
-	 */
-	protected boolean selected() {
-		
-		return false;
-		
-	}
-	
-	public final void onDeselect() {
-		selected=false;
-		deselected();
-	}
-	
-	/**
-	 * When getting deselected
-	 */
-	protected void deselected() {
 		
 		
 		

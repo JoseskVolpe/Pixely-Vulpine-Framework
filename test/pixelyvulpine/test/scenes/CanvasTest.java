@@ -121,15 +121,6 @@ public class CanvasTest extends Layout implements ContentListener{
 		this.addCommand(new Command("Test5", Command.BACK, 1));
 		this.addCommand(new Command("Test6", Command.OK, 1));
 		
-		try {
-			/*setNavigationBarButton(NAVBUTTON_LEFT, "/icons/dark/navbar/back.png");
-			setNavigationBarButton(NAVBUTTON_CENTER, "/icons/dark/navbar/no.png");
-			setNavigationBarButton(NAVBUTTON_RIGHT, "/icons/dark/navbar/yes.png");*/
-			Content.setNavbarIcon("/icons/dark/navbar/select.png");
-		}catch(IOException e) {
-			
-		}
-		
 	}
 	
 	public void paintLayout(Graphics g) {

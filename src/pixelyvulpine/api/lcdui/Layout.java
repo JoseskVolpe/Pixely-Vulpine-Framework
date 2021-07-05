@@ -266,52 +266,7 @@ public class Layout extends Canvas implements CommandListener{
 					g.setClip(0, 0, getWidth(), getHeight());
 					
 					
-					//double p = (NAVHEIGHT*(Math.min(getHeight(), getWidth())/(float)(Math.max(getHeight(), getWidth()))))/100.f;
-					
-							
-					/*g.setColor(navigationBarColor.getRed(), navigationBarColor.getGreen(), navigationBarColor.getBlue());
-					g.fillRect(0, getHeight()-((int)(navheight)), getWidth(), navheight);
-					
-					g.setColor(navigationPressColor.getRed(), navigationPressColor.getGreen(), navigationPressColor.getBlue());*/
-					
-					
 					int nx, ny;
-					
-					/*
-					if(CACHE_NAVICONS[0]!=null) {
-						nx=7;
-						ny = (int)(getHeight()-navheight+((navheight-CACHE_NAVICONS[0].getHeight())/2));
-						if(navPress[0]) {
-							g.fillRect(nx, getHeight()-navheight, CACHE_NAVICONS[0].getWidth(), navheight);
-							g.fillArc(nx-(navheight/2), getHeight()-navheight, navheight, navheight, 270, -180);
-							g.fillArc(nx+(CACHE_NAVICONS[0].getWidth())-(navheight/2), getHeight()-navheight, navheight, navheight, 270, 180);
-						}
-						CACHE_NAVICONS[0].drawOnGraphics(g, nx, ny, 0); //Left soft key
-					}
-					
-					if(CACHE_NAVICONS[1]!=null) {
-						nx=getWidth()/2-(CACHE_NAVICONS[1].getWidth()/2);
-						ny = (int)(getHeight()-navheight+((navheight-CACHE_NAVICONS[1].getHeight())/2));
-						if(navPress[1]) {
-							g.fillRect(nx, getHeight()-navheight, CACHE_NAVICONS[1].getWidth(), navheight);
-							g.fillArc(nx-(navheight/2), getHeight()-navheight, navheight, navheight, 270, -180);
-							g.fillArc(nx+(CACHE_NAVICONS[1].getWidth())-(navheight/2), getHeight()-navheight, navheight, navheight, 270, 180);
-						}
-						CACHE_NAVICONS[1].drawOnGraphics(g, nx, ny, 0); //Center soft key
-					}
-					
-					if(CACHE_NAVICONS[2]!=null) {
-						nx=getWidth()-7-CACHE_NAVICONS[2].getWidth();
-						ny = (int)(getHeight()-navheight+((navheight-CACHE_NAVICONS[2].getHeight())/2));
-						if(navPress[2]) {
-							g.fillRect(nx, getHeight()-navheight, CACHE_NAVICONS[2].getWidth(), navheight);
-							g.fillArc(nx-(navheight/2), getHeight()-navheight, navheight, navheight, 270, -180);
-							g.fillArc(nx+(CACHE_NAVICONS[2].getWidth())-(navheight/2), getHeight()-navheight, navheight, navheight, 270, 180);
-						}
-						CACHE_NAVICONS[2].drawOnGraphics(g, nx, ny, 0); //Right soft key
-					}
-					
-					*/
 				}
 				
 			}catch(Exception e) {
@@ -521,70 +476,16 @@ public class Layout extends Canvas implements CommandListener{
 	}
 	
 	protected final void keyPressed(int keyCode){
-		//when player press a key
-		int key = Controls.getKey(keyCode);
-		switch(key) {
-		case Controls.SOFTKEY_LEFT:
-			navPress[0]=true;
-			break;
-			
-		case Controls.SOFTKEY_RIGHT:
-			navPress[2]=true;
-			break;
-			
-		case Controls.SOFTKEY_CENTER:
-			navPress[1]=true;
-			break;
-			
-		}
 		
-		/*
-		canvas.onSelect();
-		if(!canvas.keyDown(keyCode, key)) {
-			
-			Content selected = canvas.getSelected();
-			if(selected == null)
-				navicons[NAVBUTTON_CENTER][0]=null;
-			else
-				navicons[NAVBUTTON_CENTER][0]=Content.getNavbarIcon();
-			
-			convertNavIcon(NAVBUTTON_CENTER);
-			
-			return;
-		}
-		*/
 		
 
 	}
 
 	protected final void keyReleased(int keyCode){
 
-		//when player released a key
-		int key = Controls.getKey(keyCode);
-		switch(key) {
-		case Controls.SOFTKEY_LEFT:
-			navPress[0]=false;
-			break;
-			
-		case Controls.SOFTKEY_RIGHT:
-			navPress[2]=false;
-			break;
-			
-		case Controls.SOFTKEY_CENTER:
-			navPress[1]=false;
-			break;
-		}
 		
-		if(!canvas.keyUp(keyCode, key)) return;
 	
 	}
-
-		/*
-		touchscreen observations:
-
-		There's NO multitouch in J2ME, they are all single-touch
-		Pointer is most used in touch screen, but may also use other controls like trackball in some devices
-		*/
 	
 	public final boolean isLoaded() {
 		return started;
@@ -592,21 +493,19 @@ public class Layout extends Canvas implements CommandListener{
 
 	protected final void pointerPressed(int x, int y){
 		
-		checkTouchNav(x, y);
+		
 
 	}
 
 	protected final void pointerReleased(int x, int y){
 		
-		navPress[0]=false;
-		navPress[1]=false;
-		navPress[2]=false;
+		
 
 	}
 
 	protected final void pointerDragged(int x, int y){
 		
-		checkTouchNav(x, y);
+		
 		
 	}
 	
@@ -632,53 +531,10 @@ public class Layout extends Canvas implements CommandListener{
 		}
 		super.setFullScreenMode(fullscreen);
 	}
-	
-	private static final void checkTouchNav(int x, int y) {
-		
-		/*
-		
-		int nx, ny;
-		
-		nx=7;
-		ny = (int)(App.getCurrentLayout().getHeight()-navheight+((navheight-CACHE_NAVICONS[0].getHeight())/2));
-		if(x>=nx && x<=nx+CACHE_NAVICONS[0].getWidth() &&
-				y>=ny && y<=ny+CACHE_NAVICONS[0].getHeight()) {
-			navPress[0]=true;
-		}else {
-			navPress[0]=false;
-		}
-		
-		nx=App.getCurrentLayout().getWidth()/2-(CACHE_NAVICONS[1].getWidth()/2);
-		ny = (int)(App.getCurrentLayout().getHeight()-navheight+((navheight-CACHE_NAVICONS[1].getHeight())/2));
-		if(x>=nx && x<=nx+CACHE_NAVICONS[1].getWidth() &&
-				y>=ny && y<=ny+CACHE_NAVICONS[1].getHeight()) {
-			navPress[1]=true;
-		}else {
-			navPress[1]=false;
-		}
-		
-		nx=App.getCurrentLayout().getWidth()-7-CACHE_NAVICONS[2].getWidth();
-		ny = (int)(App.getCurrentLayout().getHeight()-navheight+((navheight-CACHE_NAVICONS[2].getHeight())/2));
-		if(x>=nx && x<=nx+CACHE_NAVICONS[2].getWidth() &&
-				y>=ny && y<=ny+CACHE_NAVICONS[2].getHeight()) {
-			navPress[2]=true;
-		}else {
-			navPress[2]=false;
-		}
-		
-		*/
-		
-	}
 
 	public void commandAction(Command command, Displayable display) {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	/*protected final void assignCanvas(josesk.app.j2me.Canvas canvas) {
-		
-		this.canvas = canvas;
-		
-	}*/
 
 }

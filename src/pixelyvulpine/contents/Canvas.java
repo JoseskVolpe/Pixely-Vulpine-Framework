@@ -393,43 +393,6 @@ public class Canvas extends Content{
 		
 	}
 	
-	protected void deselected() {
-		
-		if(selectedC>=0 && selectedC<contents.capacity() && contents.elementAt(selectedC) != null) {
-			((Content)contents.elementAt(selectedC)).onDeselect();
-		}
-		
-	}
-	
-	protected boolean selected() {
-		
-		if(contents==null || contents.capacity()==0) return false;
-		
-		if(selectedC>=0 && selectedC<contents.capacity() && contents.elementAt(selectedC) != null && ((Content)contents.elementAt(selectedC)).onSelect()) {
-			return true;
-		}
-		
-		int inc=0;
-		
-		if(selectedC<0) {
-			selectedC=0;
-			inc++;
-		}else{
-			inc--;
-		}
-		
-		for(int i=selectedC; i<contents.capacity(); i+=inc) {
-			
-			if(contents.elementAt(i)!=null && ((Content)contents.elementAt(i)).onSelect()) {
-				selectedC=i;
-				return true;
-			}
-			
-		}
-		
-		return false;
-		
-	}
 	
 	public final void addContent(Content content) {
 		contents.addElement(content);
@@ -518,60 +481,7 @@ public class Canvas extends Content{
 	
 	public boolean keyDown(int keyCode, int key) {
 		
-		if(contents!=null && selectedC >= 0 && selectedC < contents.capacity() && contents.elementAt(selectedC) != null && !((Content)contents.elementAt(selectedC)).keyDown(keyCode, key)) return false;
 		
-		int lc;
-		
-		int nextKey=0, backKey=0;
-		switch(arrangement) {
-			case ARRANGEMENT_VERTICAL:
-				nextKey = Controls.DPAD_DOWN;
-				backKey = Controls.DPAD_UP;
-			break;
-			case ARRANGEMENT_HORIZONTAL:
-				nextKey = Controls.DPAD_RIGHT;
-				backKey = Controls.DPAD_LEFT;
-			break;
-		}
-		
-		if(key == nextKey) {
-				lc = selectedC;
-				if(selectedC<0) selectedC=0;
-				do {
-					selectedC++;
-				}while(selectedC<contents.capacity()-1 && !((Content)contents.elementAt(selectedC)).onSelect());
-				if(selectedC>=contents.capacity() || contents.elementAt(selectedC)==null || !((Content)contents.elementAt(selectedC)).onSelect()) {
-					selectedC = lc;
-					return true;
-				}else if(lc>=0 && lc<contents.capacity() && contents.elementAt(lc)!=null){
-					((Content)contents.elementAt(lc)).onDeselect();
-				}
-				
-				return false;
-				
-		}
-				
-		if(key == backKey) {
-				lc = selectedC;
-				do {
-					selectedC--;
-				}while(selectedC>0 && !((Content)contents.elementAt(selectedC)).onSelect());
-				if(selectedC < 0 || contents.elementAt(selectedC)==null || !((Content)contents.elementAt(selectedC)).onSelect()) {
-					selectedC = lc;
-					return true;
-				}else if(lc>=0 && lc<contents.capacity() && contents.elementAt(lc)!=null){
-					((Content)contents.elementAt(lc)).onDeselect();
-				}
-				
-				return false;
-				
-		}
-		
-				
-		if(key == Controls.SOFTKEY_CENTER) {
-				if(contents!=null && selectedC >= 0 && selectedC < contents.capacity() && contents.elementAt(selectedC) != null && !((Content)contents.elementAt(selectedC)).pressed()) return false;
-				return true;
-		}
 		
 		return true;
 		

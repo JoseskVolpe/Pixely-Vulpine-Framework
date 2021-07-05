@@ -72,11 +72,5 @@ public class Button extends Content{
 	public final TextFont getFont() {
 		return label.getFont();
 	}
-	
-	protected boolean selected() {
-		
-		return true;
-		
-	}
 
 }
