@@ -15,10 +15,12 @@ It shall be cool to use on Android devices with J2ME Loader aswell like it were 
 There's few J2ME apps that works great on touch, it should be well optimized for touch devices, but still, it needs to be 100% compatible with non-touchscreen devices<br>
 ## To be lightweight<br>
 It should cost few RAM and storage resource, main maximum should be 40Kb, but no more than 100Kb<br>
+## To be customizable<br>
+The developer will be able to customize colors, textures, backgrounds and create it's own custom contents for this framework<br>
 ## To be easy<br>
 It should be easy to use on IDEs. Just some layout.addContent(Content) and you made a cool advanced design<br>
 ## Open-source<br>
-It shall be open-source and MIT license, so you can do your projects, including closed-source ones, without the need of reinventing the whell<br>
+It shall be open-source and MIT license, so you can do your projects, including closed-source ones, without the need to reinventing the whell<br>
 ## To be fast<br>
 There'll be loading ofcourse, but they should not disturb much and take much long<br>
 ## Multilanguage<br>
