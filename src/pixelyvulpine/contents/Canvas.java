@@ -11,6 +11,7 @@ import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.Controls;
+import pixelyvulpine.api.util.GraphicsFix;
 
 public class Canvas extends Content{
 	
@@ -287,7 +288,7 @@ public class Canvas extends Content{
 					color[i]=hex;
 				
 				try {
-					g.drawRGB(color, 0, w, 0, 0, w, h, true);
+					GraphicsFix.drawRGB(g, color, 0, w, 0, 0, w, h, true);
 				}catch(Exception e) {}
 				
 				
@@ -316,12 +317,12 @@ public class Canvas extends Content{
 					int color[];
 					color = new int[]{foregroundColor.getHex()};
 					for(int x=0; x<lw; x++) {
-						g.drawRGB(color, 0, 1, x, 0, 1, 1, true);
-						g.drawRGB(color, 0, 1, x, lh-1, 1, 1, true);
+						GraphicsFix.drawRGB(g, color, 0, 1, x, 0, 1, 1, true);
+						GraphicsFix.drawRGB(g, color, 0, 1, x, lh-1, 1, 1, true);
 					}
 					for(int y=1; y<lh-1; y++) {
-						g.drawRGB(color, 0, 1, 0, y, 1, 1, true);
-						g.drawRGB(color, 0, 1, lw-1, y, 1, 1, true);
+						GraphicsFix.drawRGB(g, color, 0, 1, 0, y, 1, 1, true);
+						GraphicsFix.drawRGB(g, color, 0, 1, lw-1, y, 1, 1, true);
 					}
 					g.translate(1, 1);
 					lx=1;

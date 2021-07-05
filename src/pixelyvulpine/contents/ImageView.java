@@ -8,6 +8,7 @@ import javax.microedition.lcdui.Image;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.ImageTransform;
 import pixelyvulpine.api.lcdui.Layout;
+import pixelyvulpine.api.util.GraphicsFix;
 import pixelyvulpine.api.util.ThreadFlag;
 
 public class ImageView extends Content{
@@ -190,7 +191,7 @@ public class ImageView extends Content{
 			return;
 		}
 		
-		g.drawRGB(renderData, 0, width, 0, 0, width, height, true);
+		GraphicsFix.drawRGB(g, renderData, 0, width, 0, 0, width, height, true);
 		
 	}
 	
