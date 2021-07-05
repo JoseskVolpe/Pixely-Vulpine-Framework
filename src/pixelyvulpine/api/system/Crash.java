@@ -8,6 +8,8 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.MIDlet;
 
+import pixelyvulpine.Config;
+
 public class Crash implements CommandListener{
 	
 	public static byte FRAMEWORK_CRASH=0;
@@ -55,7 +57,9 @@ public class Crash implements CommandListener{
 			device="Unknown";
 		}
 		
-		Alert log = new Alert(titles[CrashType], error+"Device: "+device+"\n\n"+message+"\n\n"+reportMessage[CrashType], null, AlertType.ERROR);
+		String framework_version = Config.framework_version+" ("+Config.framework_version_tag+")";
+		
+		Alert log = new Alert(titles[CrashType], error+"Device: "+device+"\nFramework version: "+framework_version+"\nMIDlet version: "+midlet.getAppProperty("MIDlet-Version")+"\n\n"+message+"\n\n"+reportMessage[CrashType], null, AlertType.ERROR);
 		log.setTimeout(Alert.FOREVER);
 		log.setCommandListener(crash);
 		log.addCommand(exit);
