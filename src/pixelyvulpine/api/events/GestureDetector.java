@@ -1,18 +1,20 @@
 package pixelyvulpine.api.events;
 
+import pixelyvulpine.api.lcdui.Layout;
+
 public class GestureDetector {
 
-	public interface onContextClickListener{
+	public interface OnContextClickListener{
 		public abstract boolean onContextClick(MotionEvent e);
 	}
 	
-	public interface onDoubleTapListener{
+	public interface OnDoubleTapListener{
 		public abstract boolean onDoubleTap(MotionEvent e);
 		public abstract boolean onDoubleTapEvent(MotionEvent e);
 		public abstract boolean onSingleTapConfirmed(MotionEvent e);
 	}
 	
-	public interface onGestureListener{
+	public interface OnGestureListener{
 		public abstract boolean onDown(MotionEvent e);
 		public abstract boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY);
 		public abstract boolean onLongPress(MotionEvent e);
@@ -21,7 +23,7 @@ public class GestureDetector {
 		public abstract boolean onSingleTapUp(MotionEvent e);
 	}
 	
-	public static class SimpleOnGestureListener implements onContextClickListener, onDoubleTapListener, onGestureListener{
+	public static class SimpleOnGestureListener implements OnContextClickListener, OnDoubleTapListener, OnGestureListener{
 
 		public boolean onDown(MotionEvent e) {
 			return false;
@@ -60,6 +62,37 @@ public class GestureDetector {
 		public boolean onContextClick(MotionEvent e) {
 			return false;
 		}
+		
+	}
+
+	private boolean longpressEnabled = true;
+	private Layout context;
+	private OnGestureListener onGestureListener;
+	private OnContextClickListener onContextClickListener;
+	private OnDoubleTapListener onDoubleTapListener;
+	
+	public GestureDetector(Layout context, OnGestureListener listener) {
+		this.context=context;
+		this.onGestureListener=listener;
+	}
+	
+	public boolean isLongpressEnabled() {
+		return longpressEnabled;
+	}
+	
+	public boolean onTouchEvent(MotionEvent event) {
+		
+	}
+	
+	public void setContextClickListener(OnContextClickListener onContextClickListener) {
+		
+	}
+	
+	public void setIsLongpressEnabled(boolean longpressEnabled) {
+		this.longpressEnabled=longpressEnabled;
+	}
+	
+	public void setOnDoubleTapListener(OnDoubleTapListener onDoubleTapListener) {
 		
 	}
 	
