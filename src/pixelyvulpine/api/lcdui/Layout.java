@@ -18,9 +18,6 @@ import pixelyvulpine.api.util.Controls;
 
 public class Layout extends Canvas implements CommandListener{
 	
-	private static Image navicons[][]=new Image[3][2]; //3 Icons (Left, Center and Right), 2 priorities (system, interface)
-	private static boolean navPress[]=new boolean[3];
-	
 	private static final byte NAVHEIGHT = 10;//in percent
 	
 	public static final byte NAVBUTTON_LEFT=0;
@@ -36,6 +33,9 @@ public class Layout extends Canvas implements CommandListener{
 	public static final int ANIMATION_SLIDE_LEFT=6;
 	public static final int ANIMATION_SMOOTH_SLIDE_RIGHT=7;
 	public static final int ANIMATION_SLIDE_RIGHT=8;
+	
+	private static final long touch_delay = 1000; //In millis
+	private static final int touch_sensibility = 8; //In pixels
 	
 	protected int animation = ANIMATION_SMOOTH_SLIDE_UP;
 	
@@ -79,6 +79,7 @@ public class Layout extends Canvas implements CommandListener{
 					
 					do {
 						Thread.sleep(1);
+						updateTouch();
 					}while(!repaint);
 					
 					repaint=false;
@@ -395,24 +396,6 @@ public class Layout extends Canvas implements CommandListener{
 		return navigationBar;
 	}
 	
-	public final static void setNavigationBarButton(int button, String source) throws IOException {
-		setNavigationBarButton(button, Image.createImage(source));
-	}
-	
-	public final static void setNavigationBarButton(int button, Image icon) {
-		navicons[button][1] = icon;
-	}
-	
-	public final static Image[] getNavigationBarButtons() {
-		
-		Image[] temp = new Image[navicons.length];
-		for(int i=0; i<temp.length; i++) {
-			temp[i] = navicons[i][1];
-		}
-		
-		return temp;
-	}
-	
 	public final static int xToAnimation(float x) {
 		
 		return (int)(x+(getCurrent().getWidth()*Layout.x));
@@ -491,21 +474,91 @@ public class Layout extends Canvas implements CommandListener{
 		return started;
 	}
 
+	
+	private static int touch_x, touch_y, drag_x, drag_y, tap_x, tap_y;
+	private static long lastTouch;
+	private static boolean touch_press, touch_long, touch_tap;
+	
+	private final void updateTouch() {
+		
+		if(touch_press && System.currentTimeMillis()-lastTouch >= touch_delay) {
+			touch_press=false;
+			touch_long=true;
+			pointerLongTouch(touch_x, touch_y);
+		}
+		
+	}
+	
+	protected void pointerLongTouch(int x, int y) {
+		
+		System.out.println("Long "+x+"X"+y);
+		
+	}
+	
+	protected void pointerTouch(int x, int y) {
+		
+		System.out.println("Touch "+x+"X"+y);
+		
+	}
+	
+	protected void pointerDoubleTap(int x, int y) {
+		
+	}
+	
+	protected void pointerLongTap(int x, int y) {
+		
+	}
+	
+	protected void pointerDrag(int start_x, int start_y, int last_x, int last_y, int final_x, int final_y, boolean longTouch) {
+	
+		System.out.println("Drag "+start_x+"X"+start_y+"; "+last_x+"X"+last_y+"; "+final_x+"X"+final_y+"; "+longTouch);
+		
+	}
+	
 	protected final void pointerPressed(int x, int y){
 		
-		
+		touch_press=true;
+		lastTouch=System.currentTimeMillis();
+		touch_x=x;
+		touch_y=y;
+		drag_x=x;
+		drag_y=y;
 
 	}
 
 	protected final void pointerReleased(int x, int y){
 		
+		touch_long=false;
 		
+		if(touch_press) {
+			
+			if(touch_tap && Math.abs(x-tap_x)<=touch_sensibility && Math.abs(y-tap_y)<=touch_sensibility) {
+				pointerDoubleTap(x, y);
+				touch_tap=false;
+			}else {
+			
+				if(touch_tap)
+					pointerTouch(tap_x, tap_y);
+				
+				touch_tap=true;
+				tap_x = x;
+				tap_y=y;
+			
+			}
+		}
+		
+		touch_press=false;
 
 	}
 
 	protected final void pointerDragged(int x, int y){
 		
+		touch_press=false;
 		
+		pointerDrag(touch_x, touch_y, drag_x, drag_y, x, y, touch_long);
+		
+		drag_x=x;
+		drag_y=y;
 		
 	}
 	

@@ -15,14 +15,11 @@ import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.LayoutLoader;
 import pixelyvulpine.layouts.Loading;
 import pixelyvulpine.layouts.Logo;
-import pixelyvulpine.test.scenes.AlphaBlendTest;
-import pixelyvulpine.test.scenes.CanvasTest;
-import pixelyvulpine.test.scenes.CircularProgressBarTest;
-import pixelyvulpine.test.scenes.ScrollTest;
+import pixelyvulpine.test.scenes.*;
 
 public class App extends MIDlet implements CommandListener, LayoutLoader {
 
-	private static final String layoutName="scrollTest";
+	private static final String layoutName="touchTest";
 	
 	private boolean started = false;
 	
@@ -99,6 +96,10 @@ public class App extends MIDlet implements CommandListener, LayoutLoader {
 		
 		if(layoutName.equals("AlphaBlendingTest")) {
 			return new AlphaBlendTest(this);
+		}
+		
+		if(layoutName.equals("touchTest")) {
+			return new TouchTest(this);
 		}
 		
 		return null;
