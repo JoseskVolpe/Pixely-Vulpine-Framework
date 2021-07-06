@@ -6,7 +6,7 @@ public class MotionEvent extends InputEvent{
 	
 	public final static byte ACTION_DOWN=0;
 	public final static byte ACTION_MOVE=1;
-	public final static byte ACTION_UP=3;
+	public final static byte ACTION_UP=2;
 	
 	public final static String actionToString(int action) {
 		switch(action) {
@@ -51,18 +51,20 @@ public class MotionEvent extends InputEvent{
 		pointerCoords.y=y;
 		this.action=(byte)action;
 		
-		if(action==ACTION_DOWN) {
-			historicalCoords.removeAllElements();
-			historicalCoords.trimToSize();
+		switch(action) {
+			case ACTION_DOWN:
+				historicalCoords.removeAllElements();
+				historicalCoords.trimToSize();
+			break;
+			
+			case ACTION_MOVE:
+				historicalCoords.addElement(this);
+			break;
 		}
 		
 	}
 	
 	public PointerCoords getPointerCoords() {
-		
-		if(action==ACTION_MOVE) {
-			historicalCoords.addElement(this);
-		}
 		
 		return pointerCoords;
 	}
