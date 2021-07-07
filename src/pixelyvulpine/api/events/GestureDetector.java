@@ -142,14 +142,16 @@ public class GestureDetector {
 					lx=MotionEvent.getHistoricalPointerCoords(c-2).x;
 					ly=MotionEvent.getHistoricalPointerCoords(c-2).y;
 				}
-				if(!onGestureListener.onScroll(downEvent, event, event.getPointerCoords().x - lx, event.getPointerCoords().y - ly)) {
-					
-				}
-				int dist = (int)(Math.max(Math.abs(event.getPointerCoords().x-lx)/(float)Math.min(context.getWidth(), context.getHeight()), Math.abs(event.getPointerCoords().y-ly)/(float)Math.min(context.getWidth(), context.getHeight()))*100);
-				if(!fling && dist>=Config.getMinimumFlingVelocity() && dist <=Config.getMaximumFlingVelocity()) {
-					fling=true;
-					if(!onGestureListener.onFling(downEvent, moveEvent, event.getPointerCoords().x-lx, event.getPointerCoords().y-ly)) {
+				if(!longPress) {
+					if(!onGestureListener.onScroll(downEvent, event, event.getPointerCoords().x - lx, event.getPointerCoords().y - ly)) {
 						
+					}
+					int dist = (int)(Math.max(Math.abs(event.getPointerCoords().x-lx)/(float)Math.min(context.getWidth(), context.getHeight()), Math.abs(event.getPointerCoords().y-ly)/(float)Math.min(context.getWidth(), context.getHeight()))*100);
+					if(!fling && dist>=Config.getMinimumFlingVelocity() && dist <=Config.getMaximumFlingVelocity()) {
+						fling=true;
+						if(!onGestureListener.onFling(downEvent, moveEvent, event.getPointerCoords().x-lx, event.getPointerCoords().y-ly)) {
+							
+						}
 					}
 				}
 				if(doubleTap && onDoubleTapListener!=null) {
