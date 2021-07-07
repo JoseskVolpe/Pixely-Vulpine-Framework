@@ -92,7 +92,7 @@ public class GestureDetector {
 				onGestureListener.onShowPress(downEvent);
 				show=true;
 			}
-			if(!longPress && System.currentTimeMillis()-downEvent.getEventTime()>=Config.getLongPressTimeout()) {
+			if(isLongpressEnabled() && !longPress && System.currentTimeMillis()-downEvent.getEventTime()>=Config.getLongPressTimeout()) {
 				longPress=true;
 				onGestureListener.onLongPress(downEvent);
 			}
