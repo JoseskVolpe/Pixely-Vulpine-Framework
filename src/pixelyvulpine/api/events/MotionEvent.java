@@ -22,12 +22,12 @@ public class MotionEvent extends InputEvent{
 		}
 	}
 	
-	private static Vector historicalCoords = new Vector(0);
+	private static Vector historicalCoords = new Vector(0, 1);
 	
 	private PointerCoords pointerCoords;
 	private byte action;
 	
-	class PointerCoords{
+	public class PointerCoords{
 		public int x, y;
 		
 		public PointerCoords() {}
@@ -58,7 +58,7 @@ public class MotionEvent extends InputEvent{
 			break;
 			
 			case ACTION_MOVE:
-				historicalCoords.addElement(this);
+				historicalCoords.addElement(this.getPointerCoords());
 			break;
 		}
 		

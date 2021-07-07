@@ -1,8 +1,11 @@
 package pixelyvulpine.api.events;
 
+import pixelyvulpine.Config;
 import pixelyvulpine.api.lcdui.Layout;
 
 public class GestureDetector {
+	
+	private final static byte PIXELSENSIBILITY=8;
 
 	public interface OnContextClickListener{
 		public abstract boolean onContextClick(MotionEvent e);
@@ -80,12 +83,97 @@ public class GestureDetector {
 		return longpressEnabled;
 	}
 	
+	private boolean moved, movedSensi, down, show, longPress, fling, doubleTap;
+	private MotionEvent downEvent, moveEvent, upEvent, tapEvent;
+	
+	public void update() {
+		if(down && !movedSensi) {
+			if(!show && System.currentTimeMillis()-downEvent.getEventTime()>=100) {
+				onGestureListener.onShowPress(downEvent);
+				show=true;
+			}
+			if(!longPress && System.currentTimeMillis()-downEvent.getEventTime()>=Config.getLongPressTimeout()) {
+				longPress=true;
+				onGestureListener.onLongPress(downEvent);
+			}
+		}
+		if(tapEvent!=null) {
+			if(!doubleTap && onDoubleTapListener!=null && System.currentTimeMillis()-tapEvent.getEventTime()>=Config.getDoubleTapTimeout()) {
+				onDoubleTapListener.onSingleTapConfirmed(tapEvent);
+				tapEvent=null;
+			}
+		}
+	}
+	
 	public boolean onTouchEvent(MotionEvent event) {
 		
+		switch(event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				if(!onGestureListener.onDown(event)) {
+					down=true;
+					show=false;
+					moved=false;
+					movedSensi=false;
+					fling=false;
+					longPress=false;
+					downEvent=event;
+					upEvent=null;
+					doubleTap=false;
+					
+					if(onDoubleTapListener!=null && tapEvent!=null && event.getEventTime()-tapEvent.getEventTime()<=Config.getDoubleTapTimeout()) {
+						doubleTap=true;
+						onDoubleTapListener.onDoubleTap(event);
+					}else {
+						tapEvent=null;
+					}
+				}
+			break;
+			case MotionEvent.ACTION_MOVE:
+				moved=true;
+				moveEvent=event;
+				
+				if(!movedSensi && Math.abs(event.getPointerCoords().x-downEvent.getPointerCoords().x)>=PIXELSENSIBILITY || Math.abs(event.getPointerCoords().y-downEvent.getPointerCoords().y)>=PIXELSENSIBILITY)
+					movedSensi=true;
+					
+				int c = MotionEvent.getHistorySize();
+				int lx=downEvent.getPointerCoords().x;
+				int ly=downEvent.getPointerCoords().y;
+				if(c>1) {
+					lx=MotionEvent.getHistoricalPointerCoords(c-2).x;
+					ly=MotionEvent.getHistoricalPointerCoords(c-2).y;
+				}
+				if(!onGestureListener.onScroll(downEvent, event, event.getPointerCoords().x - lx, event.getPointerCoords().y - ly)) {
+					
+				}
+				int dist = (int)(Math.max(Math.abs(event.getPointerCoords().x-lx)/(float)Math.min(context.getWidth(), context.getHeight()), Math.abs(event.getPointerCoords().y-ly)/(float)Math.min(context.getWidth(), context.getHeight()))*100);
+				if(!fling && dist>=Config.getMinimumFlingVelocity() && dist <=Config.getMaximumFlingVelocity()) {
+					fling=true;
+					if(!onGestureListener.onFling(downEvent, moveEvent, event.getPointerCoords().x-lx, event.getPointerCoords().y-ly)) {
+						
+					}
+				}
+				if(doubleTap && onDoubleTapListener!=null) {
+					onDoubleTapListener.onDoubleTapEvent(event);
+				}
+			break;
+			case MotionEvent.ACTION_UP:
+				down=false;
+				
+				upEvent=event;
+				if(tapEvent==null && !movedSensi && event.getEventTime()-downEvent.getEventTime()<=Config.getDoubleTapTimeout()) {
+					tapEvent=event;
+					onGestureListener.onSingleTapUp(event);
+				}
+				
+			break;
+		}
+		
+		
+		return false;
 	}
 	
 	public void setContextClickListener(OnContextClickListener onContextClickListener) {
-		
+		this.onContextClickListener = onContextClickListener;
 	}
 	
 	public void setIsLongpressEnabled(boolean longpressEnabled) {
@@ -93,7 +181,7 @@ public class GestureDetector {
 	}
 	
 	public void setOnDoubleTapListener(OnDoubleTapListener onDoubleTapListener) {
-		
+		this.onDoubleTapListener=onDoubleTapListener;
 	}
 	
 }

@@ -1,6 +1,7 @@
 package pixelyvulpine.api.lcdui;
 
 import java.io.IOException;
+import java.util.Stack;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Canvas;
@@ -13,6 +14,9 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 
+import pixelyvulpine.api.events.GestureDetector;
+import pixelyvulpine.api.events.InputEvent;
+import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.Controls;
 
@@ -59,6 +63,9 @@ public class Layout extends Canvas implements CommandListener{
 	private CommandListener listener;
 	private Vector commands = new Vector();
 	
+	private GestureListener gListener = new GestureListener();
+	private GestureDetector gestureDetector = new GestureDetector(this, gListener);
+	
 	private paintThreadClass paintThread;
 	private class paintThreadClass implements Runnable{
 		private Thread thread;
@@ -79,7 +86,7 @@ public class Layout extends Canvas implements CommandListener{
 					
 					do {
 						Thread.sleep(1);
-						updateTouch();
+						updateEvents();
 					}while(!repaint);
 					
 					repaint=false;
@@ -107,6 +114,10 @@ public class Layout extends Canvas implements CommandListener{
 	
 	public Layout(MIDlet app) {
 		this.app = app;
+		
+		gestureDetector.setContextClickListener(gListener);
+		gestureDetector.setOnDoubleTapListener(gListener);
+		
 		canvas = new pixelyvulpine.contents.Canvas(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {100, 0}, new int[] {100, 0});
 		navbar = new pixelyvulpine.contents.Canvas(this, new int[] {0,0}, new int[] {0,0}, new int[] {100,0}, new int[] {0,NAVHEIGHT});
 		navbar.setBackgroundColor(navigationBarColor);
@@ -474,91 +485,31 @@ public class Layout extends Canvas implements CommandListener{
 		return started;
 	}
 
-	
-	private static int touch_x, touch_y, drag_x, drag_y, tap_x, tap_y;
-	private static long lastTouch;
-	private static boolean touch_press, touch_long, touch_tap;
-	
-	private final void updateTouch() {
+	private int eventIndex;
+	private final void updateEvents() {
 		
-		if(touch_press && System.currentTimeMillis()-lastTouch >= touch_delay) {
-			touch_press=false;
-			touch_long=true;
-			pointerLongTouch(touch_x, touch_y);
-		}
-		
-	}
-	
-	protected void pointerLongTouch(int x, int y) {
-		
-		System.out.println("Long "+x+"X"+y);
-		
-	}
-	
-	protected void pointerTouch(int x, int y) {
-		
-		System.out.println("Touch "+x+"X"+y);
-		
-	}
-	
-	protected void pointerDoubleTap(int x, int y) {
-		
-	}
-	
-	protected void pointerLongTap(int x, int y) {
-		
-	}
-	
-	protected void pointerDrag(int start_x, int start_y, int last_x, int last_y, int final_x, int final_y, boolean longTouch) {
-	
-		System.out.println("Drag "+start_x+"X"+start_y+"; "+last_x+"X"+last_y+"; "+final_x+"X"+final_y+"; "+longTouch);
+		gestureDetector.update();
 		
 	}
 	
 	protected final void pointerPressed(int x, int y){
 		
-		touch_press=true;
-		lastTouch=System.currentTimeMillis();
-		touch_x=x;
-		touch_y=y;
-		drag_x=x;
-		drag_y=y;
+		MotionEvent e = new MotionEvent(x, y, MotionEvent.ACTION_DOWN);
+		gestureDetector.onTouchEvent((MotionEvent)e);
 
 	}
 
 	protected final void pointerReleased(int x, int y){
 		
-		touch_long=false;
-		
-		if(touch_press) {
-			
-			if(touch_tap && Math.abs(x-tap_x)<=touch_sensibility && Math.abs(y-tap_y)<=touch_sensibility) {
-				pointerDoubleTap(x, y);
-				touch_tap=false;
-			}else {
-			
-				if(touch_tap)
-					pointerTouch(tap_x, tap_y);
-				
-				touch_tap=true;
-				tap_x = x;
-				tap_y=y;
-			
-			}
-		}
-		
-		touch_press=false;
+		MotionEvent e = new MotionEvent(x, y, MotionEvent.ACTION_UP);
+		gestureDetector.onTouchEvent((MotionEvent)e);
 
 	}
 
 	protected final void pointerDragged(int x, int y){
 		
-		touch_press=false;
-		
-		pointerDrag(touch_x, touch_y, drag_x, drag_y, x, y, touch_long);
-		
-		drag_x=x;
-		drag_y=y;
+		MotionEvent e = new MotionEvent(x, y, MotionEvent.ACTION_MOVE);
+		gestureDetector.onTouchEvent((MotionEvent)e);
 		
 	}
 	
@@ -590,4 +541,57 @@ public class Layout extends Canvas implements CommandListener{
 		
 	}
 
+	private class GestureListener extends GestureDetector.SimpleOnGestureListener{
+		
+		public boolean onDown(MotionEvent e) {
+			System.out.println("onDown "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
+			return false;
+		}
+
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			System.out.println("onFling "+e1.getPointerCoords().x+" "+e1.getPointerCoords().y+" "+e2.getPointerCoords().x+" "+e2.getPointerCoords().y+" "+velocityX+" "+velocityY);
+			return false;
+		}
+
+		public boolean onLongPress(MotionEvent e) {
+			System.out.println("onLongPress "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
+			return false;
+		}
+
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			System.out.println("onScroll "+e1.getPointerCoords().x+" "+e1.getPointerCoords().y+" "+e2.getPointerCoords().x+" "+e2.getPointerCoords().y+" "+distanceX+" "+distanceY);
+			return false;
+		}
+
+		public void onShowPress(MotionEvent e) {
+			System.out.println("onShowPress "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
+		}
+
+		public boolean onSingleTapUp(MotionEvent e) {
+			System.out.println("onSingleTapUp "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
+			return false;
+		}
+
+		public boolean onDoubleTap(MotionEvent e) {
+			System.out.println("onDoubleTap "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
+			return false;
+		}
+
+		public boolean onDoubleTapEvent(MotionEvent e) {
+			System.out.println("onDoubleTapEvent "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
+			return false;
+		}
+
+		public boolean onSingleTapConfirmed(MotionEvent e) {
+			System.out.println("onSingleTapConfirmed "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
+			return false;
+		}
+
+		public boolean onContextClick(MotionEvent e) {
+			System.out.println("onContextClick "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
+			return false;
+		}
+		
+	}
+	
 }
