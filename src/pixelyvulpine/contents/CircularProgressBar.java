@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Graphics;
 
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
+import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 
 public class CircularProgressBar extends Content {
@@ -18,26 +19,22 @@ public class CircularProgressBar extends Content {
 		}
 	}
 	
-	/*
-	 * layout - mainLayout
-	 * x - scalable, offset
-	 * y - scalable, offset
-	 * size - scalable, offset
+	/**
+	 * @param Context
+	 * @param CircularProgressBarDimensionAttributes
 	 */
-	public CircularProgressBar(Layout layout, int[] x, int[] y, int[] size) {
-		super(layout, x, y, size, size);
+	public CircularProgressBar(Layout layout, CircularProgressBarDimensionAttributes dimensionAttributes) {
+		super(layout, dimensionAttributes);
 		
 	}
 	
-	/*
-	 * layout - mainLayout
-	 * x - scalable, offset
-	 * y - scalable, offset
-	 * size - scalable, offset
-	 * color - color
+	/**
+	 * @param Context
+	 * @param CircularProgressBarDimensionAttributes
+	 * @param Color
 	 */
-	public CircularProgressBar(Layout layout, int[] x, int[] y, int[] size, Color color) {
-		super(layout, x, y, size, size);
+	public CircularProgressBar(Layout layout, CircularProgressBarDimensionAttributes dimensionAttributes, Color color) {
+		super(layout, dimensionAttributes);
 		
 		this.color = color;
 	}
@@ -152,5 +149,26 @@ public class CircularProgressBar extends Content {
 		}
 	}
 
+	public static class CircularProgressBarDimensionAttributes extends DimensionAttributes{
+		
+		public CircularProgressBarDimensionAttributes(Scaled scaled, Offset offset) {
+			super(scaled, offset);
+		}
+		
+		public static class Scaled extends DimensionAttributes.Scaled{
+			
+			public Scaled(int x, int y, int size) {
+				super(x, y, size, size);
+			}
+		}
+		
+		public static class Offset extends DimensionAttributes.Offset{
+			
+			public Offset(int x, int y, int size) {
+				super(x,y,size,size);
+			}
+		}
+		
+	}
 
 }

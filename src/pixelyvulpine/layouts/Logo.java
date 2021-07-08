@@ -6,6 +6,7 @@ import javax.microedition.midlet.MIDlet;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.ContentListener;
+import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.LayoutLoader;
 import pixelyvulpine.api.system.Crash;
@@ -60,12 +61,13 @@ public class Logo extends Layout implements Runnable{
 	}
 	
 	private void createContents() {
-		this.logo = new ImageView(this, logoI, new int[] {0,0}, new int[] {0,0}, new int[] {100,0}, new int[] {60,0}, true);
+		this.logo = new ImageView(this, logoI, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,60), new DimensionAttributes.Offset(0, 0, 0, 0)), true);
 		this.logo.setPositioning(Content.POSITIONING_ANCHORED);
 		this.logo.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
 		this.logo.setVerticalAnchor(Content.VERTICAL_ANCHOR_CENTER);
 		
-		this.spinner = new CircularProgressBar(this, new int[] {0,0}, new int[] {-5,0}, new int[] {10,0});
+		
+		this.spinner = new CircularProgressBar(this, new CircularProgressBar.CircularProgressBarDimensionAttributes(new CircularProgressBar.CircularProgressBarDimensionAttributes.Scaled(0,-5,10), new CircularProgressBar.CircularProgressBarDimensionAttributes.Offset(0,0,0)));
 		this.spinner.setPositioning(Content.POSITIONING_ANCHORED);
 		this.spinner.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
 		this.spinner.setVerticalAnchor(Content.VERTICAL_ANCHOR_BOTTOM);

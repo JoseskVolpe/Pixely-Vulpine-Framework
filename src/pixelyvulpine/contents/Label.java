@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Graphics;
 
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
+import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.TextFont;
 import pixelyvulpine.api.system.Crash;
@@ -16,20 +17,20 @@ public class Label extends Content{
 	private String text = "Label";
 	private Color backgroundColor = NO_BACKGROUND;
 	
-	public Label(Layout layout, int[] x, int[] y, int[] width, int[] height) {
+	public Label(Layout layout, DimensionAttributes dimensionAttributes) {
 		
-		super(layout, x, y, width, height);
+		super(layout, dimensionAttributes);
 		
 	}
 	
-	public Label(Layout layout, int[] x, int[] y, int[] width, int[] height, String text) {
-		super(layout, x, y, width, height);
+	public Label(Layout layout, DimensionAttributes dimensionAttributes, String text) {
+		super(layout, dimensionAttributes);
 		this.text = text;
 		
 	}
 	
-	public Label(Layout layout, int[] x, int[] y, int[] width, int[] height, String text, TextFont font) {
-		super(layout, x, y, width, height);
+	public Label(Layout layout, DimensionAttributes dimensionAttributes, String text, TextFont font) {
+		super(layout, dimensionAttributes);
 		this.text = text;
 		setTextFont(font);
 	}
@@ -103,8 +104,10 @@ public class Label extends Content{
 			w=font.getFont().stringWidth(text.toString());
 			h=font.getFont().getHeight();
 			
-			this.setWidth(new int[] {0, w});
-			this.setHeight(new int[] {0, h});
+			dimensionAttributes.getScaledDimension().width=0;
+			dimensionAttributes.getScaledDimension().height=0;
+			dimensionAttributes.getOffsetDimension().width=(short) w;
+			dimensionAttributes.getOffsetDimension().height=(short) h;
 			
 			return true;
 		

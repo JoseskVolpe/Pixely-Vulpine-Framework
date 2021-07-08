@@ -9,6 +9,7 @@ import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Command;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.ContentListener;
+import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.contents.Button;
 import pixelyvulpine.contents.Canvas;
@@ -26,21 +27,20 @@ public class TouchTest extends Layout{
 		
 		this.setTitle("Booping test");
 		
-		Label l = new Label(this,  new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, this.getTitle());
+		Label l = new Label(this,  new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), this.getTitle());
 		l.setColor(new Color(255,255,255));
 		l.getFont().setStyle(Font.STYLE_BOLD);
 		l.impact();
 		l.setPositioning(Content.POSITIONING_ANCHORED);
 		l.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
 		
-		Canvas LCanvas = new Canvas(this,  new int[] {0, 0}, new int[] {0, 0}, new int[] {100, 0}, new int[] {0, l.getFont().getFontSize()});
+		Canvas LCanvas = new Canvas(this,  new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0, 0, l.getFont().getFontSize())));
 		LCanvas.addContent(l);
 		LCanvas.setBackgroundColor(null);
 		LCanvas.setForegroundColor(null);
 		this.addContent(LCanvas);
 		
-		
-		touchInfo = new Label(this, new int[] {0,0}, new int[] {0,0}, new int[] {100,0}, new int[] {100,-45});
+		touchInfo = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100), new DimensionAttributes.Offset(0,0, 0, -45)));
 		touchInfo.setColor(new Color(255,255,255));
 		touchInfo.setText("¡Boop your phone!");
 		touchInfo.setMultiline(true);

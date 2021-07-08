@@ -118,8 +118,8 @@ public class Layout extends Canvas implements CommandListener{
 		gestureDetector.setContextClickListener(gListener);
 		gestureDetector.setOnDoubleTapListener(gListener);
 		
-		canvas = new pixelyvulpine.contents.Canvas(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {100, 0}, new int[] {100, 0});
-		navbar = new pixelyvulpine.contents.Canvas(this, new int[] {0,0}, new int[] {0,0}, new int[] {100,0}, new int[] {0,NAVHEIGHT});
+		canvas = new pixelyvulpine.contents.Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100), new DimensionAttributes.Offset(0,0, 0, 0)));
+		navbar = new pixelyvulpine.contents.Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0, 0, NAVHEIGHT)));
 		navbar.setBackgroundColor(navigationBarColor);
 		navbar.setForegroundColor(null);
 	}

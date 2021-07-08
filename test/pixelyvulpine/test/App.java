@@ -13,7 +13,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.LayoutLoader;
-import pixelyvulpine.layouts.Loading;
 import pixelyvulpine.layouts.Logo;
 import pixelyvulpine.test.scenes.*;
 

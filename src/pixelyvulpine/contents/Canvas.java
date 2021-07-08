@@ -8,6 +8,7 @@ import javax.microedition.lcdui.Graphics;
 
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
+import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.Controls;
@@ -26,6 +27,7 @@ public class Canvas extends Content{
 	
 	protected int selectedC = -1;
 	protected Vector contents = new Vector(0, 1);
+	protected Stack renderIndex;
 	protected Stack[] renderData;
 	
 	private int horizontalOffset=5;
@@ -38,8 +40,8 @@ public class Canvas extends Content{
 	
 	private Color backgroundColor, foregroundColor;
 	
-	public Canvas(Layout layout, int[] x, int[] y, int[] width, int[] height) {
-		super(layout, x, y, width, height);
+	public Canvas(Layout layout, DimensionAttributes dimensionAttributes) {
+		super(layout, dimensionAttributes);
 		// TODO Auto-generated constructor stub
 		backgroundColor=new Color (150,30,30,30);
 		foregroundColor=new Color(150,255,0,0);
@@ -91,10 +93,10 @@ public class Canvas extends Content{
 				
 				int cx[], cy[], cw[], ch[], tx, ty, clipW, clipH;
 				
-				cx = c.getX();
-				cy = c.getY();
-				cw = c.getWidth();
-				ch = c.getHeight();
+				cx = new int[] {c.getDimension().getScaledDimension().x, c.getDimension().getOffsetDimension().x};
+				cy = new int[] {c.getDimension().getScaledDimension().y, c.getDimension().getOffsetDimension().y};
+				cw = new int[] {c.getDimension().getScaledDimension().width, c.getDimension().getOffsetDimension().width};
+				ch = new int[] {c.getDimension().getScaledDimension().height, c.getDimension().getOffsetDimension().height};
 				 
 				clipW = (int)(lw*(cw[0]/100.f))+cw[1];
 				clipH = (int)(lh*(ch[0]/100.f))+ch[1];
@@ -231,10 +233,10 @@ public class Canvas extends Content{
 						//g.setClip(0, 0, lw, lh);
 					break;
 					case Content.POSITIONING_ABSOLUTE:
-						cx = c.getX();
-						cy = c.getY();
-						cw = c.getWidth();
-						ch = c.getHeight();
+						cx = new int[] {c.getDimension().getScaledDimension().x, c.getDimension().getOffsetDimension().x};
+						cy = new int[] {c.getDimension().getScaledDimension().y, c.getDimension().getOffsetDimension().y};
+						cw = new int[] {c.getDimension().getScaledDimension().width, c.getDimension().getOffsetDimension().width};
+						ch = new int[] {c.getDimension().getScaledDimension().height, c.getDimension().getOffsetDimension().height};
 						
 						tx = (int)(lw*(cx[0]/100.f))+cx[1];
 						ty = (int)(lh*(cy[0]/100.f))+cy[1];

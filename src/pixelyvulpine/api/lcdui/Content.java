@@ -29,46 +29,20 @@ public class Content {
 	private boolean visible=true;
 	private ContentListener listenner;
 	
-	/**
-	 * Use POSITIONING_ABSOLUTE or POSITIONING_ANCHORED to use that
-	 * Scalable is in percent
-	 * Offset is in pixel
-	 * */
-	private byte scalableX, scalableY;
-	private int offsetX, offsetY;
-	
-	/**
-	 * Your content's size
-	 * Scalable is in percent
-	 * Offset is in pixel
-	 */
-	private byte scalableWidth, scalableHeight;
-	private int offsetWidth, offsetHeight;
-	
 	private Layout layout;
+	protected DimensionAttributes dimensionAttributes;
 	private boolean selected=false;
 	
 	/**
 	 * Scalable - Defines value according to screen's resolutions, in percent
 	 * Offset - Defines value absolutely, in pixels
-	 * @param scalableX, offsetX
-	 * @param scalableY, offsetY
-	 * @param scalableWidth, offsetWidth
-	 * @param scalableHeight, offsetHeight
+	 * @param Context
+	 * @param DimensionAttributes
 	 */
-	public Content(Layout layout, int x[], int y[], int width[], int height[]) {
+	public Content(Layout layout, DimensionAttributes dimensionAttributes) {
 		
 		this.layout = layout;
-		
-		this.scalableX = (byte) x[0];
-		this.scalableY = (byte) y[0];
-		this.scalableWidth = (byte) width[0];
-		this.scalableHeight = (byte) height[0];
-		
-		this.offsetX = x[1];
-		this.offsetY = y[1];
-		this.offsetWidth = width[1];
-		this.offsetHeight = height[1];
+		this.dimensionAttributes=dimensionAttributes;
 		
 	}
 	
@@ -95,101 +69,12 @@ public class Content {
 		return selected;
 	}
 	
-	
-	/**
-	 * Getting dragged by touch
-	 * @param relative x
-	 * @param relative y
-	 */
-	public void touchDrag(int x, int y) {
-		
-		
-		
+	public DimensionAttributes getDimension() {
+		return dimensionAttributes;
 	}
 	
-	/**
-	 * Key pressed
-	 * @param keyCode
-	 * @param key
-	 * 
-	 * @return true if nothing is used and you want the Layout to make their operations
-	 */
-	public boolean keyDown(int keyCode, int key) {
-		
-		return true;
-		
-	}
-	
-	/**
-	 * Key released
-	 * @param keyCode
-	 * @param key
-	 * @return true if nothing is used and you want the Layout to make their operations
-	 */
-	public boolean keyUp(int keyCode, int key) {
-		
-		return true;
-		
-	}
-	
-	/**
-	 * @return scalable, offset
-	 */
-	public final int[] getX() {
-		return new int[] {scalableX, offsetX};
-	}
-	
-	/**
-	 * @param scalable, offset
-	 */
-	public final void setX(int x[]) {
-		this.scalableX = (byte) x[0];
-		this.offsetX = x[1];
-	}
-	
-	/**
-	 * @return scalable, offset
-	 */
-	public final int[] getY() {
-		return new int[] {scalableY, offsetY};
-	}
-	
-	/**
-	 * @param scalable, offset
-	 */
-	public final void setY(int y[]) {
-		this.scalableY = (byte) y[0];
-		this.offsetY = y[1];
-	}
-	
-	/**
-	 * @return scalable, offset
-	 */
-	public final int[] getWidth() {
-		return new int[] {scalableWidth, offsetWidth};
-	}
-	
-	/**
-	 * @param scalable, offset
-	 */
-	public final void setWidth(int width[]) {
-		this.scalableWidth = (byte) width[0];
-		this.offsetWidth = width[1];
-	}
-	
-	/**
-	 * @return scalable, offset
-	 */
-	public final int[] getHeight() {
-		return new int[] {scalableHeight, offsetHeight};
-	}
-	
-	/**
-	 * @param scalable, offset
-	 */
-	public final void setHeight(int height[]) {
-		this.scalableHeight = (byte) height[0];
-		this.offsetHeight = height[1];
+	public void setDimension(DimensionAttributes dimensionAttributes) {
+		this.dimensionAttributes=dimensionAttributes;
 	}
 	
 	protected final int getRenderWidth(Graphics g) {
@@ -279,5 +164,7 @@ public class Content {
 	public final void assign(ContentListener listenner) {
 		this.listenner = listenner;
 	}
+	
+	
 	
 }

@@ -3,6 +3,7 @@ package pixelyvulpine.contents;
 import javax.microedition.lcdui.Graphics;
 
 import pixelyvulpine.api.lcdui.Content;
+import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.TextFont;
 
@@ -10,18 +11,18 @@ public class Button extends Content{
 
 	private Label label;
 	
-	public Button(Layout layout, int[] x, int[] y, int[] width, int[] height, String text) {
-		super(layout, x, y, width, height);
+	public Button(Layout layout, DimensionAttributes dimensionAttributes, String text) {
+		super(layout, dimensionAttributes);
 		
-		label = new Label(layout, x, y, width, height, text);
+		label = new Label(layout, dimensionAttributes, text);
 		label.impact();
 		
 	}
 	
-	public Button(Layout layout, int[] x, int[] y, int[] width, int[] height, String text, TextFont font) {
-		super(layout, x, y, width, height);
+	public Button(Layout layout, DimensionAttributes dimensionAttributes, String text, TextFont font) {
+		super(layout, dimensionAttributes);
 		
-		label = new Label(layout, x, y, width, height, text, font);
+		label = new Label(layout, dimensionAttributes, text, font);
 		label.impact();
 		
 	}
@@ -45,8 +46,11 @@ public class Button extends Content{
 	 */
 	public void impact() {
 		
-		setWidth(new int[] {0, label.getWidth()[1]});
-		setHeight(new int[] {0, label.getHeight()[1]});
+		label.impact();
+		dimensionAttributes.getScaledDimension().width=0;
+		dimensionAttributes.getScaledDimension().height=0;
+		dimensionAttributes.getOffsetDimension().width=label.getDimension().getOffsetDimension().width;
+		dimensionAttributes.getOffsetDimension().height=label.getDimension().getOffsetDimension().height;
 		
 	}
 	
@@ -59,6 +63,7 @@ public class Button extends Content{
 	
 	public final void setText(String text) {
 		label.setText(text);
+		label.impact();
 	}
 	
 	public final String getText() {
@@ -67,6 +72,7 @@ public class Button extends Content{
 	
 	public final void setFont(TextFont font) {
 		label.setFont(font);
+		label.impact();
 	}
 	
 	public final TextFont getFont() {
