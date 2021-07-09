@@ -4,8 +4,6 @@ import pixelyvulpine.Config;
 import pixelyvulpine.api.lcdui.Layout;
 
 public class GestureDetector {
-	
-	private final static byte PIXELSENSIBILITY=8;
 
 	public interface OnContextClickListener{
 		public abstract boolean onContextClick(MotionEvent e);
@@ -166,7 +164,8 @@ public class GestureDetector {
 					longPressDelay.start();
 					showDelay.start();
 					
-					if(onDoubleTapListener!=null && tapEvent!=null && event.getEventTime()-tapEvent.getEventTime()<=Config.getDoubleTapTimeout()) {
+					if(onDoubleTapListener!=null && tapEvent!=null && event.getEventTime()-tapEvent.getEventTime()<=Config.getDoubleTapTimeout() &&
+							Math.max(Math.abs(event.getPointerCoords().x - tapEvent.getPointerCoords().x), Math.abs(event.getPointerCoords().y - tapEvent.getPointerCoords().y)) <= Config.getDoubleTapDistance()) {
 						doubleTap=true;
 						interrupt(tapDelay);
 						onDoubleTapListener.onDoubleTap(event);
@@ -180,10 +179,11 @@ public class GestureDetector {
 				moved=true;
 				moveEvent=event;
 				
-				if(!movedSensi && Math.abs(event.getPointerCoords().x-downEvent.getPointerCoords().x)>=PIXELSENSIBILITY || Math.abs(event.getPointerCoords().y-downEvent.getPointerCoords().y)>=PIXELSENSIBILITY)
+				if(!movedSensi && Math.abs(event.getPointerCoords().x-downEvent.getPointerCoords().x)>=Config.getLongpressTouchDistance() || Math.abs(event.getPointerCoords().y-downEvent.getPointerCoords().y)>=Config.getLongpressTouchDistance()) {
 					movedSensi=true;
-				interrupt(longPressDelay);
-				interrupt(showDelay);
+					interrupt(longPressDelay);
+					interrupt(showDelay);
+				}
 					
 				int c = MotionEvent.getHistorySize();
 				int lx=downEvent.getPointerCoords().x;
@@ -193,7 +193,7 @@ public class GestureDetector {
 					ly=MotionEvent.getHistoricalPointerCoords(c-2).y;
 				}
 				if(!longPress) {
-					if(!onGestureListener.onScroll(downEvent, event, event.getPointerCoords().x - lx, event.getPointerCoords().y - ly)) {
+					if(!fling && !onGestureListener.onScroll(downEvent, event, event.getPointerCoords().x - lx, event.getPointerCoords().y - ly)) {
 						
 					}
 					int dist = (int)(Math.max(Math.abs(event.getPointerCoords().x-lx)/(float)Math.min(context.getWidth(), context.getHeight()), Math.abs(event.getPointerCoords().y-ly)/(float)Math.min(context.getWidth(), context.getHeight()))*100);
