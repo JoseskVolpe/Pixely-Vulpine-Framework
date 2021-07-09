@@ -94,30 +94,6 @@ public class GestureDetector {
 	private MotionEvent downEvent, moveEvent, upEvent, tapEvent;
 	private Thread showDelay, longPressDelay, tapDelay;
 	
-	/**
-	 * Does nothing, set to deletion
-	 * @deprecated
-	 */
-	public void update() {
-		/*
-		if(down && !movedSensi) {
-			if(!show && System.currentTimeMillis()-downEvent.getEventTime()>=100) {
-				onGestureListener.onShowPress(downEvent);
-				show=true;
-			}
-			if(isLongpressEnabled() && !longPress && System.currentTimeMillis()-downEvent.getEventTime()>=Config.getLongPressTimeout()) {
-				longPress=true;
-				onGestureListener.onLongPress(downEvent);
-			}
-		}
-		if(tapEvent!=null) {
-			if(!doubleTap && onDoubleTapListener!=null && System.currentTimeMillis()-tapEvent.getEventTime()>=Config.getDoubleTapTimeout()) {
-				onDoubleTapListener.onSingleTapConfirmed(tapEvent);
-				tapEvent=null;
-			}
-		}*/
-	}
-	
 	private static void interrupt(Thread thread) {
 		if(thread!=null)
 			thread.interrupt();
