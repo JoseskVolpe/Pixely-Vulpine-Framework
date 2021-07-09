@@ -436,12 +436,13 @@ public class Canvas extends Content{
 		
 		short i=0;
 		int rx, ry, rw, rh;
-		while(!renderData[0].empty()) {
-			i=((Short)renderData[0].pop()).shortValue();
-			rx=((Integer)renderData[1].pop()).intValue();
-			ry=((Integer)renderData[2].pop()).intValue();
-			rw=((Integer)renderData[3].pop()).intValue();
-			rh=((Integer)renderData[4].pop()).intValue();
+		for(int index=renderData[0].size()-1; index>=0; index--) {
+			//Although it's a Stack, no more pop(), it'll corrupt the data when we're making a InputEvent
+			i=((Short)renderData[0].elementAt(index)).shortValue();
+			rx=((Integer)renderData[1].elementAt(index)).intValue();
+			ry=((Integer)renderData[2].elementAt(index)).intValue();
+			rw=((Integer)renderData[3].elementAt(index)).intValue();
+			rh=((Integer)renderData[4].elementAt(index)).intValue();
 			
 			if(ry>g.getClipHeight() || (ry+rh)<0 || rx>g.getClipWidth() || (rx+rw)<0)
 				continue;
