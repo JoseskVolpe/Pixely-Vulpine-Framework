@@ -69,21 +69,19 @@ public class Canvas extends Content{
 		
 		int cLy=verticalOffset; //Line alignment
 		
-		renderData = new Stack[5];
+		Stack[] renderData = new Stack[5];
 		for(int i=0; i<renderData.length; i++) {
 			renderData[i] = new Stack();
 		}
 		
-		for(byte positioning=2; positioning>=0; positioning--) {
+		//for(byte positioning=2; positioning>=0; positioning--) {
 			for(short i=0; i<contents.capacity(); i++) {
 				if(contents.elementAt(i)==null) continue;
 				
 				Content c = (Content)contents.elementAt(i);
+				byte positioning=c.getPositioning();
 				
 				if(c.getPositioning()!=positioning || !c.isVisible()) continue;
-				
-				//Insert ID, size and pos data in renderData
-				renderData[0].addElement(new Short(i)); //ID
 				
 				int rX=0;
 				int rY=0;
@@ -252,17 +250,84 @@ public class Canvas extends Content{
 				}
 				
 				
-				
-				
-				renderData[1].addElement(new Integer(rX)); //x
-				renderData[2].addElement(new Integer(rY)); //y
-				renderData[3].addElement(new Integer(clipW)); //width
-				renderData[4].addElement(new Integer(clipH)); //height
+				if(rX+clipW>=0 && rX<=getLayout().getWidth() && rY+clipH>=0 && rY<=getLayout().getHeight()) {
+					
+					addToRender(renderData, i, rX, rY, clipW, clipH);
+				}
 				
 			}
-		}
+		//}
+			
+		this.renderData = renderData;
 		
 		return new int[] {lw, lh};
+		
+	}
+	
+	protected final void addToRender(Stack renderData[], int id, int rX, int rY, int clipW, int clipH) {
+		if(renderData[0].isEmpty()) { //if Empty
+			renderData[0].addElement(new Short((short)id)); //ID
+			renderData[1].addElement(new Integer(rX)); //x
+			renderData[2].addElement(new Integer(rY)); //y
+			renderData[3].addElement(new Integer(clipW)); //width
+			renderData[4].addElement(new Integer(clipH)); //height
+			return;
+		}
+		
+		int capacity = renderData[0].size()-1;
+		
+		int minZ=((Content)contents.elementAt( ( (Short)( renderData[0].elementAt(capacity) ) ).shortValue())).getZIndex();
+		int maxZ=((Content)contents.elementAt( ( (Short)( renderData[0].elementAt(0) ) ).shortValue())).getZIndex();
+		int middleZ = ((Content)contents.elementAt( ( (Short)( renderData[0].elementAt(capacity/2) ) ).shortValue())).getZIndex();
+		int myZ=((Content)contents.elementAt(id)).getZIndex();
+		
+		if(myZ>=maxZ) { //If Z is greater than max
+			//Insert at the first queue
+			renderData[0].insertElementAt(new Short((short)id), 0);
+			renderData[1].insertElementAt(new Integer(rX), 0);
+			renderData[2].insertElementAt(new Integer(rY), 0);
+			renderData[3].insertElementAt(new Integer(clipW), 0);
+			renderData[4].insertElementAt(new Integer(clipH), 0);
+			return;
+		}
+		
+		if(myZ<minZ) { //If Z is lower than min
+			//Insert at the last queue
+			renderData[0].insertElementAt(new Short((short)id), capacity);
+			renderData[1].insertElementAt(new Integer(rX), capacity);
+			renderData[2].insertElementAt(new Integer(rY), capacity);
+			renderData[3].insertElementAt(new Integer(clipW), capacity);
+			renderData[4].insertElementAt(new Integer(clipH), capacity);
+			return;	
+		}
+		
+		if(myZ<=middleZ) {//If Z is lower or equal the middle
+			int i=capacity/2;
+			while(myZ<=((Short)renderData[0].elementAt(i)).shortValue() && i<capacity-1) {
+				i++;
+			}
+			
+			renderData[0].insertElementAt(new Short((short)id), i);
+			renderData[1].insertElementAt(new Integer(rX), i);
+			renderData[2].insertElementAt(new Integer(rY), i);
+			renderData[3].insertElementAt(new Integer(clipW), i);
+			renderData[4].insertElementAt(new Integer(clipH), i);
+			return;	
+		}
+		
+		if(myZ>middleZ) { //If Z is higher than middle
+			int i=capacity/2;
+			while(myZ>((Short)renderData[0].elementAt(i)).shortValue() && i>0) {
+				i--;
+			}
+			
+			renderData[0].insertElementAt(new Short((short)id), i);
+			renderData[1].insertElementAt(new Integer(rX), i);
+			renderData[2].insertElementAt(new Integer(rY), i);
+			renderData[3].insertElementAt(new Integer(clipW), i);
+			renderData[4].insertElementAt(new Integer(clipH), i);
+			return;	
+		}
 		
 	}
 	

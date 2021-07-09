@@ -1,9 +1,6 @@
 package pixelyvulpine.api.lcdui;
 
-import java.io.IOException;
-
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 public class Content {
 
@@ -28,6 +25,7 @@ public class Content {
 	private byte positioning;
 	private boolean visible=true;
 	private ContentListener listenner;
+	private byte ZIndex;
 	
 	private Layout layout;
 	protected DimensionAttributes dimensionAttributes;
@@ -156,6 +154,22 @@ public class Content {
 		
 		this.visible = visible;
 		
+	}
+	
+	/**
+	 * Set rendering frame
+	 * @param z
+	 */
+	public final void setZIndex(int z) {
+		this.ZIndex=(byte)z;
+	}
+	
+	/**
+	 * Returns rendering frame
+	 * @return Z Index
+	 */
+	public final byte getZIndex() {
+		return ZIndex;
 	}
 	
 	/**
