@@ -48,6 +48,8 @@ public class Content {
 		
 	}
 	
+	public void noPaint() {}
+	
 	public int[] prepaint(int width, int height) {
 		
 		return new int[] {width, height};

@@ -253,6 +253,8 @@ public class Canvas extends Content{
 				if(rX+clipW>=0 && rX<=getLayout().getWidth() && rY+clipH>=0 && rY<=getLayout().getHeight()) {
 					
 					addToRender(renderData, i, rX, rY, clipW, clipH);
+				}else {
+					c.noPaint();
 				}
 				
 			}
@@ -444,10 +446,12 @@ public class Canvas extends Content{
 			rw=((Integer)renderData[3].elementAt(index)).intValue();
 			rh=((Integer)renderData[4].elementAt(index)).intValue();
 			
-			if(ry>g.getClipHeight() || (ry+rh)<0 || rx>g.getClipWidth() || (rx+rw)<0)
-				continue;
-			
 			Content c = (Content)contents.elementAt(i);
+			
+			if(ry>g.getClipHeight() || (ry+rh)<0 || rx>g.getClipWidth() || (rx+rw)<0) {
+				c.noPaint();
+				continue;
+			}
 			
 			g.translate(rx, ry);
 			g.setClip(0, 0, rw, rh);

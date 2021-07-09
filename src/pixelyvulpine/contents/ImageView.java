@@ -142,9 +142,19 @@ public class ImageView extends Content{
 		}
 	}
 	
+	public void noPaint() {
+		renderData=null;
+	}
+	
 	public int[] prepaint(int width, int height) {
 		
 		rescale(width, height);
+		
+		return new int[] {this.width, this.height};
+		
+	}
+	
+	public void paint(Graphics g) {
 		
 		if(renderData==null) {
 			try {
@@ -157,16 +167,9 @@ public class ImageView extends Content{
 					data=null;
 					renderData=null;
 					error=true; //Can't show this ImageView :c
-					return new int[] {ERRORSIZE, ERRORSIZE};
 				}
 			}
 		}
-		
-		return new int[] {this.width, this.height};
-		
-	}
-	
-	public void paint(Graphics g) {
 		
 		if(error) {
 			g.setColor(0xffffff);
