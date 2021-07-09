@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
@@ -18,7 +17,7 @@ import pixelyvulpine.test.scenes.*;
 
 public class App extends MIDlet implements CommandListener, LayoutLoader {
 
-	private static final String layoutName="canvasTest";
+	private static final String layoutName="touchTest";
 	
 	private boolean started = false;
 	

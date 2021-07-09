@@ -77,6 +77,15 @@ public class GestureDetector {
 	public GestureDetector(Layout context, OnGestureListener listener) {
 		this.context=context;
 		this.onGestureListener=listener;
+		
+		if(listener instanceof OnContextClickListener) {
+			onContextClickListener=(OnContextClickListener) listener;
+		}
+		
+		if(listener instanceof OnDoubleTapListener) {
+			onDoubleTapListener = (OnDoubleTapListener) listener;
+		}
+		
 	}
 	
 	public boolean isLongpressEnabled() {
@@ -85,8 +94,14 @@ public class GestureDetector {
 	
 	private boolean moved, movedSensi, down, show, longPress, fling, doubleTap;
 	private MotionEvent downEvent, moveEvent, upEvent, tapEvent;
+	private Thread showDelay, longPressDelay, tapDelay;
 	
+	/**
+	 * Does nothing, set to deletion
+	 * @deprecated
+	 */
 	public void update() {
+		/*
 		if(down && !movedSensi) {
 			if(!show && System.currentTimeMillis()-downEvent.getEventTime()>=100) {
 				onGestureListener.onShowPress(downEvent);
@@ -102,7 +117,12 @@ public class GestureDetector {
 				onDoubleTapListener.onSingleTapConfirmed(tapEvent);
 				tapEvent=null;
 			}
-		}
+		}*/
+	}
+	
+	private static void interrupt(Thread thread) {
+		if(thread!=null)
+			thread.interrupt();
 	}
 	
 	public boolean onTouchEvent(MotionEvent event) {
@@ -120,11 +140,39 @@ public class GestureDetector {
 					upEvent=null;
 					doubleTap=false;
 					
+					final MotionEvent event_thread = event;
+					
+					longPressDelay = new Thread(new Runnable() {
+						public void run() {
+							try {
+								if(isLongpressEnabled()) {
+									Thread.sleep(Config.getLongPressTimeout());
+									longPress=true;
+									onGestureListener.onLongPress(event_thread);
+								}
+							}catch(InterruptedException e) {}
+						}
+					});
+					showDelay = new Thread(new Runnable() {
+						public void run() {
+							try {
+								Thread.sleep(100);
+								show=true;
+								onGestureListener.onShowPress(event_thread);
+							}catch(InterruptedException e) {}
+						}
+					});
+					
+					longPressDelay.start();
+					showDelay.start();
+					
 					if(onDoubleTapListener!=null && tapEvent!=null && event.getEventTime()-tapEvent.getEventTime()<=Config.getDoubleTapTimeout()) {
 						doubleTap=true;
+						interrupt(tapDelay);
 						onDoubleTapListener.onDoubleTap(event);
 					}else {
 						tapEvent=null;
+						interrupt(tapDelay);
 					}
 				}
 			break;
@@ -134,6 +182,8 @@ public class GestureDetector {
 				
 				if(!movedSensi && Math.abs(event.getPointerCoords().x-downEvent.getPointerCoords().x)>=PIXELSENSIBILITY || Math.abs(event.getPointerCoords().y-downEvent.getPointerCoords().y)>=PIXELSENSIBILITY)
 					movedSensi=true;
+				interrupt(longPressDelay);
+				interrupt(showDelay);
 					
 				int c = MotionEvent.getHistorySize();
 				int lx=downEvent.getPointerCoords().x;
@@ -160,10 +210,27 @@ public class GestureDetector {
 			break;
 			case MotionEvent.ACTION_UP:
 				down=false;
+				interrupt(longPressDelay);
+				interrupt(showDelay);
 				
 				upEvent=event;
 				if(tapEvent==null && !movedSensi && event.getEventTime()-downEvent.getEventTime()<=Config.getDoubleTapTimeout()) {
 					tapEvent=event;
+					
+					if(onDoubleTapListener!=null) {
+						tapDelay = new Thread(new Runnable() {
+							public void run() {
+								try {
+									Thread.sleep(Config.getDoubleTapTimeout());
+									onDoubleTapListener.onSingleTapConfirmed(tapEvent);
+									tapEvent=null;
+								}catch(InterruptedException e) {}
+							}
+						});
+						
+						tapDelay.start();
+						}
+					
 					onGestureListener.onSingleTapUp(event);
 				}
 				

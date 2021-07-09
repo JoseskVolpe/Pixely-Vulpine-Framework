@@ -5,7 +5,6 @@ import javax.microedition.midlet.MIDlet;
 
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
-import pixelyvulpine.api.lcdui.ContentListener;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.LayoutLoader;

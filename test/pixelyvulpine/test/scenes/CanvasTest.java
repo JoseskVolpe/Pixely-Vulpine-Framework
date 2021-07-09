@@ -9,14 +9,13 @@ import javax.microedition.midlet.MIDlet;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Command;
 import pixelyvulpine.api.lcdui.Content;
-import pixelyvulpine.api.lcdui.ContentListener;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.contents.Button;
 import pixelyvulpine.contents.Canvas;
 import pixelyvulpine.contents.Label;
 
-public class CanvasTest extends Layout implements ContentListener{
+public class CanvasTest extends Layout{
 
 	public CanvasTest(MIDlet app) {
 		super(app);

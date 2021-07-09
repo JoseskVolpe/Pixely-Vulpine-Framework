@@ -7,7 +7,7 @@ public final class Config {
 	private static long longPressTimeout=1000; //in millis
 	private static byte minimumFlingVelocity = 10; //in percent
 	private static byte maximumFlingVelocity = 100; //in percent
-	private static long doubleTapTimeout = 300; //in millis
+	private static long doubleTapTimeout = 700; //in millis
 	
 	public final static long getLongPressTimeout() {
 		return longPressTimeout;

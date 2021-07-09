@@ -2,7 +2,10 @@ package pixelyvulpine.api.lcdui;
 
 import javax.microedition.lcdui.Graphics;
 
-public class Content {
+import pixelyvulpine.api.events.GestureDetector;
+import pixelyvulpine.api.events.MotionEvent;
+
+public class Content{
 
 	/**Fixed position on canvas*/
 	public final static byte POSITIONING_FIXED=0;
@@ -24,7 +27,6 @@ public class Content {
 	
 	private byte positioning;
 	private boolean visible=true;
-	private ContentListener listenner;
 	private byte ZIndex;
 	
 	private Layout layout;
@@ -60,6 +62,10 @@ public class Content {
 		
 		
 		
+	}
+	
+	public boolean dispatchTouchEvent(MotionEvent event) {
+		return false;
 	}
 	
 	/**
@@ -136,10 +142,6 @@ public class Content {
 		return verticalAnchor;
 	}
 	
-	public final ContentListener getContentListener() {
-		return listenner;
-	}
-	
 	/**
 	 * @return visible
 	 */
@@ -172,13 +174,6 @@ public class Content {
 	 */
 	public final byte getZIndex() {
 		return ZIndex;
-	}
-	
-	/**
-	 * Assign a ContentListener
-	 */
-	public final void assign(ContentListener listenner) {
-		this.listenner = listenner;
 	}
 	
 	

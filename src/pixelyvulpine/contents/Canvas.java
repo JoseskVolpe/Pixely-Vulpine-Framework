@@ -550,15 +550,5 @@ public class Canvas extends Content{
 		return null;
 		
 	}
-	
-	public boolean keyDown(int keyCode, int key) {
-		
-		
-		
-		return true;
-		
-		
-		
-	}
 
 }

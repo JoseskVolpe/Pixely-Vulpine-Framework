@@ -8,7 +8,6 @@ import javax.microedition.lcdui.Graphics;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Command;
 import pixelyvulpine.api.lcdui.Content;
-import pixelyvulpine.api.lcdui.ContentListener;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.contents.Button;
@@ -16,7 +15,7 @@ import pixelyvulpine.contents.Canvas;
 import pixelyvulpine.contents.Label;
 import pixelyvulpine.test.App;
 
-public class ScrollTest extends Layout implements ContentListener{
+public class ScrollTest extends Layout{
 
 	public ScrollTest(App app) {
 		super(app);
@@ -47,27 +46,22 @@ public class ScrollTest extends Layout implements ContentListener{
 		this.addContent(canvas);
 		Button button = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "Boop UwU");
 		button.impact();
-		button.assign(this);
 		this.addContent(button);
 		Button button2 = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "heeey OwO");
 		button2.impact();
-		button2.assign(this);
 		this.addContent(button2);
 		Button button3 = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "Yiff @w@");
 		button3.impact();
-		button3.assign(this);
 		this.addContent(button3);
 		
 		Button cB1 = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "A");
 		cB1.impact();
-		cB1.assign(this);
 		canvas.addContent(cB1);
 		Label cL = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "B");
 		cL.impact();
 		canvas.addContent(cL);
 		Button cB2 = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "C");
 		cB2.impact();
-		cB2.assign(this);
 		canvas.addContent(cB2);
 		
 		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "Button"));

@@ -63,8 +63,6 @@ public class Layout extends Canvas implements CommandListener{
 	private CommandListener listener;
 	private Vector commands = new Vector();
 	
-	private GestureListener gListener = new GestureListener();
-	private GestureDetector gestureDetector = new GestureDetector(this, gListener);
 	
 	private paintThreadClass paintThread;
 	private class paintThreadClass implements Runnable{
@@ -86,7 +84,6 @@ public class Layout extends Canvas implements CommandListener{
 					
 					do {
 						Thread.sleep(1);
-						updateEvents();
 					}while(!repaint);
 					
 					repaint=false;
@@ -114,9 +111,6 @@ public class Layout extends Canvas implements CommandListener{
 	
 	public Layout(MIDlet app) {
 		this.app = app;
-		
-		gestureDetector.setContextClickListener(gListener);
-		gestureDetector.setOnDoubleTapListener(gListener);
 		
 		canvas = new pixelyvulpine.contents.Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100), new DimensionAttributes.Offset(0,0, 0, 0)));
 		navbar = new pixelyvulpine.contents.Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0, 0, NAVHEIGHT)));
@@ -484,32 +478,35 @@ public class Layout extends Canvas implements CommandListener{
 	public final boolean isLoaded() {
 		return started;
 	}
-
-	private int eventIndex;
-	private final void updateEvents() {
-		
-		gestureDetector.update();
-		
+	
+	protected boolean onTouchEvent(MotionEvent event) {
+		return false;
+	}
+	
+	private void pointerEvent(MotionEvent e) {
+		if(!onTouchEvent(e)) {
+			canvas.dispatchTouchEvent(e);
+		}
 	}
 	
 	protected final void pointerPressed(int x, int y){
 		
 		MotionEvent e = new MotionEvent(x, y, MotionEvent.ACTION_DOWN);
-		gestureDetector.onTouchEvent((MotionEvent)e);
+		pointerEvent(e);
 
 	}
 
 	protected final void pointerReleased(int x, int y){
 		
 		MotionEvent e = new MotionEvent(x, y, MotionEvent.ACTION_UP);
-		gestureDetector.onTouchEvent((MotionEvent)e);
+		pointerEvent(e);
 
 	}
 
 	protected final void pointerDragged(int x, int y){
 		
 		MotionEvent e = new MotionEvent(x, y, MotionEvent.ACTION_MOVE);
-		gestureDetector.onTouchEvent((MotionEvent)e);
+		pointerEvent(e);
 		
 	}
 	
@@ -538,59 +535,6 @@ public class Layout extends Canvas implements CommandListener{
 
 	public void commandAction(Command command, Displayable display) {
 		// TODO Auto-generated method stub
-		
-	}
-
-	private class GestureListener extends GestureDetector.SimpleOnGestureListener{
-		
-		public boolean onDown(MotionEvent e) {
-			System.out.println("onDown "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
-			return false;
-		}
-
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-			System.out.println("onFling "+e1.getPointerCoords().x+" "+e1.getPointerCoords().y+" "+e2.getPointerCoords().x+" "+e2.getPointerCoords().y+" "+velocityX+" "+velocityY);
-			return false;
-		}
-
-		public boolean onLongPress(MotionEvent e) {
-			System.out.println("onLongPress "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
-			return false;
-		}
-
-		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-			System.out.println("onScroll "+e1.getPointerCoords().x+" "+e1.getPointerCoords().y+" "+e2.getPointerCoords().x+" "+e2.getPointerCoords().y+" "+distanceX+" "+distanceY);
-			return false;
-		}
-
-		public void onShowPress(MotionEvent e) {
-			System.out.println("onShowPress "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
-		}
-
-		public boolean onSingleTapUp(MotionEvent e) {
-			System.out.println("onSingleTapUp "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
-			return false;
-		}
-
-		public boolean onDoubleTap(MotionEvent e) {
-			System.out.println("onDoubleTap "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
-			return false;
-		}
-
-		public boolean onDoubleTapEvent(MotionEvent e) {
-			System.out.println("onDoubleTapEvent "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
-			return false;
-		}
-
-		public boolean onSingleTapConfirmed(MotionEvent e) {
-			System.out.println("onSingleTapConfirmed "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
-			return false;
-		}
-
-		public boolean onContextClick(MotionEvent e) {
-			System.out.println("onContextClick "+e.getPointerCoords().x+" "+e.getPointerCoords().y);
-			return false;
-		}
 		
 	}
 	
