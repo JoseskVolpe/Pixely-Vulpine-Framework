@@ -168,7 +168,7 @@ public class GestureDetector {
 					showDelay = new Thread(new Runnable() {
 						public void run() {
 							try {
-								Thread.sleep(100);
+								Thread.sleep(50);
 								show=true;
 								onGestureListener.onShowPress(event_thread);
 							}catch(InterruptedException e) {}

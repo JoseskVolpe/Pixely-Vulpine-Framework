@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import pixelyvulpine.Config;
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.lcdui.Color;
@@ -58,6 +59,7 @@ public class TouchTest extends Layout{
 	
 	public void Setup() {
 		
+		Config.setShowTouch(true);
 		setFullScreenMode(true);
 		
 	}

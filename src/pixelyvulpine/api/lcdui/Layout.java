@@ -14,6 +14,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 
+import pixelyvulpine.Config;
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.InputEvent;
 import pixelyvulpine.api.events.MotionEvent;
@@ -297,6 +298,13 @@ public class Layout extends Canvas implements CommandListener{
 			return;
 		}
 		
+		if(Config.getShowTouch() && touchAction!=MotionEvent.ACTION_UP) {
+			int tSize=Math.min(getWidth(), getHeight())/8;
+			g.setColor(142,211,215);
+			g.drawArc(touchX-(tSize/2), touchY-(tSize/2), tSize, tSize, 0, 360);
+			g.fillRect(touchX, touchY, 1, 1);
+		}
+		
 		paintThread.askRepaint();
 		
 	}
@@ -483,7 +491,13 @@ public class Layout extends Canvas implements CommandListener{
 		return false;
 	}
 	
+	int touchX, touchY, touchAction=MotionEvent.ACTION_UP;
 	private void pointerEvent(MotionEvent e) {
+		
+		touchX=e.getPointerCoords().x;
+		touchY=e.getPointerCoords().y;
+		touchAction = e.getAction();
+		
 		if(!onTouchEvent(e)) {
 			canvas.dispatchTouchEvent(e);
 		}

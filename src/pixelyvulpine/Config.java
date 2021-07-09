@@ -11,6 +11,7 @@ public final class Config {
 	private static long doubleTapTimeout = 700; //in millis
 	private static short longpressTouchDistance = 8; //in pixels
 	private static short doubleTapDistance = 16; //in píxels
+	private static boolean showTouch;
 	
 	public final static long getLongPressTimeout() {
 		return longPressTimeout;
@@ -58,6 +59,14 @@ public final class Config {
 	
 	public final static short getDoubleTapDistance() {
 		return doubleTapDistance;
+	}
+	
+	public final static void setShowTouch(boolean showTouch) {
+		Config.showTouch = showTouch;
+	}
+	
+	public final static boolean getShowTouch() {
+		return showTouch;
 	}
 	
 }
