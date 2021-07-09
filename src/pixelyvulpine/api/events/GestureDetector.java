@@ -125,9 +125,10 @@ public class GestureDetector {
 	
 	public boolean onTouchEvent(MotionEvent event) {
 		
+		int lx, ly, c;
+		
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				if(!onGestureListener.onDown(event)) {
 					down=true;
 					show=false;
 					moved=false;
@@ -137,6 +138,19 @@ public class GestureDetector {
 					downEvent=event;
 					upEvent=null;
 					doubleTap=false;
+					
+					if(onDoubleTapListener!=null && tapEvent!=null && event.getEventTime()-tapEvent.getEventTime()<=Config.getDoubleTapTimeout() &&
+							Math.max(Math.abs(event.getPointerCoords().x - tapEvent.getPointerCoords().x), Math.abs(event.getPointerCoords().y - tapEvent.getPointerCoords().y)) <= Config.getDoubleTapDistance()) {
+						doubleTap=true;
+						interrupt(tapDelay);
+						onDoubleTapListener.onDoubleTap(event);
+						onDoubleTapListener.onDoubleTapEvent(event);
+					}else {
+						tapEvent=null;
+						interrupt(tapDelay);
+					}
+					
+					onGestureListener.onDown(event);
 					
 					final MotionEvent event_thread = event;
 					
@@ -163,49 +177,35 @@ public class GestureDetector {
 					
 					longPressDelay.start();
 					showDelay.start();
-					
-					if(onDoubleTapListener!=null && tapEvent!=null && event.getEventTime()-tapEvent.getEventTime()<=Config.getDoubleTapTimeout() &&
-							Math.max(Math.abs(event.getPointerCoords().x - tapEvent.getPointerCoords().x), Math.abs(event.getPointerCoords().y - tapEvent.getPointerCoords().y)) <= Config.getDoubleTapDistance()) {
-						doubleTap=true;
-						interrupt(tapDelay);
-						onDoubleTapListener.onDoubleTap(event);
-					}else {
-						tapEvent=null;
-						interrupt(tapDelay);
-					}
-				}
 			break;
 			case MotionEvent.ACTION_MOVE:
 				moved=true;
 				moveEvent=event;
 				
-				if(!movedSensi && Math.abs(event.getPointerCoords().x-downEvent.getPointerCoords().x)>=Config.getLongpressTouchDistance() || Math.abs(event.getPointerCoords().y-downEvent.getPointerCoords().y)>=Config.getLongpressTouchDistance()) {
+				if(!doubleTap && !movedSensi && (Math.abs(event.getPointerCoords().x-downEvent.getPointerCoords().x)>=Config.getLongpressTouchDistance() || Math.abs(event.getPointerCoords().y-downEvent.getPointerCoords().y)>=Config.getLongpressTouchDistance())) {
 					movedSensi=true;
 					interrupt(longPressDelay);
 					interrupt(showDelay);
 				}
 					
-				int c = MotionEvent.getHistorySize();
-				int lx=downEvent.getPointerCoords().x;
-				int ly=downEvent.getPointerCoords().y;
-				if(c>1) {
-					lx=MotionEvent.getHistoricalPointerCoords(c-2).x;
-					ly=MotionEvent.getHistoricalPointerCoords(c-2).y;
-				}
+				
 				if(!longPress) {
-					if(!fling && !onGestureListener.onScroll(downEvent, event, event.getPointerCoords().x - lx, event.getPointerCoords().y - ly)) {
+					
+					c = MotionEvent.getHistorySize();
+					lx=downEvent.getPointerCoords().x;
+					ly=downEvent.getPointerCoords().y;
+					if(c>1) {
+						lx=MotionEvent.getHistoricalPointerCoords(c-2).x;
+						ly=MotionEvent.getHistoricalPointerCoords(c-2).y;
+					}
+					
+					if(!onGestureListener.onScroll(downEvent, event, event.getPointerCoords().x - lx, event.getPointerCoords().y - ly)) {
 						
 					}
-					int dist = (int)(Math.max(Math.abs(event.getPointerCoords().x-lx)/(float)Math.min(context.getWidth(), context.getHeight()), Math.abs(event.getPointerCoords().y-ly)/(float)Math.min(context.getWidth(), context.getHeight()))*100);
-					if(!fling && dist>=Config.getMinimumFlingVelocity() && dist <=Config.getMaximumFlingVelocity()) {
-						fling=true;
-						if(!onGestureListener.onFling(downEvent, moveEvent, event.getPointerCoords().x-lx, event.getPointerCoords().y-ly)) {
-							
-						}
+					
+					if(doubleTap && onDoubleTapListener!=null) {
+						onDoubleTapListener.onDoubleTapEvent(event);
 					}
-				}
-				if(doubleTap && onDoubleTapListener!=null) {
-					onDoubleTapListener.onDoubleTapEvent(event);
 				}
 			break;
 			case MotionEvent.ACTION_UP:
@@ -214,6 +214,23 @@ public class GestureDetector {
 				interrupt(showDelay);
 				
 				upEvent=event;
+				
+				c = MotionEvent.getHistorySize();
+				lx=downEvent.getPointerCoords().x;
+				ly=downEvent.getPointerCoords().y;
+				if(c>1) {
+					lx=MotionEvent.getHistoricalPointerCoords(c-2).x;
+					ly=MotionEvent.getHistoricalPointerCoords(c-2).y;
+				}
+				
+				int dist = (int)(Math.max(Math.abs(event.getPointerCoords().x-lx)/(float)Math.min(context.getWidth(), context.getHeight()), Math.abs(event.getPointerCoords().y-ly)/(float)Math.min(context.getWidth(), context.getHeight()))*100);
+				if(!fling && dist>=Config.getMinimumFlingVelocity() && dist <=Config.getMaximumFlingVelocity()) {
+					fling=true;
+					if(!onGestureListener.onFling(moveEvent, event, event.getPointerCoords().x-lx, event.getPointerCoords().y-ly)) {
+						
+					}
+				}
+				
 				if(tapEvent==null && !movedSensi && event.getEventTime()-downEvent.getEventTime()<=Config.getDoubleTapTimeout()) {
 					tapEvent=event;
 					
@@ -222,7 +239,7 @@ public class GestureDetector {
 							public void run() {
 								try {
 									Thread.sleep(Config.getDoubleTapTimeout());
-									onDoubleTapListener.onSingleTapConfirmed(tapEvent);
+									onDoubleTapListener.onSingleTapConfirmed(downEvent);
 									tapEvent=null;
 								}catch(InterruptedException e) {}
 							}
@@ -232,6 +249,10 @@ public class GestureDetector {
 						}
 					
 					onGestureListener.onSingleTapUp(event);
+				}
+				
+				if(doubleTap && onDoubleTapListener!=null) {
+					onDoubleTapListener.onDoubleTapEvent(event);
 				}
 				
 			break;

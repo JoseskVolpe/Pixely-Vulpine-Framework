@@ -92,6 +92,8 @@ public class TouchTest extends Layout{
 				break;
 		}
 		
+		System.out.println(MotionEvent.actionToString(e.getAction())+":\n"+message);
+		
 		if(info.length()>0)
 			info.delete(0, info.length());
 		
