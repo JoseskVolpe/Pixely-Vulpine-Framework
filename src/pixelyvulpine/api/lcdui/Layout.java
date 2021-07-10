@@ -491,7 +491,7 @@ public class Layout extends Canvas implements CommandListener{
 		return false;
 	}
 	
-	private Vector historicalCoords;
+	private Vector historicalCoords = new Vector(0,1);
 	private int touchX, touchY, touchAction=MotionEvent.ACTION_UP;
 	private void pointerEvent(MotionEvent e) {
 		
@@ -515,6 +515,8 @@ public class Layout extends Canvas implements CommandListener{
 		
 		MotionEvent e = new MotionEvent(historicalCoords, x, y, MotionEvent.ACTION_UP);
 		pointerEvent(e);
+		
+		
 
 	}
 

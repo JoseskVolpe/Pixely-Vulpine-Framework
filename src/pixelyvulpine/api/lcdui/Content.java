@@ -67,7 +67,7 @@ public class Content{
 		
 	}
 	
-	private Vector historicalCoords;
+	private Vector historicalCoords = new Vector(0,1);
 	public final boolean dispatchTouchEvent(MotionEvent event) {
 		
 		if(onTouchListener!=null && onTouchListener.onTouch(this, event)) {

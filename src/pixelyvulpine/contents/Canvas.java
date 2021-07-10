@@ -6,6 +6,7 @@ import java.util.Vector;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 
+import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
@@ -489,7 +490,9 @@ public class Canvas extends Content{
 					MotionEvent checkEvent = new MotionEvent(c.getHistoricalCoords(), e.getPointerCoords().x-cx, e.getPointerCoords().y-cy, e.getAction());
 					downIndex=index;
 					
-					return c.dispatchTouchEvent(checkEvent);
+					if(c.dispatchTouchEvent(checkEvent)) return true;
+					
+					break;
 				}
 			}
 		
@@ -498,18 +501,32 @@ public class Canvas extends Content{
 			int cy = ((Integer)renderData[2].elementAt(downIndex)).intValue();
 			Content c = ((Content)contents.elementAt(downIndex));
 			MotionEvent checkEvent = new MotionEvent(c.getHistoricalCoords(), e.getPointerCoords().x-cx, e.getPointerCoords().y-cy, e.getAction());
-			return c.dispatchTouchEvent(checkEvent);
+			
+			if(e.getAction()==MotionEvent.ACTION_UP)
+				downIndex=-1;
+				
+			if(c.dispatchTouchEvent(checkEvent))return true;
 		}
 		
-		return false;
+		//No view touched, make Canvas's Touch Events
+		return gesture.onTouchEvent(e);
 	}
 	
+	private GestureDetector gesture = new GestureDetector(getLayout(), new GestureDetector.SimpleOnGestureListener() {
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			
+			scrollX+=distanceX;
+			scrollY+=distanceY;
+			
+			return false;
+		}
+	});
 	
 	public final void addContent(Content content) {
 		contents.addElement(content);
 	}
 	
-	public final boolean removeContent(Content content) { //PS: i know these add() and remove() methods are slow and inneficient, optimization is a project, ¡you can contribute! ;3
+	public final boolean removeContent(Content content) {
 		
 		boolean s = contents.removeElement(content);
 		if(!s) return false;

@@ -18,7 +18,7 @@ public class GestureDetector {
 	public interface OnGestureListener{
 		public abstract boolean onDown(MotionEvent e);
 		public abstract boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY);
-		public abstract boolean onLongPress(MotionEvent e);
+		public abstract void onLongPress(MotionEvent e);
 		public abstract boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY);
 		public abstract void onShowPress(MotionEvent e);
 		public abstract boolean onSingleTapUp(MotionEvent e);
@@ -34,9 +34,7 @@ public class GestureDetector {
 			return false;
 		}
 
-		public boolean onLongPress(MotionEvent e) {
-			return false;
-		}
+		public void onLongPress(MotionEvent e) {}
 
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			return false;
@@ -99,9 +97,17 @@ public class GestureDetector {
 			thread.interrupt();
 	}
 	
+	private void setReturning(boolean returning, boolean to) {
+		if(!returning) {
+			returning=to;
+		}
+	}
+	
+	private boolean returning;
 	public boolean onTouchEvent(MotionEvent event) {
 		
 		int lx, ly, c;
+		returning=false;
 		
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
@@ -119,14 +125,14 @@ public class GestureDetector {
 							Math.max(Math.abs(event.getPointerCoords().x - tapEvent.getPointerCoords().x), Math.abs(event.getPointerCoords().y - tapEvent.getPointerCoords().y)) <= Config.getDoubleTapDistance()) {
 						doubleTap=true;
 						interrupt(tapDelay);
-						onDoubleTapListener.onDoubleTap(event);
-						onDoubleTapListener.onDoubleTapEvent(event);
+						setReturning(returning, onDoubleTapListener.onDoubleTap(event));
+						setReturning(returning, onDoubleTapListener.onDoubleTapEvent(event));
 					}else {
 						tapEvent=null;
 						interrupt(tapDelay);
 					}
 					
-					onGestureListener.onDown(event);
+					setReturning(returning, onGestureListener.onDown(event));
 					
 					final MotionEvent event_thread = event;
 					
@@ -175,12 +181,10 @@ public class GestureDetector {
 						ly=event.getHistoricalPointerCoords(c-2).y;
 					}
 					
-					if(!onGestureListener.onScroll(downEvent, event, event.getPointerCoords().x - lx, event.getPointerCoords().y - ly)) {
-						
-					}
+					setReturning(returning, onGestureListener.onScroll(downEvent, event, event.getPointerCoords().x - lx, event.getPointerCoords().y - ly));
 					
 					if(doubleTap && onDoubleTapListener!=null) {
-						onDoubleTapListener.onDoubleTapEvent(event);
+						setReturning(returning, onDoubleTapListener.onDoubleTapEvent(event));
 					}
 				}
 			break;
@@ -202,9 +206,7 @@ public class GestureDetector {
 				int dist = (int)(Math.max(Math.abs(event.getPointerCoords().x-lx)/(float)Math.min(context.getWidth(), context.getHeight()), Math.abs(event.getPointerCoords().y-ly)/(float)Math.min(context.getWidth(), context.getHeight()))*100);
 				if(!fling && dist>=Config.getMinimumFlingVelocity() && dist <=Config.getMaximumFlingVelocity()) {
 					fling=true;
-					if(!onGestureListener.onFling(moveEvent, event, event.getPointerCoords().x-lx, event.getPointerCoords().y-ly)) {
-						
-					}
+					setReturning(returning, onGestureListener.onFling(moveEvent, event, event.getPointerCoords().x-lx, event.getPointerCoords().y-ly)) ;
 				}
 				
 				if(tapEvent==null && !movedSensi && event.getEventTime()-downEvent.getEventTime()<=Config.getDoubleTapTimeout()) {
@@ -215,7 +217,7 @@ public class GestureDetector {
 							public void run() {
 								try {
 									Thread.sleep(Config.getDoubleTapTimeout());
-									onDoubleTapListener.onSingleTapConfirmed(downEvent);
+									setReturning(returning, onDoubleTapListener.onSingleTapConfirmed(downEvent));
 									tapEvent=null;
 								}catch(InterruptedException e) {}
 							}
@@ -224,18 +226,18 @@ public class GestureDetector {
 						tapDelay.start();
 						}
 					
-					onGestureListener.onSingleTapUp(event);
+					setReturning(returning, onGestureListener.onSingleTapUp(event));
 				}
 				
 				if(doubleTap && onDoubleTapListener!=null) {
-					onDoubleTapListener.onDoubleTapEvent(event);
+					setReturning(returning, onDoubleTapListener.onDoubleTapEvent(event));
 				}
 				
 			break;
 		}
 		
 		
-		return false;
+		return returning;
 	}
 	
 	public void setContextClickListener(OnContextClickListener onContextClickListener) {

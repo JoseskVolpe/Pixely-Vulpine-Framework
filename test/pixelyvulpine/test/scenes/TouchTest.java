@@ -133,9 +133,8 @@ public class TouchTest extends Layout{
 			return false;
 		}
 
-		public boolean onLongPress(MotionEvent e) {
+		public void onLongPress(MotionEvent e) {
 			updateInfo("onLongPress()\n"+e.getPointerCoords().x+"X"+e.getPointerCoords().y, e);
-			return false;
 		}
 
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {

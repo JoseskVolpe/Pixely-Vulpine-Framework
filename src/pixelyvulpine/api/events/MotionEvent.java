@@ -47,9 +47,6 @@ public class MotionEvent extends InputEvent{
 		
 		this.pointerCoords = new PointerCoords();
 		
-		if(historicalCoords==null) 
-			historicalCoords=new Vector(0, 1);
-		
 		this.historicalCoords=historicalCoords;
 		
 		pointerCoords.x=x;
@@ -81,7 +78,7 @@ public class MotionEvent extends InputEvent{
 	
 	public int getHistorySize() {
 		
-		return historicalCoords.capacity();
+		return historicalCoords.size();
 	}
 	
 	public int getAction() {

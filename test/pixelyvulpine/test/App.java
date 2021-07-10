@@ -17,7 +17,7 @@ import pixelyvulpine.test.scenes.*;
 
 public class App extends MIDlet implements CommandListener, LayoutLoader {
 
-	private static final String layoutName="touchTest";
+	private static final String layoutName="scrollTest";
 	
 	private boolean started = false;
 	
