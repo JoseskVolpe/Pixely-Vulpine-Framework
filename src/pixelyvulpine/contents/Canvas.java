@@ -6,6 +6,7 @@ import java.util.Vector;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 
+import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
@@ -27,7 +28,6 @@ public class Canvas extends Content{
 	
 	protected int selectedC = -1;
 	protected Vector contents = new Vector(0, 1);
-	protected Stack renderIndex;
 	protected Stack[] renderData;
 	
 	private int horizontalOffset=5;
@@ -425,8 +425,6 @@ public class Canvas extends Content{
 		
 		paintContent(g);
 		
-		renderData=null;
-		
 	}
 
 	int sx, sy;
@@ -463,6 +461,47 @@ public class Canvas extends Content{
 			
 		}
 		
+	}
+	
+	private short downIndex=-1;
+	protected boolean onTouch(MotionEvent e) {
+		
+		if(e.getAction()==MotionEvent.ACTION_DOWN) {
+		
+			Stack renderData[] = this.renderData;
+			
+			if(contents == null || contents.size()<0 || renderData==null) return false;
+			
+			int px = e.getPointerCoords().x;
+			int py = e.getPointerCoords().y;
+			
+			for(int i=0; i<renderData[0].size(); i++) {
+				int cx = ((Integer)renderData[1].elementAt(i)).intValue();
+				int cy = ((Integer)renderData[2].elementAt(i)).intValue();
+				int cw = ((Integer)renderData[3].elementAt(i)).intValue();
+				int ch = ((Integer)renderData[4].elementAt(i)).intValue();
+				short index = ((Short)renderData[0].elementAt(i)).shortValue();
+				
+				if(px>=cx && py>=cy && px<=cx+cw && py<=cy+ch) {
+					
+					Content c = ((Content)contents.elementAt(index));
+					
+					MotionEvent checkEvent = new MotionEvent(c.getHistoricalCoords(), e.getPointerCoords().x-cx, e.getPointerCoords().y-cy, e.getAction());
+					downIndex=index;
+					
+					return c.dispatchTouchEvent(checkEvent);
+				}
+			}
+		
+		}else if(downIndex>=0 && downIndex<renderData[0].size()) {
+			int cx = ((Integer)renderData[1].elementAt(downIndex)).intValue();
+			int cy = ((Integer)renderData[2].elementAt(downIndex)).intValue();
+			Content c = ((Content)contents.elementAt(downIndex));
+			MotionEvent checkEvent = new MotionEvent(c.getHistoricalCoords(), e.getPointerCoords().x-cx, e.getPointerCoords().y-cy, e.getAction());
+			return c.dispatchTouchEvent(checkEvent);
+		}
+		
+		return false;
 	}
 	
 	
@@ -550,5 +589,7 @@ public class Canvas extends Content{
 		return null;
 		
 	}
+	
+	
 
 }

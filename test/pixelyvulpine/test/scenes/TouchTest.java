@@ -11,6 +11,7 @@ import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Command;
 import pixelyvulpine.api.lcdui.Content;
+import pixelyvulpine.api.lcdui.Content.OnTouchListener;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.TextFont;
@@ -52,6 +53,15 @@ public class TouchTest extends Layout{
 		this.addContent(LCanvas);
 		
 		bulge = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100, 0), new DimensionAttributes.Offset(0,0,0,Font.getDefaultFont().getHeight())), "Bulgue 7w7");
+		bulge.setOnTouchListener(new OnTouchListener() {
+
+			public boolean onTouch(Content view, MotionEvent event) {
+				screen=false;
+	            gesture.onTouchEvent(event);
+				return true;
+			}
+			
+		});
 		addContent(bulge);
 		
 		touchInfo = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100), new DimensionAttributes.Offset(0,0, 0, -45)));
@@ -78,7 +88,7 @@ public class TouchTest extends Layout{
 
 	protected boolean onTouchEvent(MotionEvent event) {
 		
-		screen=false;
+		screen=true;
 		gesture.onTouchEvent(event);
 		
 		return true;

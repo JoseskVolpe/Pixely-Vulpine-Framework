@@ -499,8 +499,8 @@ public class Layout extends Canvas implements CommandListener{
 		touchY=e.getPointerCoords().y;
 		touchAction = e.getAction();
 		
-		if(!onTouchEvent(e)) {
-			canvas.dispatchTouchEvent(e);
+		if(!canvas.dispatchTouchEvent(e)) {
+			onTouchEvent(e);
 		}
 	}
 	
@@ -538,6 +538,10 @@ public class Layout extends Canvas implements CommandListener{
 	public final void setCommandListener(CommandListener l) {
 		listener=l;
 		super.setCommandListener(l);
+	}
+	
+	public final CommandListener getCommandListener() {
+		return listener;
 	}
 	
 	public final void setFullScreenMode(boolean fullscreen) {

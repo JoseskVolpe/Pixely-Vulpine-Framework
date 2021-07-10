@@ -1,5 +1,7 @@
 package pixelyvulpine.api.lcdui;
 
+import java.util.Vector;
+
 import javax.microedition.lcdui.Graphics;
 
 import pixelyvulpine.api.events.GestureDetector;
@@ -32,6 +34,7 @@ public class Content{
 	private Layout layout;
 	protected DimensionAttributes dimensionAttributes;
 	private boolean selected=false;
+	protected OnTouchListener onTouchListener;
 	
 	/**
 	 * Scalable - Defines value according to screen's resolutions, in percent
@@ -64,8 +67,26 @@ public class Content{
 		
 	}
 	
-	public boolean dispatchTouchEvent(MotionEvent event) {
+	private Vector historicalCoords;
+	public final boolean dispatchTouchEvent(MotionEvent event) {
+		
+		if(onTouchListener!=null && onTouchListener.onTouch(this, event)) {
+			return true;
+		}
+		
+		return onTouch(event);
+	}
+	
+	public final Vector getHistoricalCoords() {
+		return historicalCoords;
+	}
+	
+	protected boolean onTouch(MotionEvent event) {
 		return false;
+	}
+	
+	public void setOnTouchListener(OnTouchListener onTouchListener) {
+		this.onTouchListener = onTouchListener;;
 	}
 	
 	/**
@@ -176,6 +197,8 @@ public class Content{
 		return ZIndex;
 	}
 	
-	
+	public static interface OnTouchListener{
+		public boolean onTouch(Content view, MotionEvent event) ;
+	}
 	
 }
