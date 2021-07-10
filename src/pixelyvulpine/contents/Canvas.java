@@ -475,7 +475,7 @@ public class Canvas extends Content{
 			int px = e.getPointerCoords().x;
 			int py = e.getPointerCoords().y;
 			
-			for(int i=0; i<renderData[0].size(); i++) {
+			for(int i=renderData[0].size()-1; i>=0; i--) {
 				int cx = ((Integer)renderData[1].elementAt(i)).intValue();
 				int cy = ((Integer)renderData[2].elementAt(i)).intValue();
 				int cw = ((Integer)renderData[3].elementAt(i)).intValue();
