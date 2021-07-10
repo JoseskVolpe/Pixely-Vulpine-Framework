@@ -334,7 +334,7 @@ public class Canvas extends Content{
 		
 	}
 	
-	private final void paintBackground(Graphics g, boolean saveRam) {
+	private final void paintBackground(GraphicsFix g, boolean saveRam) {
 		if(backgroundColor!=null && backgroundColor.getAlpha()>0) {
 			if(Display.getDisplay(getLayout().getMIDlet()).numAlphaLevels() <=2 || backgroundColor.getAlpha()>=255 || saveRam) {
 				backgroundColor.updateColor(g);
@@ -358,7 +358,7 @@ public class Canvas extends Content{
 					color[i]=hex;
 				
 				try {
-					GraphicsFix.drawRGB(g, color, 0, w, 0, 0, w, h, true);
+					g.drawRGB(color, 0, w, 0, 0, w, h, true);
 				}catch(Exception e) {}
 				
 				
@@ -368,7 +368,7 @@ public class Canvas extends Content{
 		}
 	}
 	
-	public final void paint(Graphics g) {
+	public final void paint(GraphicsFix g) {
 		
 		int lw=g.getClipWidth();
 		int lh=g.getClipHeight();
@@ -387,12 +387,12 @@ public class Canvas extends Content{
 					int color[];
 					color = new int[]{foregroundColor.getHex()};
 					for(int x=0; x<lw; x++) {
-						GraphicsFix.drawRGB(g, color, 0, 1, x, 0, 1, 1, true);
-						GraphicsFix.drawRGB(g, color, 0, 1, x, lh-1, 1, 1, true);
+						g.drawRGB(color, 0, 1, x, 0, 1, 1, true);
+						g.drawRGB(color, 0, 1, x, lh-1, 1, 1, true);
 					}
 					for(int y=1; y<lh-1; y++) {
-						GraphicsFix.drawRGB(g, color, 0, 1, 0, y, 1, 1, true);
-						GraphicsFix.drawRGB(g, color, 0, 1, lw-1, y, 1, 1, true);
+						g.drawRGB(color, 0, 1, 0, y, 1, 1, true);
+						g.drawRGB(color, 0, 1, lw-1, y, 1, 1, true);
 					}
 					g.translate(1, 1);
 					lx=1;
@@ -429,7 +429,7 @@ public class Canvas extends Content{
 	}
 
 	int sx, sy;
-	protected final void paintContent(Graphics g) {
+	protected final void paintContent(GraphicsFix g) {
 		if(contents==null) return;
 		
 		int lw=g.getClipWidth();

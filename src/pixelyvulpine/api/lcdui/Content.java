@@ -6,6 +6,7 @@ import javax.microedition.lcdui.Graphics;
 
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.MotionEvent;
+import pixelyvulpine.api.util.GraphicsFix;
 
 public class Content{
 
@@ -61,7 +62,7 @@ public class Content{
 		
 	}
 	
-	public void paint(Graphics g) {
+	public void paint(GraphicsFix g) {
 		
 		
 		
@@ -104,11 +105,11 @@ public class Content{
 		this.dimensionAttributes=dimensionAttributes;
 	}
 	
-	protected final int getRenderWidth(Graphics g) {
+	protected final int getRenderWidth(GraphicsFix g) {
 		return g.getClipWidth();
 	}
 	
-	protected final int getRenderHeight(Graphics g) {
+	protected final int getRenderHeight(GraphicsFix g) {
 		return g.getClipHeight();
 	}
 	

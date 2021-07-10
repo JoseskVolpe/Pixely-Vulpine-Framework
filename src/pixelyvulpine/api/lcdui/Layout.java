@@ -20,6 +20,7 @@ import pixelyvulpine.api.events.InputEvent;
 import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.Controls;
+import pixelyvulpine.api.util.GraphicsFix;
 
 public class Layout extends Canvas implements CommandListener{
 	
@@ -237,8 +238,10 @@ public class Layout extends Canvas implements CommandListener{
 					posSetup();
 				}
 				
+				GraphicsFix gf = new GraphicsFix(g);
+				
 				try {
-					canvas.paint(g);
+					canvas.paint(gf);
 				}catch(Exception e) {
 					Crash.showCrashMessage(app, e, "There was an exception trying to render activity "+getTitle(), Crash.FRAMEWORK_CRASH);
 					return;
@@ -268,7 +271,7 @@ public class Layout extends Canvas implements CommandListener{
 					g.translate(0, th);
 					g.setClip(0, 0, getWidth(), navheight);
 					navbar.prepaint(getWidth(), g.getClipHeight());
-					navbar.paint(g);
+					navbar.paint(gf);
 					g.translate(0, -th);
 					g.setClip(0, 0, getWidth(), getHeight());
 					

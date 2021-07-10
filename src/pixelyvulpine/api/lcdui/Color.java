@@ -2,6 +2,8 @@ package pixelyvulpine.api.lcdui;
 
 import javax.microedition.lcdui.Graphics;
 
+import pixelyvulpine.api.util.GraphicsFix;
+
 public final class Color {
 	
 	private byte a,r,g,b;
@@ -67,6 +69,10 @@ public final class Color {
 	}
 	
 	public void updateColor(Graphics g) {
+		g.setColor(getRed(), getGreen(), getBlue());
+	}
+	
+	public void updateColor(GraphicsFix g) {
 		g.setColor(getRed(), getGreen(), getBlue());
 	}
 	

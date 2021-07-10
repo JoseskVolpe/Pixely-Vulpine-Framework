@@ -8,6 +8,7 @@ import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.TextFont;
 import pixelyvulpine.api.system.Crash;
+import pixelyvulpine.api.util.GraphicsFix;
 
 public class Label extends Content{
 	
@@ -35,7 +36,7 @@ public class Label extends Content{
 		setTextFont(font);
 	}
 	
-	public void paint(Graphics g) {
+	public void paint(GraphicsFix g) {
 		font.render(text, g);
 	}
 	

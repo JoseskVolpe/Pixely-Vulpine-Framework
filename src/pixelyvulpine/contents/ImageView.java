@@ -154,7 +154,7 @@ public class ImageView extends Content{
 		
 	}
 	
-	public void paint(Graphics g) {
+	public void paint(GraphicsFix g) {
 		
 		if(renderData==null) {
 			try {
@@ -195,7 +195,7 @@ public class ImageView extends Content{
 			return;
 		}
 		
-		GraphicsFix.drawRGB(g, renderData, 0, width, 0, 0, width, height, true);
+		g.drawRGB(renderData, 0, width, 0, 0, width, height, true);
 		
 	}
 	

@@ -6,6 +6,7 @@ import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.TextFont;
+import pixelyvulpine.api.util.GraphicsFix;
 
 public class Button extends Content{
 
@@ -27,7 +28,7 @@ public class Button extends Content{
 		
 	}
 	
-	public void paint(Graphics g) {
+	public void paint(GraphicsFix g) {
 		
 		if(isSelected()) {
 			g.setColor(0,0,50);

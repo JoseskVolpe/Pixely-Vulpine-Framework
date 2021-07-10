@@ -6,6 +6,7 @@ import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
+import pixelyvulpine.api.util.GraphicsFix;
 
 public class CircularProgressBar extends Content {
 
@@ -43,7 +44,7 @@ public class CircularProgressBar extends Content {
 		return new int[] {Math.max(width, height), Math.max(width, height)};
 	}
 	
-	public void paint(Graphics g) {
+	public void paint(GraphicsFix g) {
 		
 		int clipW = g.getClipWidth();
 		int clipH = g.getClipHeight();
@@ -123,7 +124,7 @@ public class CircularProgressBar extends Content {
 			this.index=(byte)index;
 		}
 		
-		public void paint(Graphics g, int ballSize) {
+		public void paint(GraphicsFix g, int ballSize) {
 			
 			int sInc=0;
 			double index = this.index*0.35;

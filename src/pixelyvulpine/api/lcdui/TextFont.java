@@ -3,6 +3,8 @@ package pixelyvulpine.api.lcdui;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import pixelyvulpine.api.util.GraphicsFix;
+
 public class TextFont {
 	
 	private Font font;
@@ -36,7 +38,7 @@ public class TextFont {
 		this.multiline=multiline;
 	}
 	
-	public final void render(String text, Graphics g) {
+	public final void render(String text, GraphicsFix g) {
 		fontColor.updateColor(g);
 		g.setFont(font);
 		
