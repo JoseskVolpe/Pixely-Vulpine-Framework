@@ -22,7 +22,7 @@ public class MotionEvent extends InputEvent{
 		}
 	}
 	
-	private static Vector historicalCoords = new Vector(0, 1);
+	private Vector historicalCoords;
 	
 	private PointerCoords pointerCoords;
 	private byte action;
@@ -42,10 +42,15 @@ public class MotionEvent extends InputEvent{
 	}
 	
 	
-	public MotionEvent(int x, int y, int action) {
+	public MotionEvent(Vector historicalCoords, int x, int y, int action) {
 		super();
 		
 		this.pointerCoords = new PointerCoords();
+		
+		if(historicalCoords==null) 
+			historicalCoords=new Vector(0, 1);
+		
+		this.historicalCoords=historicalCoords;
 		
 		pointerCoords.x=x;
 		pointerCoords.y=y;
@@ -69,12 +74,12 @@ public class MotionEvent extends InputEvent{
 		return pointerCoords;
 	}
 	
-	public static PointerCoords getHistoricalPointerCoords(int pos) {
+	public PointerCoords getHistoricalPointerCoords(int pos) {
 		
 		return (PointerCoords) historicalCoords.elementAt(pos);
 	}
 	
-	public static int getHistorySize() {
+	public int getHistorySize() {
 		
 		return historicalCoords.capacity();
 	}

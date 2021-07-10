@@ -167,12 +167,12 @@ public class GestureDetector {
 				
 				if(!longPress) {
 					
-					c = MotionEvent.getHistorySize();
+					c = event.getHistorySize();
 					lx=downEvent.getPointerCoords().x;
 					ly=downEvent.getPointerCoords().y;
 					if(c>1) {
-						lx=MotionEvent.getHistoricalPointerCoords(c-2).x;
-						ly=MotionEvent.getHistoricalPointerCoords(c-2).y;
+						lx=event.getHistoricalPointerCoords(c-2).x;
+						ly=event.getHistoricalPointerCoords(c-2).y;
 					}
 					
 					if(!onGestureListener.onScroll(downEvent, event, event.getPointerCoords().x - lx, event.getPointerCoords().y - ly)) {
@@ -191,12 +191,12 @@ public class GestureDetector {
 				
 				upEvent=event;
 				
-				c = MotionEvent.getHistorySize();
+				c = event.getHistorySize();
 				lx=downEvent.getPointerCoords().x;
 				ly=downEvent.getPointerCoords().y;
 				if(c>1) {
-					lx=MotionEvent.getHistoricalPointerCoords(c-2).x;
-					ly=MotionEvent.getHistoricalPointerCoords(c-2).y;
+					lx=event.getHistoricalPointerCoords(c-2).x;
+					ly=event.getHistoricalPointerCoords(c-2).y;
 				}
 				
 				int dist = (int)(Math.max(Math.abs(event.getPointerCoords().x-lx)/(float)Math.min(context.getWidth(), context.getHeight()), Math.abs(event.getPointerCoords().y-ly)/(float)Math.min(context.getWidth(), context.getHeight()))*100);

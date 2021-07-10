@@ -22,11 +22,14 @@ import pixelyvulpine.test.App;
 public class TouchTest extends Layout{
 
 	private Label touchInfo;
+	private Button bulge;
 	
 	private StringBuffer downInfo=new StringBuffer(), moveInfo=new StringBuffer(), upInfo=new StringBuffer();
 	
 	private TouchListener listener = new TouchListener();
 	private GestureDetector gesture = new GestureDetector(this, listener);
+	
+	private boolean screen;
 	
 	public TouchTest(App app) {
 		super(app);
@@ -47,6 +50,9 @@ public class TouchTest extends Layout{
 		LCanvas.setBackgroundColor(null);
 		LCanvas.setForegroundColor(null);
 		this.addContent(LCanvas);
+		
+		bulge = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100, 0), new DimensionAttributes.Offset(0,0,0,Font.getDefaultFont().getHeight())), "Bulgue 7w7");
+		addContent(bulge);
 		
 		touchInfo = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100), new DimensionAttributes.Offset(0,0, 0, -45)));
 		touchInfo.setText("");
@@ -72,6 +78,7 @@ public class TouchTest extends Layout{
 
 	protected boolean onTouchEvent(MotionEvent event) {
 		
+		screen=false;
 		gesture.onTouchEvent(event);
 		
 		return true;
@@ -100,7 +107,7 @@ public class TouchTest extends Layout{
 			info.delete(0, info.length());
 		
 		info.append(message);
-		touchInfo.setText("Down:\n"+downInfo+"\n\nMove:\n"+moveInfo+"\n\nUp:\n"+upInfo);
+		touchInfo.setText("Screen touch: "+String.valueOf(screen)+"\nDown:\n"+downInfo+"\n\nMove:\n"+moveInfo+"\n\nUp:\n"+upInfo);
 		
 		
 	}
