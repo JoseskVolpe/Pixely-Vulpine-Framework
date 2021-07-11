@@ -188,9 +188,6 @@ public class ImageView extends Content{
 			return;
 		}
 		
-		int width = g.getClipWidth();
-		int height = g.getClipHeight();
-		
 		if(renderData==null) {
 			return;
 		}

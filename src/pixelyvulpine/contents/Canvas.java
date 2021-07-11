@@ -335,7 +335,7 @@ public class Canvas extends Content{
 		if(backgroundColor!=null && backgroundColor.getAlpha()>0) {
 			if(Display.getDisplay(getLayout().getMIDlet()).numAlphaLevels() <=2 || backgroundColor.getAlpha()>=255 || saveRam) {
 				backgroundColor.updateColor(g);
-				g.fillRect(0, 0, g.getClipWidth()-2, g.getClipHeight()-2);
+				g.fillRect(0, 0, g.getDimensionWidth()-2, g.getDimensionHeight()-2);
 			}else {
 				int color[];
 				/*
@@ -346,8 +346,8 @@ public class Canvas extends Content{
 					}
 				}*/
 				
-				int w=g.getClipWidth()-2;
-				int h=g.getClipHeight()-2;
+				int w=g.getDimensionWidth()-2;
+				int h=g.getDimensionHeight()-2;
 				
 				int hex = backgroundColor.getHex();
 				color = new int[w*h];
@@ -367,8 +367,10 @@ public class Canvas extends Content{
 	
 	public final void paint(GraphicsFix g) {
 		
-		int lw=g.getClipWidth();
-		int lh=g.getClipHeight();
+		int lcw=g.getClipWidth();
+		int lch=g.getClipHeight();
+		int lw=g.getDimensionWidth();
+		int lh=g.getDimensionHeight();
 		int lx=0;
 		int ly=0;
 		
@@ -418,11 +420,15 @@ public class Canvas extends Content{
 			paintBackground(g, true);
 		}
 		
-		g.translate(-lx, -ly);
-		g.setClip(0, 0, lw, lh);
+		
+		
+		g.setClip(0, 0, lw-lx*2, lh-ly*2);
 		
 		paintContent(g);
 		
+		g.translate(-lx, -ly);
+		
+		g.setClip(0, 0, lcw, lch);
 	}
 
 	int sx, sy;
@@ -444,20 +450,16 @@ public class Canvas extends Content{
 			
 			Content c = (Content)contents.elementAt(i);
 			
-			if(ry>g.getClipHeight() || (ry+rh)<0 || rx>g.getClipWidth() || (rx+rw)<0) {
-				c.noPaint();
-				continue;
-			}
-			
 			g.translate(rx, ry);
-			g.setClip(0, 0, rw, rh);
+			g.setDimension(rw, rh);
 			
 			c.paint(g);
 			
 			g.translate(-rx,  -ry);
-			g.setClip(0, 0, lw, lh);
 			
 		}
+		
+		g.setDimension(lw, lh);
 		
 	}
 	

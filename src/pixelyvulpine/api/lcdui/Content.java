@@ -106,11 +106,11 @@ public class Content{
 	}
 	
 	protected final int getRenderWidth(GraphicsFix g) {
-		return g.getClipWidth();
+		return g.getDimensionWidth();
 	}
 	
 	protected final int getRenderHeight(GraphicsFix g) {
-		return g.getClipHeight();
+		return g.getDimensionHeight();
 	}
 	
 	protected final Layout getLayout() {

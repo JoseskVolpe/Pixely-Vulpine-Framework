@@ -36,7 +36,7 @@ public final class GraphicsFix {
 	}
 	
 	private Graphics g;
-	private int clipX, clipY, clipH, clipW;
+	private int clipX, clipY, clipH, clipW, dimW, dimH;
 	
 	public GraphicsFix(Graphics g) {
 		this.g=g;
@@ -44,6 +44,8 @@ public final class GraphicsFix {
 		clipY=g.getClipY();
 		clipW=g.getClipWidth();
 		clipH=g.getClipHeight();
+		dimW = clipW;
+		dimH = clipH;
 	}
 	
 	public void clipRect(int x, int y, int width, int height) {
@@ -151,6 +153,14 @@ public final class GraphicsFix {
 		return g.getClipX();
 	}
 	
+	public int getDimensionWidth() {
+		return dimW;
+	}
+	
+	public int getDimensionHeight() {
+		return dimH;
+	}
+	
 	public int getClipY() {
 		return clipY;
 	}
@@ -201,6 +211,11 @@ public final class GraphicsFix {
 		clipW=width;
 		clipH=height;
 		g.setClip(x, y, width, height);
+	}
+	
+	public void setDimension(int width, int height) {
+		dimW = width;
+		dimH = height;
 	}
 	
 	public void setColor(int RGB) {

@@ -46,8 +46,8 @@ public class CircularProgressBar extends Content {
 	
 	public void paint(GraphicsFix g) {
 		
-		int clipW = g.getClipWidth();
-		int clipH = g.getClipHeight();
+		int clipW = g.getDimensionWidth();
+		int clipH = g.getDimensionHeight();
 		int mySize = Math.min(clipW, clipH);
 		int nCW = clipW-(clipW-mySize);
 		int nCH = clipH-(clipH-mySize);
@@ -55,9 +55,9 @@ public class CircularProgressBar extends Content {
 		int ty = (clipH-mySize)/2;
 		
 		g.translate(tx,  ty);
-		g.setClip(0, 0, nCW, nCH);
+		g.setDimension(nCW, nCH);
 		
-		int ballSize = (int)(Math.ceil(g.getClipHeight()/5));
+		int ballSize = (int)(Math.ceil(g.getDimensionHeight()/5));
 		
 		int b=0;
 		int f=balls.length;
@@ -77,7 +77,7 @@ public class CircularProgressBar extends Content {
 		}
 		
 		g.translate(-tx,  -ty);
-		g.setClip(0, 0, clipW, clipH);
+		g.setDimension(clipW, clipH);
 		
 	}
 	
@@ -129,15 +129,15 @@ public class CircularProgressBar extends Content {
 			int sInc=0;
 			double index = this.index*0.35;
 			
-			int w = g.getClipWidth()-(ballSize);
-			int h = g.getClipHeight()-(ballSize);
+			int w = g.getDimensionWidth()-(ballSize);
+			int h = g.getDimensionHeight()-(ballSize);
 			
 			int dw=w/2;
 			int dh=h/2;
 			int ds = ballSize/2;
 			
-			int cX = (g.getClipWidth()/2)-(ballSize/2);
-			int cY = (g.getClipHeight()/2)-(ballSize/2);
+			int cX = (g.getDimensionWidth()/2)-(ballSize/2);
+			int cY = (g.getDimensionHeight()/2)-(ballSize/2);
 			
 			//int spin1X
 			double spin3X=1;
