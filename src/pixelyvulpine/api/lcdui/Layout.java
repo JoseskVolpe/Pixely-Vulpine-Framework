@@ -62,6 +62,7 @@ public class Layout extends Canvas implements CommandListener{
 	
 	private pixelyvulpine.contents.Canvas canvas;
 	private boolean fullscreen, painted;
+	private short deltaTime;
 	private CommandListener listener;
 	private Vector commands = new Vector();
 	
@@ -287,6 +288,7 @@ public class Layout extends Canvas implements CommandListener{
 			g.setFont(Font.getDefaultFont());
 			long sub=System.currentTimeMillis()-lastT;
 			if(sub<=0) sub=1;
+			deltaTime=(short)sub;
 			g.drawString((1000/(sub))+" FPS", 0, 0, Graphics.LEFT|Graphics.TOP);
 			
 			lastT=System.currentTimeMillis();
@@ -310,6 +312,14 @@ public class Layout extends Canvas implements CommandListener{
 		
 		paintThread.askRepaint();
 		
+	}
+	
+	public final int getDeltaMillis() {
+		return deltaTime;
+	}
+	
+	public final double getDeltaSec() {
+		return deltaTime/1000.f;
 	}
 	
 	public boolean isPainted() {

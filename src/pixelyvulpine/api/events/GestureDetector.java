@@ -203,7 +203,7 @@ public class GestureDetector {
 					ly=event.getHistoricalPointerCoords(c-2).y;
 				}
 				
-				int dist = (int)(Math.max(Math.abs(event.getPointerCoords().x-lx)/(float)Math.min(context.getWidth(), context.getHeight()), Math.abs(event.getPointerCoords().y-ly)/(float)Math.min(context.getWidth(), context.getHeight()))*100);
+				int dist = (int)(Math.max(Math.abs(event.getPointerCoords().x-lx), Math.abs(event.getPointerCoords().y-ly)));
 				if(!fling && dist>=Config.getMinimumFlingVelocity() && dist <=Config.getMaximumFlingVelocity()) {
 					fling=true;
 					setReturning(onGestureListener.onFling(moveEvent, event, event.getPointerCoords().x-lx, event.getPointerCoords().y-ly)) ;

@@ -35,6 +35,7 @@ public class Canvas extends Content{
 	private byte arrangement = ARRANGEMENT_VERTICAL;
 	private boolean scroll = true;
 	private int scrollX, scrollY;
+	private double velocityX, velocityY;
 	//TODO: Corrigir canvas secundários
 	
 	private Color backgroundColor, foregroundColor;
@@ -365,7 +366,26 @@ public class Canvas extends Content{
 		}
 	}
 	
+	private short velLoss=20;
 	public final void paint(GraphicsFix g) {
+		
+		scrollX+=velocityX;
+		scrollY+=velocityY;
+		if(velocityX>0) {
+			velocityX-=velLoss*getLayout().getDeltaSec();
+			if(velocityX<0) velocityX=0;
+		}else if(velocityX<0){
+			velocityX+=velLoss*getLayout().getDeltaSec();
+			if(velocityX>0) velocityX=0;
+		}
+		
+		if(velocityY>0) {
+			velocityY-=velLoss*getLayout().getDeltaSec();
+			if(velocityY<0) velocityY=0;
+		}else if(velocityY<0){
+			velocityY+=velLoss*getLayout().getDeltaSec();
+			if(velocityY>0) velocityY=0;
+		}
 		
 		int lcw=g.getClipWidth();
 		int lch=g.getClipHeight();
@@ -467,7 +487,6 @@ public class Canvas extends Content{
 	protected boolean onTouch(MotionEvent e) {
 		Stack renderData[] = this.renderData;
 		if(e.getAction()==MotionEvent.ACTION_DOWN) {
-		
 			
 			
 			if(contents == null || contents.size()<0 || renderData==null) return false;
@@ -516,13 +535,34 @@ public class Canvas extends Content{
 		return gesture.onTouchEvent(e);
 	}
 	
+	private Canvas me = this;
 	private GestureDetector gesture = new GestureDetector(getLayout(), new GestureDetector.SimpleOnGestureListener() {
+		
+		public boolean onDown(MotionEvent e) {
+			if(scroll && (velocityX!=0||velocityY!=0)) {
+				velocityX=0;
+				velocityY=0;
+				return true;
+			}
+			return false;
+		}
+		
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			
 			if(!scroll) return false;
 			
 			scrollX+=distanceX;
 			scrollY+=distanceY;
+			
+			return true;
+		}
+		
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			
+			if(!scroll) return false;
+			
+			me.velocityX=velocityX;
+			me.velocityY=velocityY;
 			
 			return true;
 		}

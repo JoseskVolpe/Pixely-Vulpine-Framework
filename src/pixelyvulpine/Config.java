@@ -6,8 +6,8 @@ public final class Config {
 	public final static String framework_version_tag="dev";
 	
 	private static long longPressTimeout=1000; //in millis
-	private static byte minimumFlingVelocity = 10; //in percent
-	private static byte maximumFlingVelocity = 100; //in percent
+	private static short minimumFlingVelocity = 8; //in pixels
+	private static short maximumFlingVelocity = Short.MAX_VALUE; //in pixels
 	private static long doubleTapTimeout = 700; //in millis
 	private static short longpressTouchDistance = 8; //in pixels
 	private static short doubleTapDistance = 16; //in píxels
@@ -22,18 +22,18 @@ public final class Config {
 	}
 	
 	public final static void setMinimumFlingVelocity(int minimumFlingVelocity) {
-		Config.minimumFlingVelocity = (byte)minimumFlingVelocity;
+		Config.minimumFlingVelocity = (short)minimumFlingVelocity;
 	}
 	
-	public final static byte getMinimumFlingVelocity() {
+	public final static short getMinimumFlingVelocity() {
 		return minimumFlingVelocity;
 	}
 	
 	public final static void setMaximumFlingVelocity(int maximumFlingVelocity) {
-		Config.maximumFlingVelocity = (byte)maximumFlingVelocity;
+		Config.maximumFlingVelocity = (short)maximumFlingVelocity;
 	}
 	
-	public final static byte getMaximumFlingVelocity() {
+	public final static short getMaximumFlingVelocity() {
 		return maximumFlingVelocity;
 	}
 	
