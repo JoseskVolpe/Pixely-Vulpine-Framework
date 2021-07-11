@@ -31,8 +31,6 @@ public class Canvas extends Content{
 	protected Vector contents = new Vector(0, 1);
 	protected Stack[] renderData;
 	
-	private int horizontalOffset=5;
-	private int verticalOffset=5;
 	private byte alignment = ALIGNMENT_LEFT;
 	private byte arrangement = ARRANGEMENT_VERTICAL;
 	private boolean scroll = true;
@@ -68,7 +66,7 @@ public class Canvas extends Content{
 			sy=scrollY;
 		}
 		
-		int cLy=verticalOffset; //Line alignment
+		int cLy=0; //Line alignment
 		
 		Stack[] renderData = new Stack[5];
 		for(int i=0; i<renderData.length; i++) {
@@ -76,7 +74,7 @@ public class Canvas extends Content{
 		}
 		
 		//for(byte positioning=2; positioning>=0; positioning--) {
-			for(short i=0; i<contents.capacity(); i++) {
+			for(short i=0; i<contents.size(); i++) {
 				if(contents.elementAt(i)==null) continue;
 				
 				Content c = (Content)contents.elementAt(i);
@@ -108,53 +106,52 @@ public class Canvas extends Content{
 				switch(positioning) {
 					case Content.POSITIONING_FIXED:
 						
-						tx=0;
-						ty=0;
-						int lineoffset=0;
+						tx=(int)(lw*(cx[0]/100.f))+cx[1];;
+						ty=(int)(lh*(cy[0]/100.f))+cy[1];;
 						int increment=0;
 						ARRANGE:
 						switch(arrangement) {
 						
 							case ARRANGEMENT_VERTICAL:
 								
-								ty = cLy;
+								increment = clipH+ty;
+								ty += cLy;
 								
 								ALIGN:
 								switch (alignment) {
 									case ALIGNMENT_LEFT:
-										tx = horizontalOffset;
+										tx += 0;
 									break ALIGN;
 									case ALIGNMENT_CENTER:
-										tx = (lw/2)-(clipW/2);
+										tx += (lw/2)-(clipW/2);
 									break ALIGN;
 									case ALIGNMENT_RIGHT:
-										tx = lw - (clipW) - horizontalOffset;
+										tx += lw - (clipW);
 									break ALIGN;
 								}
 								
-								lineoffset=verticalOffset;
-								increment = clipH;
 							
 							break ARRANGE;
 							
 							case ARRANGEMENT_HORIZONTAL:
-								tx = cLy;
+								
+								increment = clipH+tx;
+								tx += cLy;
 								
 								ALIGN:
 								switch(alignment) {
 									case ALIGNMENT_TOP:
-										ty = verticalOffset;
+										ty += 0;
 									break ALIGN;
 									case ALIGNMENT_CENTER:
-										ty = (lh/2)-(clipH/2);
+										ty += (lh/2)-(clipH/2);
 									break ALIGN;
 									case ALIGNMENT_BOTTOM:
-										ty = lh - clipH - verticalOffset;
+										ty += lh - clipH;
 									break ALIGN;
 								}
 								
-								lineoffset = horizontalOffset;
-								increment = clipW;
+								
 							break ARRANGE;
 						}
 						
@@ -177,7 +174,7 @@ public class Canvas extends Content{
 						rW=clipW;
 						rH=clipH;
 						
-						cLy+=increment+lineoffset;
+						cLy+=increment;
 						
 						//g.translate(-(tx+sx), -(ty+sy));
 						//g.setClip(0, 0, lw, lh);
@@ -464,12 +461,12 @@ public class Canvas extends Content{
 		
 	}
 	
-	private short downIndex=-1;
+	private Object downData[];
 	protected boolean onTouch(MotionEvent e) {
-		
+		Stack renderData[] = this.renderData;
 		if(e.getAction()==MotionEvent.ACTION_DOWN) {
 		
-			Stack renderData[] = this.renderData;
+			
 			
 			if(contents == null || contents.size()<0 || renderData==null) return false;
 			
@@ -488,7 +485,11 @@ public class Canvas extends Content{
 					Content c = ((Content)contents.elementAt(index));
 					
 					MotionEvent checkEvent = new MotionEvent(c.getHistoricalCoords(), e.getPointerCoords().x-cx, e.getPointerCoords().y-cy, e.getAction());
-					downIndex=index;
+					downData=new Object[] {
+							renderData[0].elementAt(i),
+							renderData[1].elementAt(i),
+							renderData[2].elementAt(i),
+					};
 					
 					if(c.dispatchTouchEvent(checkEvent)) return true;
 					
@@ -496,14 +497,15 @@ public class Canvas extends Content{
 				}
 			}
 		
-		}else if(downIndex>=0 && downIndex<renderData[0].size()) {
-			int cx = ((Integer)renderData[1].elementAt(downIndex)).intValue();
-			int cy = ((Integer)renderData[2].elementAt(downIndex)).intValue();
-			Content c = ((Content)contents.elementAt(downIndex));
+		}else if(downData!=null) {
+			int cx = ((Integer)downData[1]).intValue();
+			int cy = ((Integer)downData[2]).intValue();
+			short index = ((Short)downData[0]).shortValue();
+			Content c = ((Content)contents.elementAt(index));
 			MotionEvent checkEvent = new MotionEvent(c.getHistoricalCoords(), e.getPointerCoords().x-cx, e.getPointerCoords().y-cy, e.getAction());
 			
 			if(e.getAction()==MotionEvent.ACTION_UP)
-				downIndex=-1;
+				downData=null;
 				
 			if(c.dispatchTouchEvent(checkEvent))return true;
 		}
@@ -515,10 +517,12 @@ public class Canvas extends Content{
 	private GestureDetector gesture = new GestureDetector(getLayout(), new GestureDetector.SimpleOnGestureListener() {
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			
+			if(!scroll) return false;
+			
 			scrollX+=distanceX;
 			scrollY+=distanceY;
 			
-			return false;
+			return true;
 		}
 	});
 	
@@ -535,11 +539,6 @@ public class Canvas extends Content{
 		
 	}
 	
-	public final void setContentOffset(int horizontal, int vertical) {
-		this.horizontalOffset = horizontal;
-		this.verticalOffset = vertical;
-	}
-	
 	public final void setBackgroundColor(Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
 	}
@@ -554,14 +553,6 @@ public class Canvas extends Content{
 	
 	public final Color getForegroundColor() {
 		return foregroundColor;
-	}
-	
-	public final int getHorizontalContentOffset() {
-		return horizontalOffset;
-	}
-	
-	public final int getVerticalContentOffset() {
-		return verticalOffset;
 	}
 	
 	/**
