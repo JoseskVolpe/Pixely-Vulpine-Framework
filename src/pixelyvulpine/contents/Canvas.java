@@ -34,7 +34,7 @@ public class Canvas extends Content{
 	private byte alignment = ALIGNMENT_LEFT;
 	private byte arrangement = ARRANGEMENT_VERTICAL;
 	private boolean scroll = true;
-	private int scrollX, scrollY;
+	private int scrollX, scrollY, minX, minY, maxX, maxY;
 	private double velocityX, velocityY;
 	//TODO: Corrigir canvas secundários
 	
@@ -60,12 +60,26 @@ public class Canvas extends Content{
 	}
 	
 	public int[] prepaint(int lw, int lh) {
+		
 		sx=0;
 		sy=0;
 		if(scroll) {
 			sx=scrollX;
 			sy=scrollY;
+			
+			//TODO: Scroll limit events
+			if(maxX-minX<=lw)
+				sx=-minX;
+			
+			if(maxY-minY<=lh)
+				sy=-minY;
+			
 		}
+		
+		minX=0;
+		minY=0;
+		maxX=0;
+		maxY=0;
 		
 		int cLy=0; //Line alignment
 		
@@ -170,6 +184,15 @@ public class Canvas extends Content{
 							}
 						}
 						
+						if(tx<minX)
+							minX=tx;
+						if(ty<minY)
+							minY=ty;
+						if(tx+clipW>maxX)
+							maxX=tx+clipW;
+						if(ty+clipH>maxY)
+							maxY=ty+clipH;
+						
 						rX=tx+sx;
 						rY=ty+sy;
 						rW=clipW;
@@ -221,8 +244,8 @@ public class Canvas extends Content{
 						}
 						
 						
-						rX=x+sx;
-						rY=y+sy;
+						rX=x;
+						rY=y;
 						rW=clipW;
 						rH=clipH;
 						
@@ -245,6 +268,15 @@ public class Canvas extends Content{
 						
 						//g.translate(-tx, -ty);
 						//g.setClip(0, 0, lw, lh);
+						
+						if(tx<minX)
+							minX=tx;
+						if(ty<minY)
+							minY=ty;
+						if(tx+clipW>maxX)
+							maxX=tx+clipW;
+						if(ty+clipH>maxY)
+							maxY=ty+clipH;
 					break;
 				}
 				
@@ -258,6 +290,25 @@ public class Canvas extends Content{
 				
 			}
 		//}
+			
+			if(lh-scrollY>maxY) {
+				scrollY=lh-maxY;
+				velocityY=0;
+			}
+			if(-scrollY<minY) {
+				scrollY=-minY;
+				velocityY=0;
+			}
+			
+			if(lw-scrollX>maxX) {
+				scrollX=lw-maxX;
+				velocityX=0;
+			}
+			
+			if(-scrollX<minX) {
+				scrollX=-minX;
+				velocityX=0;	
+			}
 			
 		this.renderData = renderData;
 		
