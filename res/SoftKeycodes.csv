@@ -1,7 +1,7 @@
 Brand,Microedition.platform,Left soft keycode,Right soft keycode,tested
 unknown,unknown,-6,-7,n/a
-unknown,unknown,-20,-21,n/a
-unknown,unknown,20,21,n/a
+unknown,unknown,-21,-22,n/a
+unknown,unknown,21,22,n/a
 unknown,j2me,-6,-7,n/a
 audiovox,unknown,-6,-7,no
 audiovox,Cdm-8900,-20,-21,no
