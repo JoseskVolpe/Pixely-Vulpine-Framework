@@ -2,8 +2,9 @@ Brand,Microedition.platform,Left soft keycode,Right soft keycode,tested
 unknown,unknown,-6,-7,n/a
 unknown,unknown,-21,-22,n/a
 unknown,unknown,21,22,n/a
+unknown,Symbian OS,-6,-7,n/a
 unknown,j2me,-6,-7,n/a
-audiovox,unknown,-6,-7,no
+audiovox,unknown,-6,-7,n/a
 audiovox,Cdm-8900,-20,-21,no
 htc,unknown,-6,-7,n/a
 htc,Qtek 8500,57345,57346,no
@@ -12,30 +13,20 @@ lg,unknown,-6,-7,n/a
 lg,unknown,-20,-21,n/a
 motorola,unknown,-21,-22,n/a
 motorola,unknown,21,22,n/a
-motorola,A1000,-11,-22,no
+motorola,Symbian OS,-11,-22,yes
 motorola,v262,-7,-8,no
 motorola,i###,-20,-21,no
 nokia,unknown,-6,-7,n/a
 panasonic,unknown,-21,-22,n/a
-panasonic,vs3,-21,-22,no
+panasonic,VS3,-21,-22,yes
 sagem,unknown,-7,-6,n/a
-sagem,Myv-55,-7,-6,no
-sagem,myx5,-7,-6,no
 samsung,unknown,-6,-7,n/a
 samsung,unknown,21,22,n/a
 samsung,unknown,-21,-22,n/a
-samsung,SGH-X507,-7,-6,no
-samsung,a620,-8,-7,no
-samsung,SGH-D600,-8,-7,no
-samsung,SGH-D800,-8,-7,no
-samsung,z500,-8,-7,no
+samsung,unknown,-8,-7,n/A
 sanyo,unknown,-6,-7,n/a
 sanyo,unknown,21,22,n/a
 sanyo,unknown,-21,-22,n/a
-sanyo,7400,-8,-7,no
-sanyo,7500,-8,-7,no
-sanyo,8300,-8,-7,no
-sanyo,8100,-8,-7,no
 sharp,unknown,21,22,n/a
 sharp,unknown,-21,-22,n/a
 siemens,unknown,-1,-4,n/a
