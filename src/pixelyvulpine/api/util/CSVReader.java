@@ -11,9 +11,7 @@ public final class CSVReader {
 	private CSVLine columns;
 	private Vector rows;
 	
-	public CSVReader() {}
-	
-	public void read(InputStream is) throws IOException {
+	private CSVReader(InputStream is) throws IOException {
 		InputStreamReader isr = new InputStreamReader(is);
 		
 		columns = new CSVLine(isr);
@@ -34,6 +32,10 @@ public final class CSVReader {
 		is.close();
 		
 		loaded=true;
+	}
+	
+	public static CSVReader read(InputStream is) throws IOException {
+		return new CSVReader(is);
 	}
 	
 	public void erase() {

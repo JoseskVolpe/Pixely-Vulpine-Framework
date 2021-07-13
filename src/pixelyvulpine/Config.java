@@ -20,8 +20,7 @@ public final class Config {
 	
 	static {
 		try {
-			CSVReader reader = new CSVReader();
-			reader.read(Runtime.getRuntime().getClass().getResourceAsStream("/pixelyvulpine/BrandClassTestNames.csv"));
+			CSVReader reader = CSVReader.read(Runtime.getRuntime().getClass().getResourceAsStream("/pixelyvulpine/BrandClassTestNames.csv"));
 			
 			for(int i=0; i<reader.getRowsLength(); i++) {
 				
