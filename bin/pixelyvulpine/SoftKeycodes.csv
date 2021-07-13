@@ -1,7 +1,7 @@
 Brand,Microedition.platform,Left soft keycode,Right soft keycode,tested
 unknown,unknown,-6,-7,n/a
-unknown,unknown,-20,-21,n/a
-unknown,unknown,20,21,n/a
+unknown,unknown,-21,-22,n/a
+unknown,unknown,21,22,n/a
 unknown,j2me,-6,-7,n/a
 audiovox,unknown,-6,-7,no
 audiovox,Cdm-8900,-20,-21,no
@@ -15,8 +15,10 @@ motorola,unknown,21,22,n/a
 motorola,A1000 ,-11,-22,no
 motorola,v262,-7,-8,no
 motorola,i###,-20,-21,no
-nokia,all,-6,-7,n/a
+nokia,unknown,-6,-7,n/a
+panasonic,unknown,-21,-22,n/a
 panasonic,vs3,-21,-22,no
+sagem,unknown,-7,-6,n/a
 sagem,Myv-55,-7,-6,no
 sagem,myx5,-7,-6,no
 samsung,unknown,-6,-7,n/a
@@ -38,4 +40,4 @@ sharp,unknown,21,22,n/a
 sharp,unknown,-21,-22,n/a
 siemens,unknown,-1,-4,n/a
 siemens,sf65,105,106,no
-sony ericsson,all,-6,-7,n/a
+sony ericsson,unknown,-6,-7,n/a
