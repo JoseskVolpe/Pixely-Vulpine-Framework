@@ -26,7 +26,8 @@ public final class CSVReader {
 		while(!ready) {
 			temp = new CSVLine(isr);
 			ready=temp.read();
-			rows.addElement(temp);
+			if(temp.length()==columns.length())
+				rows.addElement(temp);
 		}
 		
 		
