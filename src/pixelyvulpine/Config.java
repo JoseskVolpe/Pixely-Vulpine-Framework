@@ -1,5 +1,9 @@
 package pixelyvulpine;
 
+import java.io.IOException;
+
+import pixelyvulpine.api.util.CSVReader;
+
 public final class Config {
 
 	public final static String framework_version="0.0.1";
@@ -12,6 +16,33 @@ public final class Config {
 	private static short longpressTouchDistance = 8; //in pixels
 	private static short doubleTapDistance = 16; //in píxels
 	private static boolean showTouch;
+	private static String deviceBrand="unknown";
+	
+	static {
+		try {
+			CSVReader reader = new CSVReader();
+			reader.read(Runtime.getRuntime().getClass().getResourceAsStream("/pixelyvulpine/BrandClassTestNames.csv"));
+			
+			for(int i=0; i<reader.getRowsLength(); i++) {
+				
+				String classTest = reader.getValue("Class test", i);
+				
+				try {
+					Class.forName(classTest);
+					deviceBrand = reader.getValue("Brand", i);
+					break;
+				}catch(ClassNotFoundException e2) {
+					continue;
+				}
+			}
+			
+			
+			reader.erase();
+			reader=null;
+		}catch(IOException e) {
+			deviceBrand="unknown";
+		}
+	}
 	
 	public final static long getLongPressTimeout() {
 		return longPressTimeout;
@@ -67,6 +98,10 @@ public final class Config {
 	
 	public final static boolean getShowTouch() {
 		return showTouch;
+	}
+	
+	public final static String getDeviceBrand() {
+		return deviceBrand;
 	}
 	
 }
