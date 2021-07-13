@@ -1,5 +1,7 @@
 Brand,Class test
 samsung,com.samsung.util.Vibration
+samsung,com.samsung.util.LCDLight
+samsung,com.samsung.util.OverlayKeypad
 motorola,com.motorola.multimedia.Vibrator
 motorola,com.motorola.graphics.j3d.Effect3D
 motorola,com.motorola.multimedia.Lighting
