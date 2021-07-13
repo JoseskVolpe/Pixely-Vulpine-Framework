@@ -6,17 +6,14 @@ import java.io.InputStreamReader;
 import java.util.Vector;
 
 public final class CSVReader {
-	private InputStream is;
 	private boolean loaded;
 	
 	private CSVLine columns;
 	private Vector rows;
 	
-	public CSVReader(InputStream is) {
-		this.is = is;
-	}
+	public CSVReader() {}
 	
-	public void load() throws IOException {
+	public void read(InputStream is) throws IOException {
 		InputStreamReader isr = new InputStreamReader(is);
 		
 		columns = new CSVLine(isr);
