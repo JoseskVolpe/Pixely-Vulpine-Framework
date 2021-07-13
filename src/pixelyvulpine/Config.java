@@ -38,7 +38,7 @@ public final class Config {
 			
 			reader.erase();
 			reader=null;
-		}catch(IOException e) {
+		}catch(Throwable e) {
 			deviceBrand="unknown";
 		}
 	}
