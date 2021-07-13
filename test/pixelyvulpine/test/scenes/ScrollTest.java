@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Command;
 import pixelyvulpine.api.lcdui.Content;
@@ -122,8 +123,6 @@ public class ScrollTest extends Layout{
 	}
 	
 	public void Setup() {
-		
-		
 		
 		
 		setFullScreenMode(true);

@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Samsung SDK 1.2.2 for the Java(TM) ME Platform/GT-B3410W"/>
+	<classpathentry kind="src" path="test_res"/>
+	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Samsung SDK 1.2.2 for the Java(TM) ME Platform/GT-S5230N"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
