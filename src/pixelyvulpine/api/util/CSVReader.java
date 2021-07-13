@@ -95,7 +95,8 @@ public final class CSVReader {
 			StringBuffer sb = new StringBuffer();
 			while(true) {
 				if((b = isr.read()) == -1 | (c=(char)b)=='\n') {
-					rows.addElement(sb.toString());
+					if(sb.length()>0)
+						rows.addElement(sb.toString());
 					
 					if(b==-1)
 						return true;
@@ -111,7 +112,8 @@ public final class CSVReader {
 					continue;
 				}
 				
-				sb.append(c);
+				if(c!='\n' && c!='\r')
+					sb.append(c);
 			}
 		}
 		
