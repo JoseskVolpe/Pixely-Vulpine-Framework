@@ -1,6 +1,5 @@
 package pixelyvulpine.api.events;
 
-import java.io.InputStream;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Canvas;
@@ -9,7 +8,12 @@ import pixelyvulpine.Config;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.util.CSVReader;
 
-public class KeyEvent {
+public class KeyEvent extends InputEvent{
+	
+
+	public final static int ACTION_DOWN=0;
+	public final static int ACTION_REPEAT=1;
+	public final static int ACTION_UP = 2;
 	
 	public final static int KEYCODE_0 = Canvas.KEY_NUM0;
 	public final static int KEYCODE_1 = Canvas.KEY_NUM1;
@@ -44,62 +48,134 @@ public class KeyEvent {
 	 * This will NOT be removed in future releases
 	 */
 	public final static int KEYCODE_ENCALL = -11;
-	public final static int KEYCODE_DEL = -8; //TODO: KeyCodes wrapper (8 KeyCode will be -8)
+	public final static int KEYCODE_DEL = -8;
 	//TODO: SOFT_KEYS auto detector
 	public static int KEYCODE_SOFT_LEFT=-6;
 	public static int KEYCODE_SOFT_RIGHT=-7;
+	
+	private static ConvertableCode convertableCodes[] = {
+		new ConvertableCode(8,KEYCODE_DEL)
+	};
 	
 	private static int[] KEYCODE_LEFT_KC;
 	private static int[] KEYCODE_RIGHT_KC;
 	
 	public static interface Callback{
 		public abstract boolean onKeyDown(int keyCode, KeyEvent event);
-		public abstract boolean onKeyLongPress(int keyCode, KeyEvent event);
-		public abstract boolean onKeyMultiple(int keyCode, int count, KeyEvent event);
+		public abstract boolean onKeyRepeat(int keyCode, KeyEvent event);
 		public abstract boolean onKeyUp(int keyCode, KeyEvent event);
-	}
-	
-	public static class DispatcherState{
-		public DispatcherState() {
-			
-		}
-		
-		public void handleUpEvent(KeyEvent event) {
-			
-		}
-		
-		public boolean isTracking(KeyEvent event) {
-			return false;
-		}
-		
-		public void performedLongPress(KeyEvent event) {
-			
-		}
-		
-		public void reset(Object target) {
-			
-		}
-		
-		public void reset() {
-			
-		}
-		
-		public void startTracking(KeyEvent event, Object target) {
-			
-		}
 	}
 
 	
-	private int action, code;
-	private Layout context; 
+	private int action, runtimeCode, code;
+	private Layout context;
 	
-	public KeyEvent (Layout context, int action, int code) {
+	public KeyEvent (Layout context, int action, int runtimeCode) {
+		super();
 		
 		if(KEYCODE_LEFT_KC==null || KEYCODE_RIGHT_KC==null || KEYCODE_LEFT_KC.length<=0 || KEYCODE_RIGHT_KC.length<=0) detectSoftKeycodes(context);
 		
 		this.action=action;
-		this.code=code;
+		this.runtimeCode=runtimeCode;
+		this.code = convertKeycode(runtimeCode);
 		this.context=context;
+	}
+	
+	public void dispatch(Callback receiver) {
+		switch(action) {
+			case ACTION_DOWN:
+				receiver.onKeyDown(code, this);
+			break;
+			case ACTION_REPEAT:
+				receiver.onKeyRepeat(code, this);
+			break;
+			case ACTION_UP:
+				receiver.onKeyUp(code, this);
+			break;
+		}
+	}
+	
+	public int getAction() {
+		return action;
+	}
+	
+	public int getKeycode() {
+		return code;
+	}
+	
+	public int getRuntimeKeycode() {
+		return runtimeCode;
+	}
+	
+	public String getKeyName() {
+		return context.getKeyName(code);
+	}
+	
+	public int getGameAction() {
+		return context.getGameAction(code);
+	}
+	
+	public int getUnicodeChar() {
+		return getChar();
+	}
+	
+	public char getChar() {
+		switch(code) {
+			case KEYCODE_0:
+				return '0';
+			case KEYCODE_1:
+				return '1';
+			case KEYCODE_2:
+				return '2';
+			case KEYCODE_3:
+				return '3';
+			case KEYCODE_4:
+				return '4';
+			case KEYCODE_5:
+				return '5';
+			case KEYCODE_6:
+				return '6';
+			case KEYCODE_7:
+				return '7';
+			case KEYCODE_8:
+				return '8';
+			case KEYCODE_9:
+				return '9';
+			default:
+				return (char)code;
+		}
+	}
+	
+	public static int[] getLeftSoftKeycodes() {
+		return KEYCODE_LEFT_KC;
+	}
+	
+	public static int[] getRightSoftKeycodes() {
+		return KEYCODE_RIGHT_KC;
+	}
+	
+	public static void setSoftKeycodes(int leftsoft, int rightsoft) {
+		KEYCODE_LEFT_KC = new int[] {leftsoft};
+		KEYCODE_RIGHT_KC = new int[] {rightsoft};
+	}
+	
+	private static int convertKeycode(int runtimeCode) {
+		
+		for(int i=0; i<KEYCODE_LEFT_KC.length; i++) {
+			if(runtimeCode==KEYCODE_LEFT_KC[i])
+				return KEYCODE_SOFT_LEFT;
+			
+			if(runtimeCode==KEYCODE_RIGHT_KC[i])
+				return KEYCODE_SOFT_RIGHT;
+		}
+		
+		for(int i=0; i<convertableCodes.length; i++) {
+			if(runtimeCode==convertableCodes[i].from)
+				return convertableCodes[i].to;
+		}
+		
+		return runtimeCode;
+		
 	}
 	
 	private static void detectSoftKeycodes(Layout context) {
@@ -179,6 +255,9 @@ public class KeyEvent {
 					KEYCODE_RIGHT_KC[i] = ((Integer)rskc.elementAt(i)).intValue();
 				}
 				
+				csv.erase();
+				csv=null;
+				
 			}
 			
 		}catch(Throwable DetectException) {
@@ -201,6 +280,16 @@ public class KeyEvent {
 				//System.out.println("Found: " + ((Integer)lskc.lastElement()) +" "+((Integer)rskc.lastElement()));
 				
 			}
+		}
+	}
+	
+	private static class ConvertableCode{
+		
+		public int from, to;
+		
+		public ConvertableCode(int from, int to) {
+			this.from = from;
+			this.to = to;
 		}
 	}
 	
