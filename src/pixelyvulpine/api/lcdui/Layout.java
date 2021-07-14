@@ -17,6 +17,7 @@ import javax.microedition.midlet.MIDlet;
 import pixelyvulpine.Config;
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.InputEvent;
+import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.Controls;
@@ -485,15 +486,26 @@ public class Layout extends Canvas implements CommandListener{
 	}
 	
 	protected final void keyPressed(int keyCode){
-		
-		
-
+		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_DOWN, keyCode);
+		keyEvent(event);
+	}
+	
+	protected final void keyRepeated(int keyCode) {
+		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_REPEAT, keyCode);
+		keyEvent(event);
 	}
 
 	protected final void keyReleased(int keyCode){
-
-		
+		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_UP, keyCode);
+		keyEvent(event);
+	}
 	
+	private final void keyEvent(KeyEvent event) {
+		System.out.println(KeyEvent.actionToString(event.getAction())+" "+event.getKeyName());
+	}
+	
+	protected boolean onKey(Content view, int keyCode, KeyEvent event) {
+		return false;
 	}
 	
 	public final boolean isLoaded() {

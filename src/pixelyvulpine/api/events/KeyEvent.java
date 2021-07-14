@@ -47,18 +47,17 @@ public class KeyEvent extends InputEvent{
 	 * Keycode used for red end-call key
 	 * This will NOT be removed in future releases
 	 */
-	public final static int KEYCODE_ENCALL = -11;
+	public final static int KEYCODE_ENDCALL = -11;
 	public final static int KEYCODE_DEL = -8;
-	//TODO: SOFT_KEYS auto detector
-	public static int KEYCODE_SOFT_LEFT=-6;
-	public static int KEYCODE_SOFT_RIGHT=-7;
+	public final static int KEYCODE_SOFT_LEFT=-6;
+	public final static int KEYCODE_SOFT_RIGHT=-7;
 	
 	private static ConvertableCode convertableCodes[] = {
 		new ConvertableCode(8,KEYCODE_DEL)
 	};
 	
-	private static int[] KEYCODE_LEFT_KC;
-	private static int[] KEYCODE_RIGHT_KC;
+	/**@deprecated*/private static int[] KEYCODE_LEFT_KC;
+	/**@deprecated*/private static int[] KEYCODE_RIGHT_KC;
 	
 	public static interface Callback{
 		public abstract boolean onKeyDown(int keyCode, KeyEvent event);
@@ -108,7 +107,32 @@ public class KeyEvent extends InputEvent{
 	}
 	
 	public String getKeyName() {
-		return context.getKeyName(code);
+		
+		switch(code) {
+			case KEYCODE_SOFT_LEFT:
+				return "SOFT1";
+			case KEYCODE_SOFT_RIGHT:
+				return "SOFT2";
+			case KEYCODE_CALL:
+				return "SEND";
+			case KEYCODE_ENDCALL:
+				return "END";
+			default:
+				return context.getKeyName(code);
+		}
+	}
+	
+	public static String actionToString(int action) {
+		switch(action) {
+			case ACTION_DOWN:
+				return "ACTION_DOWN";
+			case ACTION_REPEAT:
+				return "ACTION_REPEAT";
+			case ACTION_UP:
+				return "ACTION_UP";
+		}
+		
+		return null;
 	}
 	
 	public int getGameAction() {
@@ -146,28 +170,46 @@ public class KeyEvent extends InputEvent{
 		}
 	}
 	
+	/**@deprecated*/
 	public static int[] getLeftSoftKeycodes() {
 		return KEYCODE_LEFT_KC;
 	}
 	
+	/**@deprecated*/
 	public static int[] getRightSoftKeycodes() {
 		return KEYCODE_RIGHT_KC;
 	}
 	
+	/**@deprecated*/
 	public static void setSoftKeycodes(int leftsoft, int rightsoft) {
 		KEYCODE_LEFT_KC = new int[] {leftsoft};
 		KEYCODE_RIGHT_KC = new int[] {rightsoft};
 	}
 	
-	private static int convertKeycode(int runtimeCode) {
-		
+	private int convertKeycode(int runtimeCode) {
+		/*
 		for(int i=0; i<KEYCODE_LEFT_KC.length; i++) {
 			if(runtimeCode==KEYCODE_LEFT_KC[i])
 				return KEYCODE_SOFT_LEFT;
 			
 			if(runtimeCode==KEYCODE_RIGHT_KC[i])
 				return KEYCODE_SOFT_RIGHT;
-		}
+		}*/
+		
+		try {
+			String name = context.getKeyName(runtimeCode);
+			if(name.equals("SOFT1"))
+				return KEYCODE_SOFT_LEFT;
+			
+			if(name.equals("SOFT2"))
+				return KEYCODE_SOFT_RIGHT;
+			
+			if(name.equals("SEND"))
+				return KEYCODE_CALL;
+			
+			if(name.equals("END"))
+				return KEYCODE_ENDCALL;
+		}catch(Throwable e) {}
 		
 		for(int i=0; i<convertableCodes.length; i++) {
 			if(runtimeCode==convertableCodes[i].from)
@@ -178,6 +220,7 @@ public class KeyEvent extends InputEvent{
 		
 	}
 	
+	/**@deprecated*/
 	private static void detectSoftKeycodes(Layout context) {
 		
 		try {
@@ -266,6 +309,7 @@ public class KeyEvent extends InputEvent{
 		}
 	}
 	
+	/**@deprecated*/
 	private static void detectSoftKeycodesRow(CSVReader csv, Vector lskc, Vector rskc, String TempBrand, String platform) {
 		//System.out.println("Searching for "+TempBrand+" "+platform);
 		
