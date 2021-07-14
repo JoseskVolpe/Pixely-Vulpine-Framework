@@ -4,16 +4,13 @@ import java.util.Stack;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Graphics;
 
-import pixelyvulpine.api.events.GestureDetector;
-import pixelyvulpine.api.events.MotionEvent;
+import pixelyvulpine.api.events.*;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.system.Crash;
-import pixelyvulpine.api.util.Controls;
 import pixelyvulpine.api.util.GraphicsFix;
 
 public class Canvas extends Content{
@@ -27,15 +24,14 @@ public class Canvas extends Content{
 	public static final byte ARRANGEMENT_VERTICAL=0;
 	public static final byte ARRANGEMENT_HORIZONTAL=1;
 	
-	protected int selectedC = -1;
 	protected Vector contents = new Vector(0, 1);
 	protected Stack[] renderData;
 	
 	private byte alignment = ALIGNMENT_LEFT;
 	private byte arrangement = ARRANGEMENT_VERTICAL;
 	private boolean scroll = true;
-	private int scrollX, scrollY, minX, minY, maxX, maxY;
-	private double velocityX, velocityY;
+	private int minX, minY, maxX, maxY, canvasWidth, canvasHeight;
+	private double scrollX, scrollY, velocityX, velocityY;
 	//TODO: Corrigir canvas secundários
 	
 	private Color backgroundColor, foregroundColor;
@@ -64,8 +60,8 @@ public class Canvas extends Content{
 		sx=0;
 		sy=0;
 		if(scroll) {
-			sx=scrollX;
-			sy=scrollY;
+			sx=(int)scrollX;
+			sy=(int)scrollY;
 			
 			//TODO: Scroll limit events
 			if(maxX-minX<=lw)
@@ -171,18 +167,7 @@ public class Canvas extends Content{
 						}
 						
 						//Scroll
-						//System.out.println(lh+" "+isSelected());
-						if(isSelected() && scroll && selectedC==i) {
-							//System.out.println((ty+sy+clipH)+">"+lh);
-							if(ty+sy+clipH>lh) {
-								//System.out.println((ty+sy)-(lh-clipH+sy));
-								scrollY=-((ty+sy)-(lh-clipH+sy));
-							}
-							if(ty+sy<0) {
-								//scrollY=(sy+ty); //Cool alternative
-								scrollY=sy-(sy+ty);
-							}
-						}
+						
 						
 						if(tx<minX)
 							minX=tx;
@@ -290,6 +275,9 @@ public class Canvas extends Content{
 				
 			}
 		//}
+			
+			canvasWidth=lw;
+			canvasHeight=lh;
 			
 			if(lh-scrollY>maxY) {
 				scrollY=lh-maxY;
@@ -417,16 +405,16 @@ public class Canvas extends Content{
 		}
 	}
 	
-	private short velLoss=20;
+	private short velLoss=40;
 	public final void paint(GraphicsFix g) {
 		
-		scrollX+=velocityX;
-		scrollY+=velocityY;
+		scrollX+=velocityX*getLayout().getDeltaSec();
+		scrollY+=velocityY*getLayout().getDeltaSec();
 		if(velocityX>0) {
-			velocityX-=velLoss*getLayout().getDeltaSec();
+			velocityX-=velLoss;
 			if(velocityX<0) velocityX=0;
 		}else if(velocityX<0){
-			velocityX+=velLoss*getLayout().getDeltaSec();
+			velocityX+=velLoss;
 			if(velocityX>0) velocityX=0;
 		}
 		
@@ -612,12 +600,86 @@ public class Canvas extends Content{
 			
 			if(!scroll) return false;
 			
-			me.velocityX=velocityX;
-			me.velocityY=velocityY;
+			me.velocityX=velocityX*getLayout().getDeltaMillis();
+			me.velocityY=velocityY*getLayout().getDeltaMillis();
 			
 			return true;
 		}
 	});
+	
+	protected boolean onKey(int keyCode, KeyEvent event) {
+		return event.dispatch(callback);
+	}
+	
+	private KeyEvent.Callback callback = new KeyEvent.Callback() {
+		
+		public boolean onKeyUp(int keyCode, KeyEvent event) {
+			
+			return false;
+		}
+		
+		public boolean onKeyRepeat(int keyCode, KeyEvent event) {
+			return scroll(event);
+		}
+		
+		public boolean onKeyDown(int keyCode, KeyEvent event) {
+			return scroll(event);
+		}
+	};
+	
+	private double DPADScrollVelocity=40;
+	protected boolean scroll(KeyEvent event) {
+		if(!scroll) return false;
+		
+		switch(event.getKeycode()) {
+			case KeyEvent.KEYCODE_DPAD_LEFT:
+				
+				if(-scrollX<=minX)
+					return false;
+				
+				if(velocityX>DPADScrollVelocity/2)
+					velocityX=DPADScrollVelocity*3;
+				else
+					velocityX=DPADScrollVelocity;
+				
+				return true;
+			case KeyEvent.KEYCODE_DPAD_RIGHT:
+				
+				if(canvasWidth-scrollX>=maxX)
+					return false;
+				
+				if(velocityX<-DPADScrollVelocity/2)
+					velocityX=-DPADScrollVelocity*3;
+				else
+					velocityX=-DPADScrollVelocity;
+				
+				return true;
+			case KeyEvent.KEYCODE_DPAD_UP:
+				
+				if(-scrollY<=minY)
+					return false;
+				
+				if(velocityY>DPADScrollVelocity/2)
+					velocityY=DPADScrollVelocity*3;
+				else
+					velocityY=DPADScrollVelocity;
+				
+				return true;
+			case KeyEvent.KEYCODE_DPAD_DOWN:
+				
+				if(canvasHeight-scrollY>=maxY)
+					return false;
+				
+				if(velocityY<-DPADScrollVelocity/2)
+					velocityY=-DPADScrollVelocity*3;
+				else
+					velocityY=-DPADScrollVelocity;
+				
+				return true;
+		}
+		
+		return false;
+	}
 	
 	public final void addContent(Content content) {
 		contents.addElement(content);
@@ -674,21 +736,6 @@ public class Canvas extends Content{
 	
 	public final boolean getScroll() {
 		return scroll;
-	}
-	
-	public Content getSelected() {
-		
-		if(contents!=null && selectedC >= 0 && selectedC < contents.capacity() && contents.elementAt(selectedC) != null) {
-			
-			try {
-				return ((Canvas) contents.elementAt(selectedC)).getSelected();
-			}catch(ClassCastException e) {
-				return (Content)contents.elementAt(selectedC);
-			}
-		}
-		
-		return null;
-		
 	}
 	
 	

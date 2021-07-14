@@ -9,9 +9,11 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import pixelyvulpine.Config;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.LayoutLoader;
+import pixelyvulpine.api.util.CSVReader;
 import pixelyvulpine.layouts.Logo;
 import pixelyvulpine.test.scenes.*;
 
@@ -72,7 +74,7 @@ public class App extends MIDlet implements CommandListener, LayoutLoader {
 	public void commandAction(Command arg0, Displayable arg1) {}
 
 	public Layout loadLayout(String layoutName) {
-		
+
 		/*// Force delay test
 		try {
 			Thread.sleep(9000);

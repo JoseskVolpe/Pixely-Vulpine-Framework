@@ -20,7 +20,6 @@ import pixelyvulpine.api.events.InputEvent;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.system.Crash;
-import pixelyvulpine.api.util.Controls;
 import pixelyvulpine.api.util.GraphicsFix;
 
 public class Layout extends Canvas implements CommandListener{
@@ -501,7 +500,16 @@ public class Layout extends Canvas implements CommandListener{
 	}
 	
 	private final void keyEvent(KeyEvent event) {
-		System.out.println(KeyEvent.actionToString(event.getAction())+" "+event.getKeyName());
+		//TODO: Soft keys commands
+		
+		if(!canvas.onKey(event.getKeycode(), event)) {
+			
+		}
+		
+	}
+	
+	protected boolean onKey(int keyCode, KeyEvent event) {
+		return false;
 	}
 	
 	protected boolean onKey(Content view, int keyCode, KeyEvent event) {

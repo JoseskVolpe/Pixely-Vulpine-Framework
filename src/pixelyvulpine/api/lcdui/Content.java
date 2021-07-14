@@ -5,6 +5,7 @@ import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 
 import pixelyvulpine.api.events.GestureDetector;
+import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.util.GraphicsFix;
 
@@ -80,6 +81,10 @@ public class Content{
 	
 	public final Vector getHistoricalCoords() {
 		return historicalCoords;
+	}
+	
+	protected boolean onKey(int keyCode, KeyEvent event) {
+		return false;
 	}
 	
 	protected boolean onTouch(MotionEvent event) {
