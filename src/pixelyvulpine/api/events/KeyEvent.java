@@ -197,17 +197,17 @@ public class KeyEvent extends InputEvent{
 		}*/
 		
 		try {
-			String name = context.getKeyName(runtimeCode);
-			if(name.toUpperCase().equals("SOFT1"))
+			String name = context.getKeyName(runtimeCode).toUpperCase();
+			if(name.equals("SOFT1"))
 				return KEYCODE_SOFT_LEFT;
 			
-			if(name.toUpperCase().equals("SOFT2"))
+			if(name.equals("SOFT2"))
 				return KEYCODE_SOFT_RIGHT;
 			
-			if(name.toUpperCase().equals("SEND"))
+			if(name.equals("SEND"))
 				return KEYCODE_CALL;
 			
-			if(name.toUpperCase().equals("END"))
+			if(name.equals("END"))
 				return KEYCODE_ENDCALL;
 		}catch(Throwable e) {}
 		
