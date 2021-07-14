@@ -27,10 +27,10 @@ public class KeyEvent extends InputEvent{
 	public final static int KEYCODE_9 = Canvas.KEY_NUM9;
 	public final static int KEYCODE_STAR = Canvas.KEY_STAR;
 	public final static int KEYCODE_POUND = Canvas.KEY_POUND;
-	public final static int KEYCODE_DPAD_UP = Canvas.UP;
-	public final static int KEYCODE_DPAD_LEFT = Canvas.LEFT;
-	public final static int KEYCODE_DPAD_RIGHT = Canvas.RIGHT;
-	public final static int KEYCODE_DPAD_DOWN = Canvas.DOWN;
+	public final static int KEYCODE_DPAD_UP = 19;
+	public final static int KEYCODE_DPAD_LEFT = 21;
+	public final static int KEYCODE_DPAD_RIGHT = 22;
+	public final static int KEYCODE_DPAD_DOWN = 20;
 	public final static int KEYCODE_DPAD_CENTER = Canvas.FIRE;
 	public final static int KEYCODE_BUTTON_A = Canvas.GAME_A;
 	public final static int KEYCODE_BUTTON_B = Canvas.GAME_B;
@@ -76,22 +76,21 @@ public class KeyEvent extends InputEvent{
 		
 		this.action=action;
 		this.runtimeCode=runtimeCode;
-		this.code = convertKeycode(runtimeCode);
 		this.context=context;
+		this.code = convertKeycode(runtimeCode);
 	}
 	
-	public void dispatch(Callback receiver) {
+	public boolean dispatch(Callback receiver) {
 		switch(action) {
 			case ACTION_DOWN:
-				receiver.onKeyDown(code, this);
-			break;
+				return receiver.onKeyDown(code, this);
 			case ACTION_REPEAT:
-				receiver.onKeyRepeat(code, this);
-			break;
+				return receiver.onKeyRepeat(code, this);
 			case ACTION_UP:
-				receiver.onKeyUp(code, this);
-			break;
+				return receiver.onKeyUp(code, this);
 		}
+		
+		return false;
 	}
 	
 	public int getAction() {
@@ -117,6 +116,14 @@ public class KeyEvent extends InputEvent{
 				return "SEND";
 			case KEYCODE_ENDCALL:
 				return "END";
+			case KEYCODE_DPAD_LEFT:
+				return "LEFT";
+			case KEYCODE_DPAD_UP:
+				return "UP";
+			case KEYCODE_DPAD_RIGHT:
+				return "RIGHT";
+			case KEYCODE_DPAD_DOWN:
+				return "DOWN";
 			default:
 				return context.getKeyName(code);
 		}
@@ -209,6 +216,18 @@ public class KeyEvent extends InputEvent{
 			
 			if(name.equals("END"))
 				return KEYCODE_ENDCALL;
+			
+			if(name.equals("LEFT"))
+				return KEYCODE_DPAD_LEFT;
+			
+			if(name.equals("UP"))
+				return KEYCODE_DPAD_UP;
+			
+			if(name.equals("RIGHT"))
+				return KEYCODE_DPAD_RIGHT;
+			
+			if(name.equals("DOWN"))
+				return KEYCODE_DPAD_DOWN;
 		}catch(Throwable e) {}
 		
 		for(int i=0; i<convertableCodes.length; i++) {
