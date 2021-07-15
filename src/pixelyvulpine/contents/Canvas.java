@@ -563,6 +563,8 @@ public class Canvas extends Content{
 		Stack renderData[] = this.renderData;
 		if(e.getAction()==MotionEvent.ACTION_DOWN) {
 			
+			selected=null;
+			
 			
 			if(contents == null || contents.size()<0 || renderData==null) return false;
 			
