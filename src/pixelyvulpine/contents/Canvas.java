@@ -26,18 +26,21 @@ public class Canvas extends Content{
 	
 	protected Vector contents = new Vector(0, 1);
 	protected Stack[] renderData;
+	protected Content selected;
 	
 	private byte alignment = ALIGNMENT_LEFT;
 	private byte arrangement = ARRANGEMENT_VERTICAL;
 	private boolean scroll = true;
 	private int minX, minY, maxX, maxY, canvasWidth, canvasHeight;
 	private double scrollX, scrollY, velocityX, velocityY;
+	private boolean gotoContent;
 	//TODO: Corrigir canvas secundários
 	
 	private Color backgroundColor, foregroundColor;
 	
 	public Canvas(Layout layout, DimensionAttributes dimensionAttributes) {
 		super(layout, dimensionAttributes);
+		selectable=true;
 		// TODO Auto-generated constructor stub
 		backgroundColor=new Color (150,30,30,30);
 		foregroundColor=new Color(150,255,0,0);
@@ -78,6 +81,8 @@ public class Canvas extends Content{
 		maxY=0;
 		
 		int cLy=0; //Line alignment
+		
+		int selectedX=0, selectedY=0, selectedW=0, selectedH=0;
 		
 		Stack[] renderData = new Stack[5];
 		for(int i=0; i<renderData.length; i++) {
@@ -273,6 +278,13 @@ public class Canvas extends Content{
 					c.noPaint();
 				}
 				
+				if(c==selected) {
+					selectedX=rX;
+					selectedY=rY;
+					selectedW=clipW;
+					selectedH=clipH;
+				}
+				
 			}
 		//}
 			
@@ -296,6 +308,24 @@ public class Canvas extends Content{
 			if(-scrollX<minX) {
 				scrollX=-minX;
 				velocityX=0;	
+			}
+			
+			if(gotoContent) {
+				if(selectedY+selectedH>canvasHeight) {
+					scrollY= -((selectedY+selectedH-sy)-canvasHeight+1);
+					if(selectedH>canvasHeight) gotoContent=false;
+				}else if(selectedY<0) {
+					scrollY-=selectedY;
+					if(selectedH>canvasHeight) gotoContent=false;
+				}
+				
+				if(selectedX+selectedW>canvasWidth) {
+					scrollX= -((selectedX+selectedW-sx)-canvasWidth+1);
+					if(selectedW>canvasWidth) gotoContent=false;
+				}else if(selectedX<0) {
+					scrollX-=selectedX;
+					if(selectedW>canvasWidth) gotoContent=false;
+				}
 			}
 			
 		this.renderData = renderData;
@@ -411,10 +441,10 @@ public class Canvas extends Content{
 		scrollX+=velocityX*getLayout().getDeltaSec();
 		scrollY+=velocityY*getLayout().getDeltaSec();
 		if(velocityX>0) {
-			velocityX-=velLoss;
+			velocityX-=velLoss*getLayout().getDeltaSec();
 			if(velocityX<0) velocityX=0;
 		}else if(velocityX<0){
-			velocityX+=velLoss;
+			velocityX+=velLoss*getLayout().getDeltaSec();
 			if(velocityX>0) velocityX=0;
 		}
 		
@@ -513,6 +543,12 @@ public class Canvas extends Content{
 			g.setDimension(rw, rh);
 			
 			c.paint(g);
+			
+			//TODO remove me
+			if(c==selected) {
+				g.setColor(0x0000ff);
+				g.drawRect(0, 0, rw, rh);
+			}
 			
 			g.translate(-rx,  -ry);
 			
@@ -619,66 +655,166 @@ public class Canvas extends Content{
 		}
 		
 		public boolean onKeyRepeat(int keyCode, KeyEvent event) {
-			return scroll(event);
+			return selectionEvent(event);
 		}
 		
 		public boolean onKeyDown(int keyCode, KeyEvent event) {
-			return scroll(event);
+			return selectionEvent(event);
 		}
 	};
+	
+	protected boolean selectionEvent(KeyEvent event) {
+		int next=0, back=0;
+		switch(arrangement) {
+			case ARRANGEMENT_HORIZONTAL:
+				next = KeyEvent.KEYCODE_DPAD_RIGHT;
+				back = KeyEvent.KEYCODE_DPAD_LEFT;
+			break;
+			case ARRANGEMENT_VERTICAL:
+				next = KeyEvent.KEYCODE_DPAD_DOWN;
+				back = KeyEvent.KEYCODE_DPAD_UP;
+			break;
+		}
+		if(event.getKeycode()!=next && event.getKeycode()!=back) return scroll(event);
+		
+		Content c;
+		if(selected==null) {
+			if (event.getKeycode()==next) {
+				for(int i=renderData[0].size()-1; i>=0; i--) {
+					c = contentFromRenderData(i);
+					if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED) {
+						return setSelectedEvent(c);
+					}
+				}
+			}else {
+				for(int i=0; i<renderData[0].size(); i++) {
+					c = contentFromRenderData(i);
+					if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED) {
+						return setSelectedEvent(c);
+					}
+				}
+			}
+			return scroll(event);
+		}
+		
+		int renderIndex = renderDataIndex(selected);
+		if(renderIndex==-1) {
+			selected=null;
+			return selectionEvent(event);
+		}
+		
+		if(event.getKeycode()==next) {
+			for(int i=renderIndex-1; i>=0; i--) {
+				c = contentFromRenderData(i);
+				if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED) {
+					return setSelectedEvent(c);
+				}
+			}
+		}else {
+			for(int i=renderIndex+1; i<renderData[0].size(); i++) {
+				c = contentFromRenderData(i);
+				if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED) {
+					return setSelectedEvent(c);
+				}
+			}
+		}
+		
+		return scroll(event);
+	}
+	
+	private boolean setSelectedEvent(Content selected) {
+		this.selected=selected;
+		
+		int i = renderDataIndex(selected);
+		
+		int x = ((Integer)renderData[1].elementAt(i)).intValue();
+		int y = ((Integer)renderData[2].elementAt(i)).intValue();
+		int w = ((Integer)renderData[3].elementAt(i)).intValue();
+		int h = ((Integer)renderData[4].elementAt(i)).intValue();
+		
+		if(i!=-1) {
+			if(y+h>canvasHeight) {
+				velocityY=-DPADScrollVelocity;
+			}else if(y<0) {
+				velocityY=DPADScrollVelocity;
+			}
+			
+			if(x+w>canvasWidth) {
+				velocityX=-DPADScrollVelocity;
+			}else if(x<0) {
+				velocityX=DPADScrollVelocity;
+			}
+		}
+		
+		return true;
+	}
+	
+	private int renderDataIndex(Content content) {
+		
+		for(int i=renderData[0].size()-1; i>=0; i--) {
+			if(content == contentFromRenderData(i))
+				return i;
+		}
+		
+		return -1;
+	}
+	
+	private Content contentFromRenderData(int i) {
+		return ((Content)(contents.elementAt(((Short)(renderData[0].elementAt(i))).shortValue())));
+	}
 	
 	private double DPADScrollVelocity=40;
 	protected boolean scroll(KeyEvent event) {
 		if(!scroll) return false;
 		
 		switch(event.getKeycode()) {
-			case KeyEvent.KEYCODE_DPAD_LEFT:
-				
-				if(-scrollX<=minX)
-					return false;
-				
-				if(velocityX>DPADScrollVelocity/2)
-					velocityX=DPADScrollVelocity*3;
-				else
-					velocityX=DPADScrollVelocity;
-				
-				return true;
-			case KeyEvent.KEYCODE_DPAD_RIGHT:
-				
-				if(canvasWidth-scrollX>=maxX)
-					return false;
-				
-				if(velocityX<-DPADScrollVelocity/2)
-					velocityX=-DPADScrollVelocity*3;
-				else
-					velocityX=-DPADScrollVelocity;
-				
-				return true;
-			case KeyEvent.KEYCODE_DPAD_UP:
-				
-				if(-scrollY<=minY)
-					return false;
-				
-				if(velocityY>DPADScrollVelocity/2)
-					velocityY=DPADScrollVelocity*3;
-				else
-					velocityY=DPADScrollVelocity;
-				
-				return true;
-			case KeyEvent.KEYCODE_DPAD_DOWN:
-				
-				if(canvasHeight-scrollY>=maxY)
-					return false;
-				
-				if(velocityY<-DPADScrollVelocity/2)
-					velocityY=-DPADScrollVelocity*3;
-				else
-					velocityY=-DPADScrollVelocity;
-				
-				return true;
-		}
-		
-		return false;
+		case KeyEvent.KEYCODE_DPAD_LEFT:
+			
+			if(-scrollX<=minX)
+				return false;
+			
+			if(velocityX>DPADScrollVelocity/2)
+				velocityX=DPADScrollVelocity*3;
+			else
+				velocityX=DPADScrollVelocity;
+			
+			return true;
+		case KeyEvent.KEYCODE_DPAD_RIGHT:
+			
+			if(canvasWidth-scrollX>=maxX)
+				return false;
+			
+			if(velocityX<-DPADScrollVelocity/2)
+				velocityX=-DPADScrollVelocity*3;
+			else
+				velocityX=-DPADScrollVelocity;
+			
+			return true;
+		case KeyEvent.KEYCODE_DPAD_UP:
+			
+			if(-scrollY<=minY)
+				return false;
+			
+			if(velocityY>DPADScrollVelocity/2)
+				velocityY=DPADScrollVelocity*3;
+			else
+				velocityY=DPADScrollVelocity;
+			
+			return true;
+		case KeyEvent.KEYCODE_DPAD_DOWN:
+			
+			if(canvasHeight-scrollY>=maxY)
+				return false;
+			
+			if(velocityY<-DPADScrollVelocity/2)
+				velocityY=-DPADScrollVelocity*3;
+			else
+				velocityY=-DPADScrollVelocity;
+			
+			return true;
+	}
+	
+	return false;
 	}
 	
 	public final void addContent(Content content) {
@@ -690,6 +826,7 @@ public class Canvas extends Content{
 		boolean s = contents.removeElement(content);
 		if(!s) return false;
 		contents.trimToSize();
+		if(selected==content) selected=null;
 		return true;
 		
 	}

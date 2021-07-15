@@ -32,10 +32,10 @@ public class Content{
 	private byte positioning;
 	private boolean visible=true;
 	private byte ZIndex;
+	protected boolean selectable;
 	
 	private Layout layout;
 	protected DimensionAttributes dimensionAttributes;
-	private boolean selected=false;
 	protected OnTouchListener onTouchListener;
 	
 	/**
@@ -93,13 +93,6 @@ public class Content{
 	
 	public void setOnTouchListener(OnTouchListener onTouchListener) {
 		this.onTouchListener = onTouchListener;;
-	}
-	
-	/**
-	 * @return true/false selected
-	 */
-	public final boolean isSelected() {
-		return selected;
 	}
 	
 	public DimensionAttributes getDimension() {
@@ -185,6 +178,10 @@ public class Content{
 		
 		this.visible = visible;
 		
+	}
+	
+	public final boolean isSelectable() {
+		return selectable;
 	}
 	
 	/**

@@ -3,12 +3,12 @@ package pixelyvulpine.api.lcdui;
 public class DimensionAttributes{
 	
 	public static class Scaled{
-		public byte x, y, width, height;
+		public short x, y, width, height;
 		public Scaled(int x, int y, int width, int height) {
-			this.x = (byte)x;
-			this.y = (byte)y;
-			this.width=(byte)width;
-			this.height=(byte)height;
+			this.x = (short)x;
+			this.y = (short)y;
+			this.width=(short)width;
+			this.height=(short)height;
 		}
 	}
 	

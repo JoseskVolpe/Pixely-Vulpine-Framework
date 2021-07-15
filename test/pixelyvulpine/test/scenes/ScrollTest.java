@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.lcdui.Color;
@@ -13,6 +14,7 @@ import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.contents.Button;
 import pixelyvulpine.contents.Canvas;
+import pixelyvulpine.contents.ImageView;
 import pixelyvulpine.contents.Label;
 import pixelyvulpine.test.App;
 
@@ -20,6 +22,13 @@ public class ScrollTest extends Layout{
 
 	public ScrollTest(App app) {
 		super(app);
+		
+
+		Image logoI = null;
+		
+		try {
+			logoI=Image.createImage("/joseskvolpe.png");
+		}catch(IOException e) {}
 		
 		animation = ANIMATION_SLIDE_LEFT;
 		
@@ -66,52 +75,44 @@ public class ScrollTest extends Layout{
 		canvas.addContent(cB2);
 		int b=0;
 		
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
-		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new ImageView(this, logoI, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,200,200), new DimensionAttributes.Offset(0, 0, 0, 0)), true));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 150), new DimensionAttributes.Offset(0,2,90,40)), "Big Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
 		
 		
 		Label ml = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0,0,120)), "*te lambe* :3\nIsso é um teste, isso, um teste UwU\nTestando múltiplas linhas nisso aqui, só isso");
@@ -123,6 +124,8 @@ public class ScrollTest extends Layout{
 	}
 	
 	public void Setup() {
+		
+		new KeyEvent(this,0,0);//TODO: REMOVE ME
 		
 		
 		setFullScreenMode(true);

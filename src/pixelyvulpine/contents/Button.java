@@ -1,7 +1,5 @@
 package pixelyvulpine.contents;
 
-import javax.microedition.lcdui.Graphics;
-
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
@@ -12,29 +10,45 @@ public class Button extends Content{
 
 	private Label label;
 	
+	public Button(Layout context, ButtonPadding buttonPadding, String text) {
+		super(context, buttonPadding);
+		
+		selectable=true;
+		label = new Label(context, dimensionAttributes, text);
+		label.impact();
+	}
+	
+	public Button(Layout context, ButtonPadding buttonPadding, String text, TextFont font) {
+		super(context, buttonPadding);
+		
+		selectable=true;
+		label = new Label(context, dimensionAttributes, text, font);
+		label.impact();
+	}
+	
 	public Button(Layout layout, DimensionAttributes dimensionAttributes, String text) {
 		super(layout, dimensionAttributes);
 		
+		selectable=true;
 		label = new Label(layout, dimensionAttributes, text);
-		label.impact();
 		
 	}
 	
 	public Button(Layout layout, DimensionAttributes dimensionAttributes, String text, TextFont font) {
 		super(layout, dimensionAttributes);
 		
+		selectable=true;
 		label = new Label(layout, dimensionAttributes, text, font);
-		label.impact();
 		
 	}
 	
 	public void paint(GraphicsFix g) {
 		
-		if(isSelected()) {
+		/*if(isSelected()) {
 			g.setColor(0,0,50);
 		}else {
-			g.setColor(255,255,255);
-		}
+			*/g.setColor(255,255,255);/*
+		}*/
 		
 		g.fillRect(0, 0, getRenderWidth(g), getRenderHeight(g));
 		
@@ -78,6 +92,31 @@ public class Button extends Content{
 	
 	public final TextFont getFont() {
 		return label.getFont();
+	}
+	
+	public static class ButtonPadding extends DimensionAttributes{
+		
+		public ButtonPadding(Scaled scaled, Offset offset) {
+			super(scaled,offset);
+		}
+		
+		public ButtonPadding(int scaledx, int scaledy, int offsetx, int offsety) {
+			super(new Scaled(scaledx, scaledy), new Offset(offsetx, offsety));
+		}
+		
+		public static class Scaled extends DimensionAttributes.Scaled{
+			
+			public Scaled(int x, int y) {
+				super(x, y, 0,0);
+			}
+		}
+		
+		public static class Offset extends DimensionAttributes.Offset{
+			
+			public Offset(int x, int y) {
+				super(x,y,0,0);
+			}
+		}
 	}
 
 }
