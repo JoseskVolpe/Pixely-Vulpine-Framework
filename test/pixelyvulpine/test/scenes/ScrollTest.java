@@ -64,15 +64,35 @@ public class ScrollTest extends Layout{
 		button3.impact();
 		this.addContent(button3);
 		
-		Button cB1 = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "A");
-		cB1.impact();
-		canvas.addContent(cB1);
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "A"));
 		Label cL = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "B");
 		cL.impact();
 		canvas.addContent(cL);
-		Button cB2 = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "C");
-		cB2.impact();
-		canvas.addContent(cB2);
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "C"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "D"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "E"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "F"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "G"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "H"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "I"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "J"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "K"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "L"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "M"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "O"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "P"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "Q"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "R"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "S"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "T"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "U"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "V"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "W"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "X"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "Y"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "Z"));
+		
+		
 		int b=0;
 		
 		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));

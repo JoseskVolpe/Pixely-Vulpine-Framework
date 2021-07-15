@@ -31,7 +31,7 @@ public class Canvas extends Content{
 	private byte alignment = ALIGNMENT_LEFT;
 	private byte arrangement = ARRANGEMENT_VERTICAL;
 	private boolean scroll = true;
-	private int minX, minY, maxX, maxY, canvasWidth, canvasHeight;
+	private int minX, minY, maxX, maxY, canvasDisplayW, canvasDisplayH, canvasWidth, canvasHeight, canvasX, canvasY;
 	private double scrollX, scrollY, velocityX, velocityY;
 	private boolean gotoContent;
 	//TODO: Corrigir canvas secundários
@@ -438,6 +438,11 @@ public class Canvas extends Content{
 	private short velLoss=40;
 	public final void paint(GraphicsFix g) {
 		
+		canvasX = g.getTranslateX();
+		canvasY = g.getTranslateY();
+		canvasDisplayW=g.getDisplayClipWidth();
+		canvasDisplayH=g.getDisplayClipHeight();
+		
 		scrollX+=velocityX*getLayout().getDeltaSec();
 		scrollY+=velocityY*getLayout().getDeltaSec();
 		if(velocityX>0) {
@@ -514,18 +519,16 @@ public class Canvas extends Content{
 		g.setClip(0, 0, lw-lx*2, lh-ly*2);
 		
 		paintContent(g);
-		
-		g.translate(-lx, -ly);
-		
-		g.setClip(0, 0, lcw, lch);
 	}
 
 	int sx, sy;
 	protected final void paintContent(GraphicsFix g) {
 		if(contents==null) return;
 		
-		int lw=g.getClipWidth();
-		int lh=g.getClipHeight();
+		int dw=g.getDimensionWidth();
+		int dh=g.getDimensionHeight();
+		int lcw=g.getClipWidth();
+		int lch=g.getClipHeight();
 		
 		short i=0;
 		int rx, ry, rw, rh;
@@ -542,6 +545,9 @@ public class Canvas extends Content{
 			g.translate(rx, ry);
 			g.setDimension(rw, rh);
 			
+			int tx=g.getTranslateX();
+			int ty=g.getTranslateY();
+			
 			c.paint(g);
 			
 			//TODO remove me
@@ -550,11 +556,12 @@ public class Canvas extends Content{
 				g.drawRect(0, 0, rw, rh);
 			}
 			
-			g.translate(-rx,  -ry);
+			g.translate(tx-g.getTranslateX()-rx,  ty-g.getTranslateY()-ry);
+			g.setClip(0, 0 ,lcw, lch);
 			
 		}
 		
-		g.setDimension(lw, lh);
+		g.setDimension(dw, dh);
 		
 	}
 	
@@ -666,7 +673,11 @@ public class Canvas extends Content{
 	};
 	
 	protected boolean selectionEvent(KeyEvent event) {
+		
+		if(selected!=null && selected.dispatchKeyEvent(event.getKeycode(), event)) return true;
+		
 		int next=0, back=0;
+		int cd[];
 		switch(arrangement) {
 			case ARRANGEMENT_HORIZONTAL:
 				next = KeyEvent.KEYCODE_DPAD_RIGHT;
@@ -684,14 +695,18 @@ public class Canvas extends Content{
 			if (event.getKeycode()==next) {
 				for(int i=renderData[0].size()-1; i>=0; i--) {
 					c = contentFromRenderData(i);
-					if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED) {
+					cd = getRenderData(i);
+					if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED && cd[0]+canvasX < canvasDisplayW && cd[0]+cd[2]+canvasX>=0 && cd[1]+canvasY < canvasDisplayH && cd[1]+cd[3]+canvasY>=0) {
+						
 						return setSelectedEvent(c);
 					}
 				}
 			}else {
 				for(int i=0; i<renderData[0].size(); i++) {
 					c = contentFromRenderData(i);
-					if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED) {
+					cd = getRenderData(i);
+					if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED && cd[0]+canvasX < canvasDisplayW && cd[0]+cd[2]+canvasX>=0 && cd[1]+canvasY < canvasDisplayH && cd[1]+cd[3]+canvasY>=0) {
+							
 						return setSelectedEvent(c);
 					}
 				}
@@ -709,6 +724,11 @@ public class Canvas extends Content{
 			for(int i=renderIndex-1; i>=0; i--) {
 				c = contentFromRenderData(i);
 				if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED) {
+					cd = getRenderData(i);
+					
+					if(!(cd[0]+canvasX < canvasDisplayW && cd[0]+cd[2]+canvasX>=0 && cd[1]+canvasY < canvasDisplayH && cd[1]+cd[3]+canvasY>=0))
+						break;
+					
 					return setSelectedEvent(c);
 				}
 			}
@@ -716,6 +736,11 @@ public class Canvas extends Content{
 			for(int i=renderIndex+1; i<renderData[0].size(); i++) {
 				c = contentFromRenderData(i);
 				if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED) {
+					
+					cd = getRenderData(i);
+					if(!(cd[0]+canvasX < canvasDisplayW && cd[0]+cd[2]+canvasX>=0 && cd[1]+canvasY < canvasDisplayH && cd[1]+cd[3]+canvasY>=0))
+						break;
+					
 					return setSelectedEvent(c);
 				}
 			}
@@ -749,6 +774,15 @@ public class Canvas extends Content{
 		}
 		
 		return true;
+	}
+	
+	private int[] getRenderData(int i) {
+		int cx = ((Integer)renderData[1].elementAt(i)).intValue();
+		int cy = ((Integer)renderData[2].elementAt(i)).intValue();
+		int cw = ((Integer)renderData[3].elementAt(i)).intValue();
+		int ch = ((Integer)renderData[4].elementAt(i)).intValue();
+		
+		return new int[] {cx, cy, cw, ch};
 	}
 	
 	private int renderDataIndex(Content content) {

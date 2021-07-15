@@ -502,7 +502,7 @@ public class Layout extends Canvas implements CommandListener{
 	private final void keyEvent(KeyEvent event) {
 		//TODO: Soft keys commands
 		
-		if(!canvas.onKey(event.getKeycode(), event)) {
+		if(!canvas.dispatchKeyEvent(event.getKeycode(), event)) {
 			
 		}
 		

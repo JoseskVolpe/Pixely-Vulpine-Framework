@@ -79,6 +79,10 @@ public class Content{
 		return onTouch(event);
 	}
 	
+	public final boolean dispatchKeyEvent(int keyCode, KeyEvent event) {
+		return onKey(keyCode, event);
+	}
+	
 	public final Vector getHistoricalCoords() {
 		return historicalCoords;
 	}
