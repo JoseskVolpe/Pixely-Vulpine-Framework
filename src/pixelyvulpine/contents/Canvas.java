@@ -699,6 +699,9 @@ public class Canvas extends Content{
 		
 		int renderIndex = renderDataIndex(selected);
 		if(renderIndex==-1) {
+			if(this.selected!=null)
+				this.selected.dispatchSelected(false);
+			
 			selected=null;
 			return selectionEvent(event);
 		}
