@@ -32,7 +32,6 @@ public class Content{
 	private byte positioning;
 	private boolean visible=true;
 	private byte ZIndex;
-	protected boolean selectable;
 	
 	private Layout layout;
 	protected DimensionAttributes dimensionAttributes;
@@ -184,8 +183,19 @@ public class Content{
 		
 	}
 	
-	public final boolean isSelectable() {
-		return selectable;
+	public boolean isSelectable() {
+		return false;
+	}
+	
+	protected void onSelect() {}
+	
+	protected void onDeselect() {}
+	
+	public final void dispatchSelected(boolean selected) {
+		if(selected) 
+			onSelect();
+		else
+			onDeselect();
 	}
 	
 	/**

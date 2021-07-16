@@ -60,7 +60,7 @@ public class Layout extends Canvas implements CommandListener{
 	
 	private static short navheight;
 	
-	private pixelyvulpine.contents.Canvas canvas;
+	private pixelyvulpine.contents.Canvas canvas, focused;
 	private boolean fullscreen, painted;
 	private short deltaTime;
 	private CommandListener listener;
@@ -119,6 +119,7 @@ public class Layout extends Canvas implements CommandListener{
 		navbar = new pixelyvulpine.contents.Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0, 0, NAVHEIGHT)));
 		navbar.setBackgroundColor(navigationBarColor);
 		navbar.setForegroundColor(null);
+		focused=canvas;
 	}
 	
 	public final void setup() {
@@ -502,7 +503,7 @@ public class Layout extends Canvas implements CommandListener{
 	private final void keyEvent(KeyEvent event) {
 		//TODO: Soft keys commands
 		
-		if(!canvas.dispatchKeyEvent(event.getKeycode(), event)) {
+		if(!getFocusedCanvas().dispatchKeyEvent(event.getKeycode(), event)) {
 			
 		}
 		
@@ -514,6 +515,19 @@ public class Layout extends Canvas implements CommandListener{
 	
 	protected boolean onKey(Content view, int keyCode, KeyEvent event) {
 		return false;
+	}
+	
+	public void setFocusedCanvas(pixelyvulpine.contents.Canvas canvas) {
+		focused=canvas;
+	}
+	
+	public pixelyvulpine.contents.Canvas getFocusedCanvas() {
+		if(focused==null) focused=canvas;
+		return focused;
+	}
+	
+	public Content getSelectedView() {
+		return getFocusedCanvas().getSelected();
 	}
 	
 	public final boolean isLoaded() {

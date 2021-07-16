@@ -9,11 +9,11 @@ import pixelyvulpine.api.util.GraphicsFix;
 public class Button extends Content{
 
 	private Label label;
+	private boolean selected;
 	
 	public Button(Layout context, ButtonPadding buttonPadding, String text) {
 		super(context, buttonPadding);
 		
-		selectable=true;
 		label = new Label(context, dimensionAttributes, text);
 		label.impact();
 	}
@@ -21,7 +21,6 @@ public class Button extends Content{
 	public Button(Layout context, ButtonPadding buttonPadding, String text, TextFont font) {
 		super(context, buttonPadding);
 		
-		selectable=true;
 		label = new Label(context, dimensionAttributes, text, font);
 		label.impact();
 	}
@@ -29,7 +28,6 @@ public class Button extends Content{
 	public Button(Layout layout, DimensionAttributes dimensionAttributes, String text) {
 		super(layout, dimensionAttributes);
 		
-		selectable=true;
 		label = new Label(layout, dimensionAttributes, text);
 		
 	}
@@ -37,18 +35,29 @@ public class Button extends Content{
 	public Button(Layout layout, DimensionAttributes dimensionAttributes, String text, TextFont font) {
 		super(layout, dimensionAttributes);
 		
-		selectable=true;
 		label = new Label(layout, dimensionAttributes, text, font);
 		
 	}
 	
+	public boolean isSelectable() {
+		return true;
+	}
+	
+	protected void onSelect() {
+		selected=true;
+	}
+	
+	protected void onDeselect() {
+		selected=false;
+	}
+	
 	public void paint(GraphicsFix g) {
 		
-		/*if(isSelected()) {
+		if(selected) {
 			g.setColor(0,0,50);
 		}else {
-			*/g.setColor(255,255,255);/*
-		}*/
+			g.setColor(255,255,255);
+		}
 		
 		g.fillRect(0, 0, getRenderWidth(g), getRenderHeight(g));
 		

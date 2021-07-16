@@ -39,7 +39,6 @@ public class Canvas extends Content{
 	
 	public Canvas(Layout layout, DimensionAttributes dimensionAttributes) {
 		super(layout, dimensionAttributes);
-		selectable=true;
 		// TODO Auto-generated constructor stub
 		backgroundColor=new Color (150,30,30,30);
 		foregroundColor=new Color(150,255,0,0);
@@ -59,8 +58,13 @@ public class Canvas extends Content{
 	
 	public int[] prepaint(int lw, int lh) {
 		
-		if(selected!=null && !selected.isSelectable())
-			selected=null;
+		if(foregroundColor!=null && foregroundColor.getAlpha()<=0) {
+			lw-=2;
+			lh-=2;
+			
+			if(lw<0) lw=0;
+			if(lh<0) lh=0;
+		}
 		
 		sx=0;
 		sy=0;
@@ -534,12 +538,6 @@ public class Canvas extends Content{
 			
 			c.paint(g);
 			
-			//TODO remove me
-			if(c==selected) {
-				g.setColor(0x0000ff);
-				g.drawRect(0, 0, rw, rh);
-			}
-			
 			g.translate(tx-g.getTranslateX()-rx,  ty-g.getTranslateY()-ry);
 			g.setClip(0, 0 ,lcw, lch);
 			
@@ -554,6 +552,7 @@ public class Canvas extends Content{
 		Stack renderData[] = this.renderData;
 		if(e.getAction()==MotionEvent.ACTION_DOWN) {
 			
+			if(selected!=null) selected.dispatchSelected(false);
 			selected=null;
 			
 			
@@ -735,6 +734,9 @@ public class Canvas extends Content{
 	
 	private boolean setSelectedEvent(Content selected) {
 		
+		if(this.selected!=null)
+			this.selected.dispatchSelected(false);
+		
 		this.selected=selected;
 		
 		int i = renderDataIndex(selected);
@@ -749,47 +751,84 @@ public class Canvas extends Content{
 			double vx=velocityX;
 			double vy=velocityY;
 			
-			if(y+h>canvasHeight) {
-				
+			if(arrangement==ARRANGEMENT_VERTICAL || h<canvasHeight) {
+			if(y+h>canvasHeight || y+h>canvasDisplayH) {
 				if(h>canvasDisplayH) {
 					vy=-DPADScrollVelocity;
 				}else {
-					s=canvasHeight-y-h;
+					if(y+h>canvasDisplayH)
+						s=canvasDisplayH-y-h;
+					else
+						s=canvasHeight-y-h;
 					vy=-Math.sqrt(- 4*velLoss * s);
 				}
-			}else if(y<0) {
+			}else if(y<0 || y+canvasY<0) {
 
 				if(h>canvasDisplayH) {
 					vy=DPADScrollVelocity;
 				}else {
-					s=y;
+					if(y+canvasY<0) 
+						s=y+canvasY;
+					else
+						s=y;
 					vy=Math.sqrt( - 4*velLoss * s);
 				}
-			}
+			}}
 			
-			if(x+w>canvasWidth) {
+			if(arrangement==ARRANGEMENT_HORIZONTAL || w<canvasWidth) {
+			if(x+w>canvasWidth || x+w+canvasX>canvasDisplayW) {
 				
 				if(w>canvasDisplayW) {
 					vx=-DPADScrollVelocity;
 				}else {
-					s=canvasWidth-x-w;
+					if(x+w+canvasX>canvasDisplayW)
+						s=canvasDisplayW-x-w-canvasX;
+					else
+						s=canvasWidth-x-w;
 					vx=-Math.sqrt( - 4*velLoss * s);
 				}
-			}else if(x<0) {
+			}else if(x<0 || x+canvasX<0) {
 				
 				if(w>canvasDisplayW) {
 					vx=DPADScrollVelocity;
 				}else {
-					s=x;
+					if(x+canvasX<0) 
+						s=x+canvasX;
+					else
+						s=x;
 					vx=Math.sqrt( - 4*velLoss * s);
 				}
+			}
 			}
 			
 			velocityX=vx;
 			velocityY=vy;
 		}
 		
+		this.selected.dispatchSelected(true);
+		
 		return true;
+	}
+	
+	public void onSelect() {
+		if(selected!=null) selected.dispatchSelected(true);
+	}
+	
+	public void onDeselect() {
+		if(selected!=null) selected.dispatchSelected(false);
+	}
+	
+	public boolean isSelectable() {
+		if(contents==null || contents.size()<=0) return false;
+		
+		for(int i=0; i<contents.size(); i++) {
+			if(((Content)contents.elementAt(i)).isSelectable()) return true;
+		}
+		
+		if(!(minX==maxX && minY==maxY)) return true;
+		
+		return false;
+		
 	}
 	
 	private int[] getRenderData(int i) {
@@ -927,6 +966,15 @@ public class Canvas extends Content{
 		return scroll;
 	}
 	
-	
+	public Content getSelected(){
+		if(selected==null)
+			return this;
+		
+		if(selected instanceof Canvas) {
+			return ((Canvas) selected).getSelected();
+		}
+		
+		return selected;
+	}
 
 }
