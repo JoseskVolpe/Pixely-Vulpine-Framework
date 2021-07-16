@@ -811,6 +811,19 @@ public class Canvas extends Content{
 	}
 	
 	public void onSelect() {
+		
+		if(selected == null) {
+			Content c;
+			for(int i=renderData[0].size()-1; i>=0; i--) {
+				c = contentFromRenderData(i);
+				int[] cd = getRenderData(i);
+				if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED && cd[0]+canvasX < canvasDisplayW && cd[0]+cd[2]+canvasX>=0 && cd[1]+canvasY < canvasDisplayH && cd[1]+cd[3]+canvasY>=0) {
+					setSelectedEvent(c);
+					break;
+				}
+			}
+		}
+		
 		if(selected!=null) selected.dispatchSelected(true);
 	}
 	
