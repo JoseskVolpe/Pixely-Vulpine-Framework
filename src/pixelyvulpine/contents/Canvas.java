@@ -770,7 +770,7 @@ public class Canvas extends Content{
 			if(x+w>canvasWidth) {
 				
 				if(w>canvasDisplayW) {
-					vy=-DPADScrollVelocity;
+					vx=-DPADScrollVelocity;
 				}else {
 					s=canvasWidth-x-w;
 					vx=-Math.sqrt( - 4*velLoss * s);
@@ -778,7 +778,7 @@ public class Canvas extends Content{
 			}else if(x<0) {
 				
 				if(w>canvasDisplayW) {
-					vy=DPADScrollVelocity;
+					vx=DPADScrollVelocity;
 				}else {
 					s=x;
 					vx=Math.sqrt( - 4*velLoss * s);
