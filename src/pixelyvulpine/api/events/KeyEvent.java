@@ -31,7 +31,7 @@ public class KeyEvent extends InputEvent{
 	public final static int KEYCODE_DPAD_LEFT = 21;
 	public final static int KEYCODE_DPAD_RIGHT = 22;
 	public final static int KEYCODE_DPAD_DOWN = 20;
-	public final static int KEYCODE_DPAD_CENTER = Canvas.FIRE;
+	public final static int KEYCODE_DPAD_CENTER = 23;
 	public final static int KEYCODE_BUTTON_A = Canvas.GAME_A;
 	public final static int KEYCODE_BUTTON_B = Canvas.GAME_B;
 	public final static int KEYCODE_BUTTON_C = Canvas.GAME_C;
@@ -124,6 +124,8 @@ public class KeyEvent extends InputEvent{
 				return "RIGHT";
 			case KEYCODE_DPAD_DOWN:
 				return "DOWN";
+			case KEYCODE_DPAD_CENTER:
+				return "FIRE";
 			default:
 				return context.getKeyName(code);
 		}
