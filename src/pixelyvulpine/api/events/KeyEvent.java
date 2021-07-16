@@ -216,19 +216,19 @@ public class KeyEvent extends InputEvent{
 			
 			if(name.equals("END"))
 				return KEYCODE_ENDCALL;
-			
-			if(name.equals("LEFT"))
-				return KEYCODE_DPAD_LEFT;
-			
-			if(name.equals("UP"))
-				return KEYCODE_DPAD_UP;
-			
-			if(name.equals("RIGHT"))
-				return KEYCODE_DPAD_RIGHT;
-			
-			if(name.equals("DOWN"))
-				return KEYCODE_DPAD_DOWN;
 		}catch(Throwable e) {}
+		
+		if(runtimeCode == context.getKeyCode(Canvas.UP)) 
+			return KEYCODE_DPAD_UP;
+		if(runtimeCode == context.getKeyCode(Canvas.DOWN)) 
+			return KEYCODE_DPAD_DOWN;
+		if(runtimeCode == context.getKeyCode(Canvas.LEFT)) 
+			return KEYCODE_DPAD_LEFT;
+		if(runtimeCode == context.getKeyCode(Canvas.RIGHT)) 
+			return KEYCODE_DPAD_RIGHT;
+		if(runtimeCode == context.getKeyCode(Canvas.FIRE))
+			return KEYCODE_DPAD_CENTER;
+		
 		
 		for(int i=0; i<convertableCodes.length; i++) {
 			if(runtimeCode==convertableCodes[i].from)
