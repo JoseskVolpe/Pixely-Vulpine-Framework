@@ -760,7 +760,7 @@ public class Canvas extends Content{
 						s=canvasDisplayH-y-h;
 					else
 						s=canvasHeight-y-h;
-					vy=-Math.sqrt(- 4*velLoss * s);
+					vy=-Math.sqrt(- 2.5*velLoss * s);
 				}
 			}else if(y<0 || y+canvasY<0) {
 
@@ -771,7 +771,7 @@ public class Canvas extends Content{
 						s=y+canvasY;
 					else
 						s=y;
-					vy=Math.sqrt( - 4*velLoss * s);
+					vy=Math.sqrt( - 2.5*velLoss * s);
 				}
 			}}
 			
@@ -785,7 +785,7 @@ public class Canvas extends Content{
 						s=canvasDisplayW-x-w-canvasX;
 					else
 						s=canvasWidth-x-w;
-					vx=-Math.sqrt( - 4*velLoss * s);
+					vx=-Math.sqrt( - 2.5*velLoss * s);
 				}
 			}else if(x<0 || x+canvasX<0) {
 				
@@ -796,7 +796,7 @@ public class Canvas extends Content{
 						s=x+canvasX;
 					else
 						s=x;
-					vx=Math.sqrt( - 4*velLoss * s);
+					vx=Math.sqrt( - 2.5*velLoss * s);
 				}
 			}
 			}
