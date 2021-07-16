@@ -33,7 +33,6 @@ public class Canvas extends Content{
 	private boolean scroll = true;
 	private int minX, minY, maxX, maxY, canvasDisplayW, canvasDisplayH, canvasWidth, canvasHeight, canvasX, canvasY;
 	private double scrollX, scrollY, velocityX, velocityY;
-	private boolean gotoContent;
 	//TODO: Corrigir canvas secundários
 	
 	private Color backgroundColor, foregroundColor;
@@ -59,6 +58,9 @@ public class Canvas extends Content{
 	}
 	
 	public int[] prepaint(int lw, int lh) {
+		
+		if(selected!=null && !selected.isSelectable())
+			selected=null;
 		
 		sx=0;
 		sy=0;
@@ -151,7 +153,7 @@ public class Canvas extends Content{
 							
 							case ARRANGEMENT_HORIZONTAL:
 								
-								increment = clipH+tx;
+								increment = clipW+tx;
 								tx += cLy;
 								
 								ALIGN:
@@ -308,24 +310,6 @@ public class Canvas extends Content{
 			if(-scrollX<minX) {
 				scrollX=-minX;
 				velocityX=0;	
-			}
-			
-			if(gotoContent) {
-				if(selectedY+selectedH>canvasHeight) {
-					scrollY= -((selectedY+selectedH-sy)-canvasHeight+1);
-					if(selectedH>canvasHeight) gotoContent=false;
-				}else if(selectedY<0) {
-					scrollY-=selectedY;
-					if(selectedH>canvasHeight) gotoContent=false;
-				}
-				
-				if(selectedX+selectedW>canvasWidth) {
-					scrollX= -((selectedX+selectedW-sx)-canvasWidth+1);
-					if(selectedW>canvasWidth) gotoContent=false;
-				}else if(selectedX<0) {
-					scrollX-=selectedX;
-					if(selectedW>canvasWidth) gotoContent=false;
-				}
 			}
 			
 		this.renderData = renderData;
