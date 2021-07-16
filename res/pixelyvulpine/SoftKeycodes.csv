@@ -1,0 +1,34 @@
+Brand,Microedition.platform,Left soft keycode,Right soft keycode,tested
+unknown,unknown,-6,-7,n/a
+unknown,unknown,-21,-22,n/a
+unknown,unknown,21,22,n/a
+unknown,Symbian OS,-6,-7,n/a
+unknown,j2me,-6,-7,n/a
+audiovox,unknown,-6,-7,n/a
+audiovox,Cdm-8900,-20,-21,no
+htc,unknown,-6,-7,n/a
+htc,Qtek 8500,57345,57346,no
+lg,unknown,-202,-203,n/a
+lg,unknown,-6,-7,n/a
+lg,unknown,-20,-21,n/a
+motorola,unknown,-21,-22,n/a
+motorola,unknown,21,22,n/a
+motorola,Symbian OS,-11,-22,yes
+motorola,v262,-7,-8,no
+motorola,i###,-20,-21,no
+nokia,unknown,-6,-7,n/a
+panasonic,unknown,-21,-22,n/a
+panasonic,VS3,-21,-22,yes
+sagem,unknown,-7,-6,n/a
+samsung,unknown,-6,-7,n/a
+samsung,unknown,21,22,n/a
+samsung,unknown,-21,-22,n/a
+samsung,unknown,-8,-7,n/A
+sanyo,unknown,-6,-7,n/a
+sanyo,unknown,21,22,n/a
+sanyo,unknown,-21,-22,n/a
+sharp,unknown,21,22,n/a
+sharp,unknown,-21,-22,n/a
+siemens,unknown,-1,-4,n/a
+siemens,sf65,105,106,no
+sony ericsson,unknown,-6,-7,n/a

@@ -6,6 +6,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import pixelyvulpine.api.lcdui.Content;
+import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.ImageTransform;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.util.GraphicsFix;
@@ -20,8 +21,8 @@ public class ImageView extends Content{
 	private boolean fit, error;
 	private ImageView me;
 	
-	public ImageView(Layout layout, Image image, int[] x, int[] y) {
-		super(layout, x, y, new int[] {0,imageWidth(image)}, new int[] {0,imageHeight(image)});
+	public ImageView(Layout layout, Image image, int scaledX, int scaledY, int offsetX, int offsetY) {
+		super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(scaledX, scaledY, 0, 0), new DimensionAttributes.Offset(offsetX, offsetY, image.getWidth(), image.getHeight())));
 		
 		me=this;
 		
@@ -55,8 +56,8 @@ public class ImageView extends Content{
 		
 	}
 	
-	public ImageView(Layout layout, Image image, int[] x, int[] y, int[] width, int[] height) {
-		super(layout, x, y, width, height);
+	public ImageView(Layout layout, Image image, DimensionAttributes dimensionAttributes) {
+		super(layout, dimensionAttributes);
 		
 		me=this;
 		if(image==null) {
@@ -87,8 +88,8 @@ public class ImageView extends Content{
 		
 	}
 	
-	public ImageView(Layout layout, Image image, int[] x, int[] y, int[] width, int[] height, boolean fit) {
-		super(layout, x, y, width, height);
+	public ImageView(Layout layout, Image image, DimensionAttributes dimensionAttributes, boolean fit) {
+		super(layout, dimensionAttributes);
 		
 		
 		me=this;
@@ -141,9 +142,19 @@ public class ImageView extends Content{
 		}
 	}
 	
+	public void noPaint() {
+		renderData=null;
+	}
+	
 	public int[] prepaint(int width, int height) {
 		
 		rescale(width, height);
+		
+		return new int[] {this.width, this.height};
+		
+	}
+	
+	public void paint(GraphicsFix g) {
 		
 		if(renderData==null) {
 			try {
@@ -156,16 +167,9 @@ public class ImageView extends Content{
 					data=null;
 					renderData=null;
 					error=true; //Can't show this ImageView :c
-					return new int[] {ERRORSIZE, ERRORSIZE};
 				}
 			}
 		}
-		
-		return new int[] {this.width, this.height};
-		
-	}
-	
-	public void paint(Graphics g) {
 		
 		if(error) {
 			g.setColor(0xffffff);
@@ -184,14 +188,11 @@ public class ImageView extends Content{
 			return;
 		}
 		
-		int width = g.getClipWidth();
-		int height = g.getClipHeight();
-		
 		if(renderData==null) {
 			return;
 		}
 		
-		GraphicsFix.drawRGB(g, renderData, 0, width, 0, 0, width, height, true);
+		g.drawRGB(renderData, 0, width, 0, 0, width, height, true);
 		
 	}
 	

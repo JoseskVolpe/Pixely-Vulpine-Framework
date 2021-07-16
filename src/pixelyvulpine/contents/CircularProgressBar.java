@@ -4,7 +4,9 @@ import javax.microedition.lcdui.Graphics;
 
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
+import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
+import pixelyvulpine.api.util.GraphicsFix;
 
 public class CircularProgressBar extends Content {
 
@@ -18,26 +20,22 @@ public class CircularProgressBar extends Content {
 		}
 	}
 	
-	/*
-	 * layout - mainLayout
-	 * x - scalable, offset
-	 * y - scalable, offset
-	 * size - scalable, offset
+	/**
+	 * @param Context
+	 * @param CircularProgressBarDimensionAttributes
 	 */
-	public CircularProgressBar(Layout layout, int[] x, int[] y, int[] size) {
-		super(layout, x, y, size, size);
+	public CircularProgressBar(Layout layout, CircularProgressBarDimensionAttributes dimensionAttributes) {
+		super(layout, dimensionAttributes);
 		
 	}
 	
-	/*
-	 * layout - mainLayout
-	 * x - scalable, offset
-	 * y - scalable, offset
-	 * size - scalable, offset
-	 * color - color
+	/**
+	 * @param Context
+	 * @param CircularProgressBarDimensionAttributes
+	 * @param Color
 	 */
-	public CircularProgressBar(Layout layout, int[] x, int[] y, int[] size, Color color) {
-		super(layout, x, y, size, size);
+	public CircularProgressBar(Layout layout, CircularProgressBarDimensionAttributes dimensionAttributes, Color color) {
+		super(layout, dimensionAttributes);
 		
 		this.color = color;
 	}
@@ -46,10 +44,10 @@ public class CircularProgressBar extends Content {
 		return new int[] {Math.max(width, height), Math.max(width, height)};
 	}
 	
-	public void paint(Graphics g) {
+	public void paint(GraphicsFix g) {
 		
-		int clipW = g.getClipWidth();
-		int clipH = g.getClipHeight();
+		int clipW = g.getDimensionWidth();
+		int clipH = g.getDimensionHeight();
 		int mySize = Math.min(clipW, clipH);
 		int nCW = clipW-(clipW-mySize);
 		int nCH = clipH-(clipH-mySize);
@@ -57,9 +55,9 @@ public class CircularProgressBar extends Content {
 		int ty = (clipH-mySize)/2;
 		
 		g.translate(tx,  ty);
-		g.setClip(0, 0, nCW, nCH);
+		g.setDimension(nCW, nCH);
 		
-		int ballSize = (int)(Math.ceil(g.getClipHeight()/5));
+		int ballSize = (int)(Math.ceil(g.getDimensionHeight()/5));
 		
 		int b=0;
 		int f=balls.length;
@@ -79,7 +77,7 @@ public class CircularProgressBar extends Content {
 		}
 		
 		g.translate(-tx,  -ty);
-		g.setClip(0, 0, clipW, clipH);
+		g.setDimension(clipW, clipH);
 		
 	}
 	
@@ -126,20 +124,20 @@ public class CircularProgressBar extends Content {
 			this.index=(byte)index;
 		}
 		
-		public void paint(Graphics g, int ballSize) {
+		public void paint(GraphicsFix g, int ballSize) {
 			
 			int sInc=0;
 			double index = this.index*0.35;
 			
-			int w = g.getClipWidth()-(ballSize);
-			int h = g.getClipHeight()-(ballSize);
+			int w = g.getDimensionWidth()-(ballSize);
+			int h = g.getDimensionHeight()-(ballSize);
 			
 			int dw=w/2;
 			int dh=h/2;
 			int ds = ballSize/2;
 			
-			int cX = (g.getClipWidth()/2)-(ballSize/2);
-			int cY = (g.getClipHeight()/2)-(ballSize/2);
+			int cX = (g.getDimensionWidth()/2)-(ballSize/2);
+			int cY = (g.getDimensionHeight()/2)-(ballSize/2);
 			
 			//int spin1X
 			double spin3X=1;
@@ -152,5 +150,26 @@ public class CircularProgressBar extends Content {
 		}
 	}
 
+	public static class CircularProgressBarDimensionAttributes extends DimensionAttributes{
+		
+		public CircularProgressBarDimensionAttributes(Scaled scaled, Offset offset) {
+			super(scaled, offset);
+		}
+		
+		public static class Scaled extends DimensionAttributes.Scaled{
+			
+			public Scaled(int x, int y, int size) {
+				super(x, y, size, size);
+			}
+		}
+		
+		public static class Offset extends DimensionAttributes.Offset{
+			
+			public Offset(int x, int y, int size) {
+				super(x,y,size,size);
+			}
+		}
+		
+	}
 
 }

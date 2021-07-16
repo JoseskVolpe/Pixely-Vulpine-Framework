@@ -16,7 +16,7 @@ public class CircularProgressBarTest extends Layout{
 		
 		this.setBackgroundColor(new Color(0,0,0));
 		
-		CircularProgressBar spinner = new CircularProgressBar(this,new int[] {0,0}, new int[] {0,0}, new int[] {20, 0}, new Color(255,255,255));
+		CircularProgressBar spinner = new CircularProgressBar(this,new CircularProgressBar.CircularProgressBarDimensionAttributes(new CircularProgressBar.CircularProgressBarDimensionAttributes.Scaled(0, 0, 20), new CircularProgressBar.CircularProgressBarDimensionAttributes.Offset(0, 0, 0)), new Color(255,255,255));
 		spinner.setPositioning(Content.POSITIONING_ANCHORED);
 		spinner.setVerticalAnchor(Content.VERTICAL_ANCHOR_CENTER);
 		spinner.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);

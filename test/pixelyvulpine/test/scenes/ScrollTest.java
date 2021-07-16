@@ -4,90 +4,139 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
+import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Command;
 import pixelyvulpine.api.lcdui.Content;
-import pixelyvulpine.api.lcdui.ContentListener;
+import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.contents.Button;
 import pixelyvulpine.contents.Canvas;
+import pixelyvulpine.contents.ImageView;
 import pixelyvulpine.contents.Label;
 import pixelyvulpine.test.App;
 
-public class ScrollTest extends Layout implements ContentListener{
+public class ScrollTest extends Layout{
 
 	public ScrollTest(App app) {
 		super(app);
+		
+		this.getFocusedCanvas().setContentAlignment(Canvas.ALIGNMENT_CENTER);
+
+		Image logoI = null;
+		
+		try {
+			logoI=Image.createImage("/joseskvolpe.png");
+		}catch(IOException e) {}
 		
 		animation = ANIMATION_SLIDE_LEFT;
 		
 		this.setTitle("Scroll test uwu");
 		
-		Label l = new Label(this,  new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, this.getTitle());
+		Label l = new Label(this,  new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), this.getTitle());
 		l.setColor(new Color(255,255,255));
 		l.getFont().setStyle(Font.STYLE_BOLD);
 		l.impact();
 		l.setPositioning(Content.POSITIONING_ANCHORED);
 		l.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
 		
-		Canvas LCanvas = new Canvas(this,  new int[] {0, 0}, new int[] {0, 0}, new int[] {100, 0}, new int[] {0, l.getFont().getFontSize()});
+		Canvas LCanvas = new Canvas(this,  new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0,0,l.getFont().getFontSize())));
 		LCanvas.addContent(l);
 		LCanvas.setBackgroundColor(null);
 		LCanvas.setForegroundColor(null);
 		this.addContent(LCanvas);
 		
-		
-		Label label = new Label(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Testing OwO");
+		Label label = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "Testing OwO");
 		label.setBackgroundColor(new Color(150,150,150));
 		label.impact();
 		this.addContent(label);
-		Canvas canvas = new Canvas(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 25});
+		Canvas canvas = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,30)));
 		canvas.setArrangement(Canvas.ARRANGEMENT_HORIZONTAL);
 		this.addContent(canvas);
-		Button button = new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Boop UwU");
+		Button button = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Boop UwU");
 		button.impact();
-		button.assign(this);
 		this.addContent(button);
-		Button button2 = new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "heeey OwO");
+		Button button2 = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "heeey OwO");
 		button2.impact();
-		button2.assign(this);
 		this.addContent(button2);
-		Button button3 = new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Yiff @w@");
+		Button button3 = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Yiff @w@");
 		button3.impact();
-		button3.assign(this);
 		this.addContent(button3);
 		
-		Button cB1 = new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "A");
-		cB1.impact();
-		cB1.assign(this);
-		canvas.addContent(cB1);
-		Label cL = new Label(this, new int[] {0,0}, new int[] {0,0}, new int[] {0,90}, new int[] {0, 40}, "B");
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "A"));
+		Label cL = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), "B");
 		cL.impact();
 		canvas.addContent(cL);
-		Button cB2 = new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "C");
-		cB2.impact();
-		cB2.assign(this);
-		canvas.addContent(cB2);
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "C"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "D"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "E"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "F"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "G"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "H"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "I"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "J"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "K"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "L"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "M"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "O"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "P"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "Q"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "R"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "S"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "T"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "U"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "V"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "W"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "X"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "Y"));
+		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "Z"));
 		
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
-		this.addContent(new Button(this, new int[] {0, 0}, new int[] {0, 0}, new int[] {0, 90}, new int[] {0, 40}, "Button"));
 		
-		Label ml = new Label(this, new int[] {0,0}, new int[] {0,0}, new int[] {100,0}, new int[] {0,620}, "*te lambe* :3\nIsso é um teste, isso, um teste UwU\nTestando múltiplas linhas nisso aqui, só isso");
+		int b=0;
+		
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new ImageView(this, logoI, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,200,200), new DimensionAttributes.Offset(0, 0, 0, 0)), true));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 150), new DimensionAttributes.Offset(0,2,90,40)), "Big Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
+		
+		
+		Label ml = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0,0,120)), "*te lambe* :3\nIsso é um teste, isso, um teste UwU\nTestando múltiplas linhas nisso aqui, só isso");
 		ml.setMultiline(true);
 		ml.setColor(new Color(255,255,255));
 		this.addContent(ml);
@@ -97,7 +146,7 @@ public class ScrollTest extends Layout implements ContentListener{
 	
 	public void Setup() {
 		
-		
+		new KeyEvent(this,0,0);//TODO: REMOVE ME
 		
 		
 		setFullScreenMode(true);
@@ -110,15 +159,6 @@ public class ScrollTest extends Layout implements ContentListener{
 		this.addCommand(new Command("Test4", Command.BACK, 1));
 		this.addCommand(new Command("Test5", Command.BACK, 1));
 		this.addCommand(new Command("Test6", Command.OK, 1));
-		
-		try {
-			/*setNavigationBarButton(NAVBUTTON_LEFT, "/icons/dark/navbar/back.png");
-			setNavigationBarButton(NAVBUTTON_CENTER, "/icons/dark/navbar/no.png");
-			setNavigationBarButton(NAVBUTTON_RIGHT, "/icons/dark/navbar/yes.png");*/
-			Content.setNavbarIcon("/icons/dark/navbar/select.png");
-		}catch(IOException e) {
-			
-		}
 		
 	}
 	

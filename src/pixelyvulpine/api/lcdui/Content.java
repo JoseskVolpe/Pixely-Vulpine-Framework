@@ -1,11 +1,15 @@
 package pixelyvulpine.api.lcdui;
 
-import java.io.IOException;
+import java.util.Vector;
 
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
-public class Content {
+import pixelyvulpine.api.events.GestureDetector;
+import pixelyvulpine.api.events.KeyEvent;
+import pixelyvulpine.api.events.MotionEvent;
+import pixelyvulpine.api.util.GraphicsFix;
+
+public class Content{
 
 	/**Fixed position on canvas*/
 	public final static byte POSITIONING_FIXED=0;
@@ -27,50 +31,22 @@ public class Content {
 	
 	private byte positioning;
 	private boolean visible=true;
-	private ContentListener listenner;
-	
-	/**
-	 * Use POSITIONING_ABSOLUTE or POSITIONING_ANCHORED to use that
-	 * Scalable is in percent
-	 * Offset is in pixel
-	 * */
-	private byte scalableX, scalableY;
-	private int offsetX, offsetY;
-	
-	/**
-	 * Your content's size
-	 * Scalable is in percent
-	 * Offset is in pixel
-	 */
-	private byte scalableWidth, scalableHeight;
-	private int offsetWidth, offsetHeight;
+	private byte ZIndex;
 	
 	private Layout layout;
-	private boolean selected=false;
-	
-	private static Image selectNavbarIconSource;
+	protected DimensionAttributes dimensionAttributes;
+	protected OnTouchListener onTouchListener;
 	
 	/**
 	 * Scalable - Defines value according to screen's resolutions, in percent
 	 * Offset - Defines value absolutely, in pixels
-	 * @param scalableX, offsetX
-	 * @param scalableY, offsetY
-	 * @param scalableWidth, offsetWidth
-	 * @param scalableHeight, offsetHeight
+	 * @param Context
+	 * @param DimensionAttributes
 	 */
-	public Content(Layout layout, int x[], int y[], int width[], int height[]) {
+	public Content(Layout layout, DimensionAttributes dimensionAttributes) {
 		
 		this.layout = layout;
-		
-		this.scalableX = (byte) x[0];
-		this.scalableY = (byte) y[0];
-		this.scalableWidth = (byte) width[0];
-		this.scalableHeight = (byte) height[0];
-		
-		this.offsetX = x[1];
-		this.offsetY = y[1];
-		this.offsetWidth = width[1];
-		this.offsetHeight = height[1];
+		this.dimensionAttributes=dimensionAttributes;
 		
 	}
 	
@@ -78,201 +54,67 @@ public class Content {
 		
 	}
 	
+	public void noPaint() {}
+	
 	public int[] prepaint(int width, int height) {
 		
 		return new int[] {width, height};
 		
 	}
 	
-	public void paint(Graphics g) {
+	public void paint(GraphicsFix g) {
 		
 		
 		
 	}
 	
-	/**
-	 * Sets the center navbar icon for when any content is selected
-	 * @param source
-	 * @throws IOException 
-	 */
-	public final static void setNavbarIcon(String source) throws IOException {
+	private Vector historicalCoords = new Vector(0,1);
+	public final boolean dispatchTouchEvent(MotionEvent event) {
 		
-		setNavbarIcon(Image.createImage(source));
-		
-	}
-	
-	/**
-	 * Sets the center navbar icon for when any content is selected
-	 * @param icon
-	 */
-	public final static void setNavbarIcon(Image icon) {
-		
-		Content.selectNavbarIconSource = icon;
-		
-	}
-	
-	/**
-	 * Returns the navbar icon for when any content is selected
-	 * @return icon
-	 */
-	public final static Image getNavbarIcon() {
-		return selectNavbarIconSource;
-	}
-	
-	/**When getting pressed by key or touch
-	 @return true if ignore Layout command
-	 */
-	public boolean pressed() {
-		
-		if(listenner==null) return true;
-		
-		return listenner.contentPressed(this);
-		
-	}
-	
-	
-	public final boolean onSelect() {
-		if(selected()) {
-			selected=true;
+		if(onTouchListener!=null && onTouchListener.onTouch(this, event)) {
 			return true;
 		}
 		
+		return onTouch(event);
+	}
+	
+	public final boolean dispatchKeyEvent(int keyCode, KeyEvent event) {
+		
+		if(layout.onKey(this, keyCode, event)) return true;
+		
+		return onKey(keyCode, event);
+	}
+	
+	public final Vector getHistoricalCoords() {
+		return historicalCoords;
+	}
+	
+	protected boolean onKey(int keyCode, KeyEvent event) {
 		return false;
 	}
 	
-	/**
-	 * When getting selected
-	 */
-	protected boolean selected() {
-		
+	protected boolean onTouch(MotionEvent event) {
 		return false;
-		
 	}
 	
-	public final void onDeselect() {
-		selected=false;
-		deselected();
+	public void setOnTouchListener(OnTouchListener onTouchListener) {
+		this.onTouchListener = onTouchListener;;
 	}
 	
-	/**
-	 * When getting deselected
-	 */
-	protected void deselected() {
-		
-		
-		
+	public DimensionAttributes getDimension() {
+		return dimensionAttributes;
 	}
 	
-	/**
-	 * @return true/false selected
-	 */
-	public final boolean isSelected() {
-		return selected;
+	public void setDimension(DimensionAttributes dimensionAttributes) {
+		this.dimensionAttributes=dimensionAttributes;
 	}
 	
-	
-	/**
-	 * Getting dragged by touch
-	 * @param relative x
-	 * @param relative y
-	 */
-	public void touchDrag(int x, int y) {
-		
-		
-		
+	protected final int getRenderWidth(GraphicsFix g) {
+		return g.getDimensionWidth();
 	}
 	
-	/**
-	 * Key pressed
-	 * @param keyCode
-	 * @param key
-	 * 
-	 * @return true if nothing is used and you want the Layout to make their operations
-	 */
-	public boolean keyDown(int keyCode, int key) {
-		
-		return true;
-		
-	}
-	
-	/**
-	 * Key released
-	 * @param keyCode
-	 * @param key
-	 * @return true if nothing is used and you want the Layout to make their operations
-	 */
-	public boolean keyUp(int keyCode, int key) {
-		
-		return true;
-		
-	}
-	
-	/**
-	 * @return scalable, offset
-	 */
-	public final int[] getX() {
-		return new int[] {scalableX, offsetX};
-	}
-	
-	/**
-	 * @param scalable, offset
-	 */
-	public final void setX(int x[]) {
-		this.scalableX = (byte) x[0];
-		this.offsetX = x[1];
-	}
-	
-	/**
-	 * @return scalable, offset
-	 */
-	public final int[] getY() {
-		return new int[] {scalableY, offsetY};
-	}
-	
-	/**
-	 * @param scalable, offset
-	 */
-	public final void setY(int y[]) {
-		this.scalableY = (byte) y[0];
-		this.offsetY = y[1];
-	}
-	
-	/**
-	 * @return scalable, offset
-	 */
-	public final int[] getWidth() {
-		return new int[] {scalableWidth, offsetWidth};
-	}
-	
-	/**
-	 * @param scalable, offset
-	 */
-	public final void setWidth(int width[]) {
-		this.scalableWidth = (byte) width[0];
-		this.offsetWidth = width[1];
-	}
-	
-	/**
-	 * @return scalable, offset
-	 */
-	public final int[] getHeight() {
-		return new int[] {scalableHeight, offsetHeight};
-	}
-	
-	/**
-	 * @param scalable, offset
-	 */
-	public final void setHeight(int height[]) {
-		this.scalableHeight = (byte) height[0];
-		this.offsetHeight = height[1];
-	}
-	
-	protected final int getRenderWidth(Graphics g) {
-		return g.getClipWidth();
-	}
-	
-	protected final int getRenderHeight(Graphics g) {
-		return g.getClipHeight();
+	protected final int getRenderHeight(GraphicsFix g) {
+		return g.getDimensionHeight();
 	}
 	
 	protected final Layout getLayout() {
@@ -326,10 +168,6 @@ public class Content {
 		return verticalAnchor;
 	}
 	
-	public final ContentListener getContentListener() {
-		return listenner;
-	}
-	
 	/**
 	 * @return visible
 	 */
@@ -348,11 +186,39 @@ public class Content {
 		
 	}
 	
+	public boolean isSelectable() {
+		return false;
+	}
+	
+	protected void onSelect() {}
+	
+	protected void onDeselect() {}
+	
+	public final void dispatchSelected(boolean selected) {
+		if(selected) 
+			onSelect();
+		else
+			onDeselect();
+	}
+	
 	/**
-	 * Assign a ContentListener
+	 * Set rendering frame
+	 * @param z
 	 */
-	public final void assign(ContentListener listenner) {
-		this.listenner = listenner;
+	public final void setZIndex(int z) {
+		this.ZIndex=(byte)z;
+	}
+	
+	/**
+	 * Returns rendering frame
+	 * @return Z Index
+	 */
+	public final byte getZIndex() {
+		return ZIndex;
+	}
+	
+	public static interface OnTouchListener{
+		public boolean onTouch(Content view, MotionEvent event) ;
 	}
 	
 }

@@ -4,25 +4,22 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import pixelyvulpine.Config;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.LayoutLoader;
-import pixelyvulpine.layouts.Loading;
+import pixelyvulpine.api.util.CSVReader;
 import pixelyvulpine.layouts.Logo;
-import pixelyvulpine.test.scenes.AlphaBlendTest;
-import pixelyvulpine.test.scenes.CanvasTest;
-import pixelyvulpine.test.scenes.CircularProgressBarTest;
-import pixelyvulpine.test.scenes.ScrollTest;
+import pixelyvulpine.test.scenes.*;
 
 public class App extends MIDlet implements CommandListener, LayoutLoader {
 
-	private static final String layoutName="AlphaBlendingTest";
+	private static final String layoutName="scrollTest";
 	
 	private boolean started = false;
 	
@@ -77,7 +74,7 @@ public class App extends MIDlet implements CommandListener, LayoutLoader {
 	public void commandAction(Command arg0, Displayable arg1) {}
 
 	public Layout loadLayout(String layoutName) {
-		
+
 		/*// Force delay test
 		try {
 			Thread.sleep(9000);
@@ -99,6 +96,10 @@ public class App extends MIDlet implements CommandListener, LayoutLoader {
 		
 		if(layoutName.equals("AlphaBlendingTest")) {
 			return new AlphaBlendTest(this);
+		}
+		
+		if(layoutName.equals("touchTest")) {
+			return new TouchTest(this);
 		}
 		
 		return null;

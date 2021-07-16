@@ -3,6 +3,8 @@ package pixelyvulpine.api.lcdui;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import pixelyvulpine.api.util.GraphicsFix;
+
 public class TextFont {
 	
 	private Font font;
@@ -36,7 +38,7 @@ public class TextFont {
 		this.multiline=multiline;
 	}
 	
-	public final void render(String text, Graphics g) {
+	public final void render(String text, GraphicsFix g) {
 		fontColor.updateColor(g);
 		g.setFont(font);
 		
@@ -52,7 +54,7 @@ public class TextFont {
 		
 		for(int i=0; i<text.length(); i++) {
 			
-			if(y>=g.getClipHeight()) break;
+			if(y>=g.getDisplayClipHeight() || y>=g.getDimensionHeight()) break;
 			
 			if(i>=text.length()-1 || text.charAt(i)==' ' || text.charAt(i)=='\n') {
 				
@@ -61,7 +63,7 @@ public class TextFont {
 				
 				w=font.stringWidth(temp.toString());
 				
-				if(w + x >= g.getClipWidth()) {
+				if(w + x >= g.getDimensionWidth()) {
 					x=0;
 					y+=h;
 					
@@ -85,6 +87,9 @@ public class TextFont {
 			temp.append(text.charAt(i));
 			
 		}
+		
+		if(temp!=null && temp.length()>0)
+			temp.delete(0, temp.length()-1);
 		
 		temp=null;
 	}
