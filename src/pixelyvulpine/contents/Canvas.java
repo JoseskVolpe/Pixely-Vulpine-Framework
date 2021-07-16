@@ -750,6 +750,7 @@ public class Canvas extends Content{
 	}
 	
 	private boolean setSelectedEvent(Content selected) {
+		
 		this.selected=selected;
 		
 		int i = renderDataIndex(selected);
@@ -760,17 +761,48 @@ public class Canvas extends Content{
 		int h = ((Integer)renderData[4].elementAt(i)).intValue();
 		
 		if(i!=-1) {
+			int s;
+			double vx=velocityX;
+			double vy=velocityY;
+			
 			if(y+h>canvasHeight) {
-				velocityY=-DPADScrollVelocity;
+				
+				if(h>canvasDisplayH) {
+					vy=-DPADScrollVelocity;
+				}else {
+					s=canvasHeight-y-h;
+					vy=-Math.sqrt(- 4*velLoss * s);
+				}
 			}else if(y<0) {
-				velocityY=DPADScrollVelocity;
+
+				if(h>canvasDisplayH) {
+					vy=DPADScrollVelocity;
+				}else {
+					s=y;
+					vy=Math.sqrt( - 4*velLoss * s);
+				}
 			}
 			
 			if(x+w>canvasWidth) {
-				velocityX=-DPADScrollVelocity;
+				
+				if(w>canvasDisplayW) {
+					vy=-DPADScrollVelocity;
+				}else {
+					s=canvasWidth-x-w;
+					vx=-Math.sqrt( - 4*velLoss * s);
+				}
 			}else if(x<0) {
-				velocityX=DPADScrollVelocity;
+				
+				if(w>canvasDisplayW) {
+					vy=DPADScrollVelocity;
+				}else {
+					s=x;
+					vx=Math.sqrt( - 4*velLoss * s);
+				}
 			}
+			
+			velocityX=vx;
+			velocityY=vy;
 		}
 		
 		return true;
