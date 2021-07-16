@@ -11,6 +11,8 @@ public class Button extends Content{
 	private Label label;
 	private boolean selected;
 	
+	private boolean enabled=true;
+	
 	public Button(Layout context, ButtonPadding buttonPadding, String text) {
 		super(context, buttonPadding);
 		
@@ -40,7 +42,7 @@ public class Button extends Content{
 	}
 	
 	public boolean isSelectable() {
-		return true;
+		return isEnabled();
 	}
 	
 	protected void onSelect() {
@@ -53,11 +55,14 @@ public class Button extends Content{
 	
 	public void paint(GraphicsFix g) {
 		
-		if(selected) {
-			g.setColor(0,0,50);
-		}else {
-			g.setColor(255,255,255);
-		}
+		if(isEnabled())
+			if(selected) {
+				g.setColor(155,155,255);
+			}else {
+				g.setColor(255,255,255);
+			}
+		else
+			g.setColor(110, 110, 110);
 		
 		g.fillRect(0, 0, getRenderWidth(g), getRenderHeight(g));
 		
@@ -101,6 +106,14 @@ public class Button extends Content{
 	
 	public final TextFont getFont() {
 		return label.getFont();
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
+	public void setEnabled(boolean enabled) {
+		this.enabled=enabled;
 	}
 	
 	public static class ButtonPadding extends DimensionAttributes{
