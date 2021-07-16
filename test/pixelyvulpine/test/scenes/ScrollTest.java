@@ -60,6 +60,7 @@ public class ScrollTest extends Layout{
 		this.addContent(button);
 		Button button2 = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "heeey OwO");
 		button2.impact();
+		button2.setEnabled(false);
 		this.addContent(button2);
 		Button button3 = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Yiff @w@");
 		button3.impact();
