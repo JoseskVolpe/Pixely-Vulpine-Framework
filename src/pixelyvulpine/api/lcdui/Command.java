@@ -5,6 +5,7 @@ import javax.microedition.lcdui.Image;
 public class Command extends javax.microedition.lcdui.Command{
 
 	private Image icon;
+	private Content view;
 	
 	public Command(String label, int commandType, int priority) {
 		super(label, commandType, priority);
@@ -25,6 +26,14 @@ public class Command extends javax.microedition.lcdui.Command{
 	
 	public Image getIcon() {
 		return icon;
+	}
+	
+	public final void setView(Content view) {
+		this.view=view;
+	}
+	
+	public final Content getView() {
+		return view;
 	}
 
 }

@@ -1,5 +1,10 @@
 package pixelyvulpine.contents;
 
+import javax.microedition.lcdui.Command;
+
+import pixelyvulpine.api.events.GestureDetector;
+import pixelyvulpine.api.events.KeyEvent;
+import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
@@ -9,7 +14,9 @@ import pixelyvulpine.api.util.GraphicsFix;
 public class Button extends Content{
 
 	private Label label;
+	protected GestureDetector gesture;
 	private boolean selected;
+	protected Command clickCom, selectCom, deselectCom;
 	
 	private boolean enabled=true;
 	
@@ -18,6 +25,7 @@ public class Button extends Content{
 		
 		label = new Label(context, dimensionAttributes, text);
 		label.impact();
+		gesture = new GestureDetector(context, gestureListener);
 	}
 	
 	public Button(Layout context, ButtonPadding buttonPadding, String text, TextFont font) {
@@ -25,20 +33,21 @@ public class Button extends Content{
 		
 		label = new Label(context, dimensionAttributes, text, font);
 		label.impact();
+		gesture = new GestureDetector(context, gestureListener);
 	}
 	
-	public Button(Layout layout, DimensionAttributes dimensionAttributes, String text) {
-		super(layout, dimensionAttributes);
+	public Button(Layout context, DimensionAttributes dimensionAttributes, String text) {
+		super(context, dimensionAttributes);
 		
-		label = new Label(layout, dimensionAttributes, text);
-		
+		label = new Label(context, dimensionAttributes, text);
+		gesture = new GestureDetector(context, gestureListener);
 	}
 	
-	public Button(Layout layout, DimensionAttributes dimensionAttributes, String text, TextFont font) {
-		super(layout, dimensionAttributes);
+	public Button(Layout context, DimensionAttributes dimensionAttributes, String text, TextFont font) {
+		super(context, dimensionAttributes);
 		
-		label = new Label(layout, dimensionAttributes, text, font);
-		
+		label = new Label(context, dimensionAttributes, text, font);
+		gesture = new GestureDetector(context, gestureListener);
 	}
 	
 	public boolean isSelectable() {
@@ -46,12 +55,39 @@ public class Button extends Content{
 	}
 	
 	protected void onSelect() {
+		getLayout().dispatchCommand(selectCom);
 		selected=true;
 	}
 	
 	protected void onDeselect() {
+		getLayout().dispatchCommand(deselectCom);
 		selected=false;
 	}
+	
+	protected boolean onClick() {
+		
+		if(!isEnabled()) return false;
+		
+		getLayout().dispatchCommand(clickCom, this);
+		return true;
+	}
+	
+	public boolean onKey(int keyCode, KeyEvent ev) {
+		if(ev.getAction()==KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
+			return onClick();
+		
+		return false;
+	}
+	
+	public boolean onTouch(MotionEvent ev) {
+		return gesture.onTouchEvent(ev);
+	}
+	
+	protected GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener(){
+		public boolean onSingleTapUp(MotionEvent ev) {
+			return onClick();
+		}
+	};
 	
 	public void paint(GraphicsFix g) {
 		
@@ -83,13 +119,6 @@ public class Button extends Content{
 		
 	}
 	
-	public boolean pressed() {
-		
-		System.out.println(label.getText());
-		
-		return false;
-	}
-	
 	public final void setText(String text) {
 		label.setText(text);
 		label.impact();
@@ -114,6 +143,18 @@ public class Button extends Content{
 	
 	public void setEnabled(boolean enabled) {
 		this.enabled=enabled;
+	}
+	
+	public final void setClickCommand(Command clickCom) {
+		this.clickCom=clickCom;
+	}
+	
+	public final void setSelectCommand(Command selectCom) {
+		this.selectCom=selectCom;
+	}
+	
+	public final void setDeselectCommand(Command deselectCom) {
+		this.deselectCom=deselectCom;
 	}
 	
 	public static class ButtonPadding extends DimensionAttributes{

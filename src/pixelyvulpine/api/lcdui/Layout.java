@@ -22,7 +22,7 @@ import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.GraphicsFix;
 
-public class Layout extends Canvas implements CommandListener{
+public class Layout extends Canvas{
 	
 	private static final byte NAVHEIGHT = 10;//in percent
 	
@@ -593,17 +593,26 @@ public class Layout extends Canvas implements CommandListener{
 		return listener;
 	}
 	
+	public final void dispatchCommand(Command c) {
+		dispatchCommand(c, null);
+	}
+	
+	public final void dispatchCommand(Command c, Content view) {
+		if(getCommandListener()!=null && c!=null) {
+			
+			if(c instanceof pixelyvulpine.api.lcdui.Command)
+				((pixelyvulpine.api.lcdui.Command)c).setView(view);
+				
+			getCommandListener().commandAction(c, this);
+		}
+	}
+	
 	public final void setFullScreenMode(boolean fullscreen) {
 		this.fullscreen=fullscreen;
 		if(!fullscreen) {
 			setNavigationBar(false);
 		}
 		super.setFullScreenMode(fullscreen);
-	}
-
-	public void commandAction(Command command, Displayable display) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

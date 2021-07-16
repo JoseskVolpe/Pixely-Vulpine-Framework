@@ -642,22 +642,22 @@ public class Canvas extends Content{
 	private KeyEvent.Callback callback = new KeyEvent.Callback() {
 		
 		public boolean onKeyUp(int keyCode, KeyEvent event) {
-			
+			if(selected!=null && selected.dispatchKeyEvent(event.getKeycode(), event)) return true;
 			return false;
 		}
 		
 		public boolean onKeyRepeat(int keyCode, KeyEvent event) {
+			if(selected!=null && selected.dispatchKeyEvent(event.getKeycode(), event)) return true;
 			return selectionEvent(event);
 		}
 		
 		public boolean onKeyDown(int keyCode, KeyEvent event) {
+			if(selected!=null && selected.dispatchKeyEvent(event.getKeycode(), event)) return true;
 			return selectionEvent(event);
 		}
 	};
 	
 	protected boolean selectionEvent(KeyEvent event) {
-		
-		if(selected!=null && selected.dispatchKeyEvent(event.getKeycode(), event)) return true;
 		
 		int next=0, back=0;
 		int cd[];
