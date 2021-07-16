@@ -52,7 +52,7 @@ public class ScrollTest extends Layout{
 		label.setBackgroundColor(new Color(150,150,150));
 		label.impact();
 		this.addContent(label);
-		Canvas canvas = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,15)));
+		Canvas canvas = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,30)));
 		canvas.setArrangement(Canvas.ARRANGEMENT_HORIZONTAL);
 		this.addContent(canvas);
 		Button button = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Boop UwU");
