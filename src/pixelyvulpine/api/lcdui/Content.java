@@ -79,6 +79,9 @@ public class Content{
 	}
 	
 	public final boolean dispatchKeyEvent(int keyCode, KeyEvent event) {
+		
+		if(layout.onKey(this, keyCode, event)) return true;
+		
 		return onKey(keyCode, event);
 	}
 	
