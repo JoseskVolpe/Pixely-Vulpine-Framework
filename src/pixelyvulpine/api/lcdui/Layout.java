@@ -597,14 +597,21 @@ public class Layout extends Canvas{
 		dispatchCommand(c, null);
 	}
 	
-	public final void dispatchCommand(Command c, Content view) {
-		if(getCommandListener()!=null && c!=null) {
+	public final void dispatchCommand(final Command c, final Content view) {
+		final Layout me = this;
+		new Thread(new Runnable() {
 			
-			if(c instanceof pixelyvulpine.api.lcdui.Command)
-				((pixelyvulpine.api.lcdui.Command)c).setView(view);
-				
-			getCommandListener().commandAction(c, this);
+			public void run() {
+				if(getCommandListener()!=null && c!=null) {
+					
+					if(c instanceof pixelyvulpine.api.lcdui.Command)
+						((pixelyvulpine.api.lcdui.Command)c).setView(view);
+						
+					getCommandListener().commandAction(c, me);
+				}
+			}
 		}
+		).start();
 	}
 	
 	public final void setFullScreenMode(boolean fullscreen) {
