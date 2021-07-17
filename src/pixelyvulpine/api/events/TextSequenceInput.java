@@ -4,7 +4,7 @@ import pixelyvulpine.Config;
 
 public class TextSequenceInput implements KeyEvent.Callback{
 
-	public final CharSequence[] standardCharSequence= {
+	public static final CharSequence[] standardCharSequence= {
 		new CharSequence('0', new char[] {' ', '\n', '0'}),
 		new CharSequence('1', new char[] {'.', ',', ':', ';', '+', '-', '?', '!', '@', '(', ')', '/', '_', '1'}),
 		new CharSequence('2', new char[] {'a', 'b', 'c', '2'}),
