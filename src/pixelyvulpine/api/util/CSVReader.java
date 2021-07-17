@@ -24,7 +24,7 @@ public final class CSVReader {
 		while(!ready) {
 			temp = new CSVLine(isr);
 			ready=temp.read();
-			if(temp.length()==columns.length())
+			if(temp.length()>0)
 				rows.addElement(temp);
 		}
 		
@@ -95,10 +95,11 @@ public final class CSVReader {
 		private boolean read() throws IOException {
 			int b;
 			char c;
+			boolean nextC = false;
 			StringBuffer sb = new StringBuffer();
 			while(true) {
 				if((b = isr.read()) == -1 | (c=(char)b)=='\n') {
-					if(sb.length()>0)
+					if(sb.length()>0 || nextC)
 						rows.addElement(sb.toString());
 					
 					if(b==-1)
@@ -111,12 +112,14 @@ public final class CSVReader {
 					rows.addElement(sb.toString());
 					if(sb.length()>0)
 						sb.delete(0,  sb.length());
-					
+					nextC=true;
 					continue;
 				}
 				
-				if(c!='\n' && c!='\r')
+				if(c!='\n' && c!='\r') {
 					sb.append(c);
+					nextC=false;
+				}
 			}
 		}
 		
