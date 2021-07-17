@@ -15,6 +15,12 @@ public class TextFont {
 		this.font = Font.getDefaultFont();
 	}
 	
+	public TextFont(TextFont font) {
+		this.font = Font.getFont(font.getFont().getFace(), font.getFont().getStyle(), font.getFont().getSize());
+		this.fontColor=font.getColor();
+		this.multiline=font.getMultiline();
+	}
+	
 	public TextFont(boolean multiline) {
 		this.font = Font.getDefaultFont();
 		this.multiline = multiline;

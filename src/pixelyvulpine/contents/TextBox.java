@@ -22,7 +22,7 @@ public class TextBox extends Content{
 	public TextBox(Layout context, DimensionAttributes dimensionAttributes, TextFont font) {
 		this(context, dimensionAttributes);
 		
-		this.font = font;
+		this.font = new TextFont(font);
 	}
 	
 	public void paint(GraphicsFix g) {

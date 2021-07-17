@@ -31,8 +31,7 @@ public class Label extends Content{
 	}
 	
 	public Label(Layout layout, DimensionAttributes dimensionAttributes, String text, TextFont font) {
-		super(layout, dimensionAttributes);
-		this.text = text;
+		this(layout, dimensionAttributes, text);
 		setTextFont(font);
 	}
 	
@@ -49,7 +48,7 @@ public class Label extends Content{
 	}
 	
 	public final void setTextFont(TextFont font) {
-		this.font = font;
+		this.font = new TextFont(font);
 	}
 	
 	public final TextFont getTextFont() {

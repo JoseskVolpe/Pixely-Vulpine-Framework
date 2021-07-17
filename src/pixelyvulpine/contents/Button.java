@@ -25,15 +25,12 @@ public class Button extends Content{
 		
 		label = new Label(context, dimensionAttributes, text);
 		label.impact();
-		gesture = new GestureDetector(context, gestureListener);
 	}
 	
 	public Button(Layout context, ButtonPadding buttonPadding, String text, TextFont font) {
-		super(context, buttonPadding);
+		this(context, buttonPadding, text);
 		
-		label = new Label(context, dimensionAttributes, text, font);
 		label.impact();
-		gesture = new GestureDetector(context, gestureListener);
 	}
 	
 	public Button(Layout context, DimensionAttributes dimensionAttributes, String text) {
@@ -44,10 +41,9 @@ public class Button extends Content{
 	}
 	
 	public Button(Layout context, DimensionAttributes dimensionAttributes, String text, TextFont font) {
-		super(context, dimensionAttributes);
+		this(context, dimensionAttributes, text);
 		
-		label = new Label(context, dimensionAttributes, text, font);
-		gesture = new GestureDetector(context, gestureListener);
+		label.setFont(font);
 	}
 	
 	public boolean isSelectable() {
