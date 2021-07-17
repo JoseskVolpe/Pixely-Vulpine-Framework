@@ -8,6 +8,14 @@ public final class Config {
 
 	public final static String framework_version="0.0.1";
 	public final static String framework_version_tag="dev";
+	/*
+	 * dev: not released
+	 * pre-alpha: pre-alpha release
+	 * alpha: alpha release
+	 * beta: beta release
+	 * stable: main release
+	 * custom: cutom, modified framework
+	 */
 	
 	private static long longPressTimeout=1000; //in millis
 	private static short minimumFlingVelocity = 8; //in pixels
@@ -17,6 +25,7 @@ public final class Config {
 	private static short doubleTapDistance = 16; //in píxels
 	private static boolean showTouch;
 	private static String deviceBrand="unknown";
+	private static long numpadTextInputTimeout=3000; //In millis
 	
 	static {
 		try {
@@ -101,6 +110,14 @@ public final class Config {
 	
 	public final static String getDeviceBrand() {
 		return deviceBrand;
+	}
+	
+	public final static void setNumpadTextInputTimeout(long numpadTextInputTimeout) {
+		Config.numpadTextInputTimeout = numpadTextInputTimeout;
+	}
+	
+	public final static long getNumpadTextInputTimeout() {
+		return numpadTextInputTimeout;
 	}
 	
 }
