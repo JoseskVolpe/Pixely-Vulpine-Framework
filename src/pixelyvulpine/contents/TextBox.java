@@ -1,25 +1,31 @@
 package pixelyvulpine.contents;
 
+import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
+import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.TextFont;
+import pixelyvulpine.api.system.TextInput;
 import pixelyvulpine.api.util.GraphicsFix;
 import pixelyvulpine.api.events.TextSequenceInput;
 
-public class TextBox extends Content implements TextSequenceInput.OnTextInputListener{
+public class TextBox extends Content implements TextSequenceInput.OnTextInputListener, TextInput.InputListener{
 	
 	private TextFont font;
 	private StringBuffer text=new StringBuffer();
 	private TextSequenceInput input = new TextSequenceInput();
 	private boolean selected;
+	
+	private GestureDetector gesture;
 
 	public TextBox(Layout context, DimensionAttributes dimensionAttributes) {
 		super(context, dimensionAttributes);
 		
 		font = new TextFont();
 		input.setOnTextInputListener(this);
+		gesture = new GestureDetector(getLayout(), gestureListener);
 	}
 	
 	public TextBox(Layout context, DimensionAttributes dimensionAttributes, TextFont font) {
@@ -36,27 +42,28 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	
 	public boolean onKey(int keyCode, KeyEvent ev) {
 		
-		/*switch(keyCode) {
-			case KeyEvent.KEYCODE_DPAD_DOWN:
-				return false;
-			case KeyEvent.KEYCODE_DPAD_LEFT:
-				return false;
-			case KeyEvent.KEYCODE_DPAD_RIGHT:
-				return false;
-			case KeyEvent.KEYCODE_DPAD_UP:
-				return false;
-			case KeyEvent.KEYCODE_DEL:
-				if(text.length()>0)
-					text.deleteCharAt(text.length()-1);
+		switch(keyCode) {
+			case KeyEvent.KEYCODE_DPAD_CENTER:
+				TextInput.showTextInput(getLayout(), this, false, text.toString(), 255);
 				return true;
-			case KeyEvent.KEYCODE_ENTER:
-				return false;
-		}*/
+		}
 		
 		
 		return ev.dispatch(input);
 		
 	}
+	
+	public boolean onTouch(MotionEvent ev) {
+		return gesture.onTouchEvent(ev);
+	}
+	
+	private TextBox me=this;
+	public GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
+		public boolean onSingleTapUp(MotionEvent ev) {
+			TextInput.showTextInput(getLayout(), me, false, text.toString(), 255);
+			return true;
+		}
+	};
 	
 	public boolean isSelectable() {
 		return true;
@@ -94,6 +101,15 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		if(text.length()>0)
 			text.deleteCharAt(text.length()-1);
+		
+	}
+
+	public void onInputConfirmed(String output) {
+		if(text.length()>0) text.delete(0, text.length());
+		text.append(output);
+	}
+
+	public void onInputCanceled(String input) {
 		
 	}
 
