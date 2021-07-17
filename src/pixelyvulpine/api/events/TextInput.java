@@ -6,7 +6,7 @@ public class TextInput implements KeyEvent.Callback{
 
 	public final CharSequence[] standardCharSequence= {
 		new CharSequence('0', new char[] {' ', '\n', '0'}),
-		new CharSequence('1', new char[] {'.', ',', '-', '?', '!', '@', '(', ')', '/', '_', '1'}),
+		new CharSequence('1', new char[] {'.', ',', ':', ';', '+', '-', '?', '!', '@', '(', ')', '/', '_', '1'}),
 		new CharSequence('2', new char[] {'a', 'b', 'c', '2'}),
 		new CharSequence('3', new char[] {'d', 'e', 'f', '3'}),
 		new CharSequence('4', new char[] {'g', 'h', 'i', '4'}),
