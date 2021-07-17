@@ -23,6 +23,7 @@ public class KeyEvent extends InputEvent{
 	public final static int KEYCODE_9 = Canvas.KEY_NUM9;
 	public final static int KEYCODE_STAR = Canvas.KEY_STAR;
 	public final static int KEYCODE_POUND = Canvas.KEY_POUND;
+	public final static int KEYCODE_ENTER = 10;
 	public final static int KEYCODE_DPAD_UP = 19;
 	public final static int KEYCODE_DPAD_LEFT = 21;
 	public final static int KEYCODE_DPAD_RIGHT = 22;
