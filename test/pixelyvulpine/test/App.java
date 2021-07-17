@@ -9,17 +9,15 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import pixelyvulpine.Config;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.LayoutLoader;
-import pixelyvulpine.api.util.CSVReader;
 import pixelyvulpine.layouts.Logo;
 import pixelyvulpine.test.scenes.*;
 
 public class App extends MIDlet implements CommandListener, LayoutLoader {
 
-	private static final String layoutName="vibrate";
+	private static final String layoutName="scrollTest";
 	
 	private boolean started = false;
 	

@@ -30,7 +30,7 @@ public class Canvas extends Content{
 	
 	private byte alignment = ALIGNMENT_LEFT;
 	private byte arrangement = ARRANGEMENT_VERTICAL;
-	private boolean scroll = true;
+	private boolean scroll = false;
 	private int minX, minY, maxX, maxY, canvasDisplayW, canvasDisplayH, canvasWidth, canvasHeight, canvasX, canvasY;
 	private double scrollX, scrollY, velocityX, velocityY;
 	//TODO: Corrigir canvas secundários
@@ -39,9 +39,6 @@ public class Canvas extends Content{
 	
 	public Canvas(Layout layout, DimensionAttributes dimensionAttributes) {
 		super(layout, dimensionAttributes);
-		// TODO Auto-generated constructor stub
-		backgroundColor=new Color (150,30,30,30);
-		foregroundColor=new Color(150,255,0,0);
 	}
 	
 	public void Stopped() {
@@ -974,11 +971,11 @@ public class Canvas extends Content{
 		return arrangement;
 	}
 	
-	public final void setScroll(boolean scroll) {
+	public final void setScrollable(boolean scroll) {
 		this.scroll = scroll;
 	}
 	
-	public final boolean getScroll() {
+	public final boolean getScrollable() {
 		return scroll;
 	}
 	

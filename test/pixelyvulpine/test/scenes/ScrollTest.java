@@ -11,14 +11,15 @@ import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Command;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
-import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.contents.Button;
 import pixelyvulpine.contents.Canvas;
 import pixelyvulpine.contents.ImageView;
 import pixelyvulpine.contents.Label;
+import pixelyvulpine.contents.ScrollableCanvas;
+import pixelyvulpine.layouts.EmptyScrollLayout;
 import pixelyvulpine.test.App;
 
-public class ScrollTest extends Layout{
+public class ScrollTest extends EmptyScrollLayout{
 
 	public ScrollTest(App app) {
 		super(app);
@@ -52,7 +53,7 @@ public class ScrollTest extends Layout{
 		label.setBackgroundColor(new Color(150,150,150));
 		label.impact();
 		this.addContent(label);
-		Canvas canvas = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,30)));
+		Canvas canvas = new ScrollableCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,30)));
 		canvas.setArrangement(Canvas.ARRANGEMENT_HORIZONTAL);
 		this.addContent(canvas);
 		Button button = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Boop UwU");

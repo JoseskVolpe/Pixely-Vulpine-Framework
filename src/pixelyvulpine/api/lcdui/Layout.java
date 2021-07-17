@@ -60,7 +60,8 @@ public class Layout extends Canvas{
 	
 	private static short navheight;
 	
-	private pixelyvulpine.contents.Canvas canvas, focused;
+	protected pixelyvulpine.contents.Canvas canvas;
+	private pixelyvulpine.contents.Canvas focused;
 	private boolean fullscreen, painted;
 	private short deltaTime;
 	private CommandListener listener;
