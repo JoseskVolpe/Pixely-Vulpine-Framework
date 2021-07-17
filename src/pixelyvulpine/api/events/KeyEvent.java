@@ -191,11 +191,6 @@ public class KeyEvent extends InputEvent{
 	
 	private int convertKeycode(int runtimeCode) {
 		
-		if(runtimeCode==KEYCODE_LEFT_KC)
-			return KEYCODE_LEFT_KC;
-		if(runtimeCode==KEYCODE_RIGHT_KC)
-			return KEYCODE_RIGHT_KC;
-		
 		try {
 			String name = context.getKeyName(runtimeCode).toUpperCase();
 			if(name.equals("SOFT1"))
@@ -210,6 +205,11 @@ public class KeyEvent extends InputEvent{
 			if(name.equals("END"))
 				return KEYCODE_ENDCALL;
 		}catch(Throwable e) {}
+		
+		if(runtimeCode==KEYCODE_LEFT_KC)
+			return KEYCODE_LEFT_KC;
+		if(runtimeCode==KEYCODE_RIGHT_KC)
+			return KEYCODE_RIGHT_KC;
 		
 		if(runtimeCode == context.getKeyCode(Canvas.UP)) 
 			return KEYCODE_DPAD_UP;
