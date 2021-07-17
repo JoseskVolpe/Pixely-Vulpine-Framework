@@ -1,11 +1,6 @@
 package pixelyvulpine.api.events;
 
-import java.io.IOException;
-import java.util.Vector;
-
 import javax.microedition.lcdui.Canvas;
-
-import pixelyvulpine.Config;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.util.CSVReader;
 
