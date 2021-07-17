@@ -212,16 +212,18 @@ public class KeyEvent extends InputEvent{
 		if(runtimeCode==KEYCODE_RIGHT_KC)
 			return KEYCODE_RIGHT_KC;
 		
-		if(runtimeCode == context.getKeyCode(Canvas.UP)) 
-			return KEYCODE_DPAD_UP;
-		if(runtimeCode == context.getKeyCode(Canvas.DOWN)) 
-			return KEYCODE_DPAD_DOWN;
-		if(runtimeCode == context.getKeyCode(Canvas.LEFT)) 
-			return KEYCODE_DPAD_LEFT;
-		if(runtimeCode == context.getKeyCode(Canvas.RIGHT)) 
-			return KEYCODE_DPAD_RIGHT;
-		if(runtimeCode == context.getKeyCode(Canvas.FIRE))
-			return KEYCODE_DPAD_CENTER;
+		try {
+			if(context.getGameAction(runtimeCode) == Canvas.LEFT && runtimeCode!=KEYCODE_4) 
+				return KEYCODE_DPAD_LEFT;
+			if(context.getGameAction(runtimeCode) == Canvas.DOWN && runtimeCode!=KEYCODE_8) 
+				return KEYCODE_DPAD_DOWN;
+			if(context.getGameAction(runtimeCode) == Canvas.RIGHT && runtimeCode!=KEYCODE_6)
+				return KEYCODE_DPAD_RIGHT;
+			if(context.getGameAction(runtimeCode) == Canvas.UP && runtimeCode!=KEYCODE_2)
+				return KEYCODE_DPAD_UP;
+			if(context.getGameAction(runtimeCode) == Canvas.FIRE && runtimeCode!=KEYCODE_5)
+				return KEYCODE_DPAD_CENTER;
+		}catch(IllegalArgumentException e) {}
 		
 		
 		for(int i=0; i<convertableCodes.length; i++) {
