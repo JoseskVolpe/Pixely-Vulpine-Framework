@@ -270,12 +270,16 @@ public class KeyEvent extends InputEvent{
 								) {
 							KEYCODE_LEFT_KC = l;
 							KEYCODE_RIGHT_KC = r;
+							csv.erase();
+							csv=null;
 							return;
 						}
 						
 					}catch(IllegalArgumentException e) {}
 					
 				}
+				csv.erase();
+				csv=null;
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
