@@ -25,7 +25,7 @@ public final class Config {
 	private static short doubleTapDistance = 16; //in píxels
 	private static boolean showTouch;
 	private static String deviceBrand="unknown";
-	private static long numpadTextInputTimeout=3000; //In millis
+	private static long numpadTextInputTimeout=1300; //In millis
 	
 	static {
 		try {

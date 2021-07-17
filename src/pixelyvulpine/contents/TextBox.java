@@ -6,17 +6,20 @@ import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.TextFont;
 import pixelyvulpine.api.util.GraphicsFix;
+import pixelyvulpine.api.events.TextSequenceInput;
 
-public class TextBox extends Content{
+public class TextBox extends Content implements TextSequenceInput.OnTextInputListener{
 	
 	private TextFont font;
 	private StringBuffer text=new StringBuffer();
+	private TextSequenceInput input = new TextSequenceInput();
 	private boolean selected;
 
 	public TextBox(Layout context, DimensionAttributes dimensionAttributes) {
 		super(context, dimensionAttributes);
 		
 		font = new TextFont();
+		input.setOnTextInputListener(this);
 	}
 	
 	public TextBox(Layout context, DimensionAttributes dimensionAttributes, TextFont font) {
@@ -33,9 +36,7 @@ public class TextBox extends Content{
 	
 	public boolean onKey(int keyCode, KeyEvent ev) {
 		
-		if(ev.getAction()==KeyEvent.ACTION_UP) return false;
-		
-		switch(keyCode) {
+		/*switch(keyCode) {
 			case KeyEvent.KEYCODE_DPAD_DOWN:
 				return false;
 			case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -50,11 +51,10 @@ public class TextBox extends Content{
 				return true;
 			case KeyEvent.KEYCODE_ENTER:
 				return false;
-		}
+		}*/
 		
-		text.append(ev.getChar());
 		
-		return true;
+		return ev.dispatch(input);
 		
 	}
 	
@@ -68,6 +68,33 @@ public class TextBox extends Content{
 	
 	public void onDeselect() {
 		selected=false;
+	}
+
+	public boolean onCharAdded(char c) {
+		
+		text.append(c);
+		
+		return true;
+		
+	}
+
+	public boolean onCharChanged(char c) {
+		
+		text.setCharAt(text.length()-1, c);
+		return true;
+		
+	}
+
+	public void onCharFinished(char c) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onCharErase() {
+		
+		if(text.length()>0)
+			text.deleteCharAt(text.length()-1);
+		
 	}
 
 }

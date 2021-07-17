@@ -2,7 +2,7 @@ package pixelyvulpine.api.events;
 
 import pixelyvulpine.Config;
 
-public class TextInput implements KeyEvent.Callback{
+public class TextSequenceInput implements KeyEvent.Callback{
 
 	public final CharSequence[] standardCharSequence= {
 		new CharSequence('0', new char[] {' ', '\n', '0'}),
@@ -79,7 +79,6 @@ public class TextInput implements KeyEvent.Callback{
 				
 				lastCharSeq = seq;
 				lastEvent = event;
-				startThread();
 				clicks=0;
 			}else {
 				do {
@@ -111,8 +110,8 @@ public class TextInput implements KeyEvent.Callback{
 
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		
-		if(listener!=null && getValidKey(keyCode)) {
-			
+		if(listener!=null && lastEvent!=null && getSequence(event.getChar())!=null && clicks<=0 && getValidKey(keyCode)) {
+			startThread();
 		}
 		
 		return false;
