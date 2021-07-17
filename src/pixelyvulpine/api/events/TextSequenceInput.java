@@ -42,6 +42,11 @@ public class TextSequenceInput implements KeyEvent.Callback{
 				}catch(InterruptedException e) {}
 			}
 	};
+	
+	public TextSequenceInput() {}
+	public TextSequenceInput(CharSequence[] charSequence) {
+		this.charSequence=charSequence;
+	}
 		
 	protected void resetThread() {
 		if(inputThread!=null) inputThread.interrupt();
@@ -141,6 +146,14 @@ public class TextSequenceInput implements KeyEvent.Callback{
 		}
 		
 		return null;
+	}
+	
+	public CharSequence[] getCharSequences() {
+		return charSequence;
+	}
+	
+	public void setCharSequences(CharSequence[] charSequence) {
+		this.charSequence=charSequence;
 	}
 	
 	public final void setOnTextInputListener(OnTextInputListener listener) {
