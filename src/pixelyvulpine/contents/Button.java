@@ -23,6 +23,7 @@ public class Button extends Content{
 	public Button(Layout context, ButtonPadding buttonPadding, String text) {
 		super(context, buttonPadding);
 		
+		gesture = new GestureDetector(context, gestureListener);
 		label = new Label(context, dimensionAttributes, text);
 		label.impact();
 	}
@@ -30,13 +31,13 @@ public class Button extends Content{
 	public Button(Layout context, ButtonPadding buttonPadding, String text, TextFont font) {
 		this(context, buttonPadding, text);
 		
-		gesture = new GestureDetector(context, gestureListener);
 		label.impact();
 	}
 	
 	public Button(Layout context, DimensionAttributes dimensionAttributes, String text) {
 		super(context, dimensionAttributes);
 		
+		gesture = new GestureDetector(context, gestureListener);
 		label = new Label(context, dimensionAttributes, text);
 	}
 	
