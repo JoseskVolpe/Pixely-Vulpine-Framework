@@ -1,5 +1,6 @@
 package pixelyvulpine.api.events;
 
+import java.io.IOException;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Canvas;
@@ -56,8 +57,8 @@ public class KeyEvent extends InputEvent{
 		new ConvertableCode(8,KEYCODE_DEL)
 	};
 	
-	/**@deprecated*/private static int[] KEYCODE_LEFT_KC;
-	/**@deprecated*/private static int[] KEYCODE_RIGHT_KC;
+	private static int KEYCODE_LEFT_KC;
+	private static int KEYCODE_RIGHT_KC;
 	
 	public static interface Callback{
 		public abstract boolean onKeyDown(int keyCode, KeyEvent event);
@@ -72,7 +73,7 @@ public class KeyEvent extends InputEvent{
 	public KeyEvent (Layout context, int action, int runtimeCode) {
 		super();
 		
-		if(KEYCODE_LEFT_KC==null || KEYCODE_RIGHT_KC==null || KEYCODE_LEFT_KC.length<=0 || KEYCODE_RIGHT_KC.length<=0) detectSoftKeycodes(context);
+		if(KEYCODE_LEFT_KC==KEYCODE_RIGHT_KC) detectSoftKeycodes(context);
 		
 		this.action=action;
 		this.runtimeCode=runtimeCode;
@@ -179,31 +180,26 @@ public class KeyEvent extends InputEvent{
 		}
 	}
 	
-	/**@deprecated*/
-	public static int[] getLeftSoftKeycodes() {
+	
+	public static int getLeftSoftKeycodes() {
 		return KEYCODE_LEFT_KC;
 	}
 	
-	/**@deprecated*/
-	public static int[] getRightSoftKeycodes() {
+	public static int getRightSoftKeycodes() {
 		return KEYCODE_RIGHT_KC;
 	}
 	
-	/**@deprecated*/
 	public static void setSoftKeycodes(int leftsoft, int rightsoft) {
-		KEYCODE_LEFT_KC = new int[] {leftsoft};
-		KEYCODE_RIGHT_KC = new int[] {rightsoft};
+		KEYCODE_LEFT_KC = leftsoft;
+		KEYCODE_RIGHT_KC = rightsoft;
 	}
 	
 	private int convertKeycode(int runtimeCode) {
-		/*
-		for(int i=0; i<KEYCODE_LEFT_KC.length; i++) {
-			if(runtimeCode==KEYCODE_LEFT_KC[i])
-				return KEYCODE_SOFT_LEFT;
-			
-			if(runtimeCode==KEYCODE_RIGHT_KC[i])
-				return KEYCODE_SOFT_RIGHT;
-		}*/
+		
+		if(runtimeCode==KEYCODE_LEFT_KC)
+			return KEYCODE_LEFT_KC;
+		if(runtimeCode==KEYCODE_RIGHT_KC)
+			return KEYCODE_RIGHT_KC;
 		
 		try {
 			String name = context.getKeyName(runtimeCode).toUpperCase();
@@ -241,111 +237,96 @@ public class KeyEvent extends InputEvent{
 		
 	}
 	
-	/**@deprecated*/
 	private static void detectSoftKeycodes(Layout context) {
 		
-		try {
+			String lskc = context.getMIDlet().getAppProperty("PixelyVulpineFramework.leftsoftkeycode");
+			String rskc = context.getMIDlet().getAppProperty("PixelyVulpineFramework.rightsoftkeycode");
+			boolean givenName=false;
+			
+			if(lskc!=null && rskc!=null && !lskc.equals(null) && !rskc.equals(null)) {
+					try {
+						KEYCODE_LEFT_KC = Integer.parseInt(lskc);
+						KEYCODE_RIGHT_KC = Integer.parseInt(rskc);
+						return;
+					}catch(NumberFormatException e) {
+						lskc.toUpperCase();
+						rskc.toUpperCase();
+						givenName=true;
+					}
+			}
 			
 			try {
-				String lskc = context.getMIDlet().getAppProperty("PixelyVulpineFramework.leftsoftkeycode");
-				String rskc = context.getMIDlet().getAppProperty("PixelyVulpineFramework.rightsoftkeycode");
-				
-				if(lskc==null || rskc==null || lskc.equals(null) || rskc.equals(null))
-					throw new NullPointerException();
-				
-				KEYCODE_LEFT_KC = new int[] {Integer.parseInt(lskc)};
-				KEYCODE_RIGHT_KC = new int[] {Integer.parseInt(rskc)};
-				
-			}catch(Exception invalidProperty) {
-				
-				Vector lskc = new Vector(0,1);
-				Vector rskc = new Vector(0,1);
-				
-				String TempBrand = Config.getDeviceBrand().toLowerCase();
-				
-				CSVReader csv = CSVReader.read(context.getClass().getResourceAsStream("/pixelyvulpine/SoftKeycodes.csv"));
-				
-				if(!TempBrand.equals("unknown"))
-					for(int i=0; i<csv.getRowsLength(); i++) {
+				CSVReader csv = CSVReader.read(Runtime.getRuntime().getClass().getResourceAsStream("/pixelyvulpine/SoftKeycodes.csv"));
+				int l, r;
+				String le, re, kl, kr;
+				for(int i=0; i<csv.getRowsLength(); i++) {
+					l = Integer.parseInt(csv.getValue("soft left", i));
+					r = Integer.parseInt(csv.getValue("soft right", i));
+					le = csv.getValue("left name exception", i).toUpperCase();
+					re = csv.getValue("right name exception", i).toUpperCase();
+					
+					try {
+						kl = context.getKeyName(l);
+						kr = context.getKeyName(r);
 						
-						if(csv.getValue("Brand", i).toLowerCase().equals(TempBrand))
-							break;
-						
-						if(i>=csv.getRowsLength()-1) {
-							TempBrand = "unknown";
-							break;
+						if(!kl.equals(kr) && checkAvailableKeycode(context, l) && checkAvailableKeycode(context, r)&& 
+								( (givenName && kl.toUpperCase().equals(lskc) && kr.toUpperCase().equals(rskc)) ||
+								(!givenName && !kl.toUpperCase().equals(le) && !kr.toUpperCase().equals(re) && !kl.equals("") && !kr.equals("")) )
+								) {
+							KEYCODE_LEFT_KC = l;
+							KEYCODE_RIGHT_KC = r;
+							return;
 						}
-					}
-				
-				
-				
-				String platform = System.getProperty("microedition.platform").toLowerCase();
-				int i=platform.indexOf("/");
-				if(i<0) {
-					i=platform.indexOf("\\");
-				}
-				
-				if(i>0)
-					platform=platform.substring(0, i);
-				
-				detectSoftKeycodesRow(csv, lskc, rskc, TempBrand, platform);
-				
-				if(rskc.isEmpty() || lskc.isEmpty()) {
-					platform=platform.replace('0', '#');
-					platform=platform.replace('1', '#');
-					platform=platform.replace('2', '#');
-					platform=platform.replace('3', '#');
-					platform=platform.replace('4', '#');
-					platform=platform.replace('5', '#');
-					platform=platform.replace('6', '#');
-					platform=platform.replace('7', '#');
-					platform=platform.replace('8', '#');
-					platform=platform.replace('9', '#');
-					
-					detectSoftKeycodesRow(csv, lskc, rskc, TempBrand, platform);
-					
-					if(rskc.isEmpty() || lskc.isEmpty()) {
-						platform="unknown";
-						detectSoftKeycodesRow(csv, lskc, rskc, TempBrand, platform);
-					}
+						
+					}catch(IllegalArgumentException e) {}
 					
 				}
-				
-				KEYCODE_LEFT_KC = new int[lskc.size()];
-				KEYCODE_RIGHT_KC = new int[rskc.size()];
-				
-				for(i=0; i<lskc.size();i++) {
-					KEYCODE_LEFT_KC[i] = ((Integer)lskc.elementAt(i)).intValue();
-					KEYCODE_RIGHT_KC[i] = ((Integer)rskc.elementAt(i)).intValue();
-				}
-				
-				csv.erase();
-				csv=null;
-				
+			}catch(Exception e) {
+				e.printStackTrace();
 			}
 			
-		}catch(Throwable DetectException) {
-			KEYCODE_LEFT_KC = new int[] {KEYCODE_SOFT_LEFT};
-			KEYCODE_RIGHT_KC = new int[] {KEYCODE_SOFT_RIGHT};
-		}
+			System.err.println("Pixely Vulpine warning: SOFT KEYCODES NOT FOUND");
+			KEYCODE_LEFT_KC = -6;
+			KEYCODE_RIGHT_KC = -7;
+			
 	}
 	
-	/**@deprecated*/
-	private static void detectSoftKeycodesRow(CSVReader csv, Vector lskc, Vector rskc, String TempBrand, String platform) {
-		//System.out.println("Searching for "+TempBrand+" "+platform);
-		
-		for(int i=0; i<csv.getRowsLength(); i++) {
-			if(
-				(csv.getValue("Brand", i).toLowerCase().equals(TempBrand) && csv.getValue("Microedition.platform", i).toLowerCase().equals(platform)) ||
-				(csv.getValue("Microedition.platform", i).toLowerCase().equals(platform) && !platform.equals("unknown") && TempBrand=="unknown")
-			) {
-				lskc.addElement(Integer.valueOf(csv.getValue("Left soft keycode", i)));
-				rskc.addElement(Integer.valueOf(csv.getValue("Right soft keycode", i)));
-				
-				//System.out.println("Found: " + ((Integer)lskc.lastElement()) +" "+((Integer)rskc.lastElement()));
-				
-			}
+	private static boolean checkAvailableKeycode(Layout context, int keycode) {
+		switch(keycode) {
+		case KEYCODE_0:
+			return false;
+		case KEYCODE_1:
+			return false;
+		case KEYCODE_2:
+			return false;
+		case KEYCODE_3:
+			return false;
+		case KEYCODE_4:
+			return false;
+		case KEYCODE_5:
+			return false;
+		case KEYCODE_6:
+			return false;
+		case KEYCODE_7:
+			return false;
+		case KEYCODE_8:
+			return false;
+		case KEYCODE_9:
+			return false;
 		}
+		
+		if(keycode == context.getKeyCode(Canvas.UP)) 
+			return false;
+		if(keycode == context.getKeyCode(Canvas.DOWN)) 
+			return false;
+		if(keycode == context.getKeyCode(Canvas.LEFT)) 
+			return false;
+		if(keycode == context.getKeyCode(Canvas.RIGHT)) 
+			return false;
+		if(keycode == context.getKeyCode(Canvas.FIRE))
+			return false;
+		
+		return true;
 	}
 	
 	private static class ConvertableCode{
