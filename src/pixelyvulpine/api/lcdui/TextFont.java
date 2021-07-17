@@ -42,6 +42,8 @@ public class TextFont {
 		fontColor.updateColor(g);
 		g.setFont(font);
 		
+		if(text==null) return;
+		
 		if(!multiline) {
 			g.drawString(text, 0, 0, 0);
 			return ;

@@ -16,6 +16,7 @@ import pixelyvulpine.contents.Canvas;
 import pixelyvulpine.contents.ImageView;
 import pixelyvulpine.contents.Label;
 import pixelyvulpine.contents.ScrollableCanvas;
+import pixelyvulpine.contents.TextBox;
 import pixelyvulpine.layouts.EmptyScrollLayout;
 import pixelyvulpine.test.App;
 
@@ -95,6 +96,9 @@ public class ScrollTest extends EmptyScrollLayout{
 		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "Y"));
 		canvas.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 0), "Z"));
 		
+		
+		TextBox text = new TextBox(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,40,15), new DimensionAttributes.Offset(0, 2, 0, 0)));
+		addContent(text);
 		
 		int b=0;
 		
