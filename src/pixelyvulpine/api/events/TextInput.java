@@ -27,6 +27,7 @@ public class TextInput implements KeyEvent.Callback{
 	private CharSequence[] charSequence = standardCharSequence;
 	private OnTextInputListener listener;
 	private KeyEvent lastEvent;
+	private CharSequence lastCharSeq;
 	private int clicks;
 	protected Thread inputThread;
 	protected Runnable inputRunnable = new Runnable() {
@@ -68,17 +69,22 @@ public class TextInput implements KeyEvent.Callback{
 				if(lastEvent!=null) {
 					listener.onCharFinished(lastEvent.getChar());
 					if(inputThread!=null) inputThread.interrupt();
+					lastEvent=null;
 				}
 				
-				if(!listener.onCharAdded(getSelectedChar(event.getChar(), 0))) return false;
+				CharSequence seq = getSequence(event.getChar());
+				if(seq == null) return listener.onCharAdded(event.getChar());
 				
+				if(!listener.onCharAdded(seq.getChar(0))) return false;
+				
+				lastCharSeq = seq;
 				lastEvent = event;
 				startThread();
 				clicks=0;
 			}else {
 				do {
 					clicks++;
-				}while(!listener.onCharChanged(getSelectedChar(event.getChar(), clicks)));
+				}while(!listener.onCharChanged(lastCharSeq.getChar(clicks)));
 				resetThread();
 			}
 			return true;
@@ -93,6 +99,10 @@ public class TextInput implements KeyEvent.Callback{
 			case KeyEvent.KEYCODE_DEL:
 				if(listener!=null) listener.onCharErase();
 			return true;
+		}
+		
+		if(lastEvent==null && getSequence(event.getChar())==null) {
+			return listener.onCharAdded(event.getChar());
 		}
 		
 		return finishSequence();
@@ -123,15 +133,15 @@ public class TextInput implements KeyEvent.Callback{
 		return false;
 	}
 	
-	protected char getSelectedChar(char c, int index) {
+	public CharSequence getSequence(char c) {
 		
 		for(int i=0; i<charSequence.length; i++) {
 			if(charSequence[i].key==c) {
-				return charSequence[i].getChar(index);
+				return charSequence[i];
 			}
 		}
 		
-		return c;
+		return null;
 	}
 	
 	public final void setOnTextInputListener(OnTextInputListener listener) {
