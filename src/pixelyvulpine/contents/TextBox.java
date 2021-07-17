@@ -48,6 +48,8 @@ public class TextBox extends Content{
 				if(text.length()>0)
 					text.deleteCharAt(text.length()-1);
 				return true;
+			case KeyEvent.KEYCODE_ENTER:
+				return false;
 		}
 		
 		text.append(ev.getChar());
