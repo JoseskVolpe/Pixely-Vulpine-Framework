@@ -12,8 +12,17 @@ public class Paragraph {
 	private int width, height, startX, lastFace, lastStyle, lastSize;
 	private Vector paragraphs;
 	
+	public Paragraph(Font font) {
+		this.font = font;
+	}
+	
+	public Paragraph(Font font, boolean multiline) {
+		this(font);
+		this.multiline=multiline;
+	}
+	
 	public Paragraph(String text, Font font) {
-		this.font=font;
+		this(font);
 		this.text=text;
 	}
 	
@@ -24,6 +33,9 @@ public class Paragraph {
 	
 	public void render(GraphicsFix g) {
 		g.setFont(font);
+		
+		if(text==null) return;
+		
 		prepareDimension(g.getDimensionWidth(), g.getDimensionHeight());
 		
 		int x = startX;
