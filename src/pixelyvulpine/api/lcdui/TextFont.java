@@ -5,6 +5,7 @@ import javax.microedition.lcdui.Graphics;
 
 import pixelyvulpine.api.util.GraphicsFix;
 
+/**@deprecated**/
 public class TextFont {
 	
 	private Font font;
@@ -46,7 +47,7 @@ public class TextFont {
 	/**@deprecated**/
 	public final void render(String text, GraphicsFix g) {
 		
-		Paragraph p = new Paragraph(text, this, multiline);
+		Paragraph p = new Paragraph(text, getFont(), multiline);
 		p.render(g);
 		
 		p=null;

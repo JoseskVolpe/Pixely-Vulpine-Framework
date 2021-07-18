@@ -232,6 +232,7 @@ public final class GraphicsFix {
 		g.setFont(font);
 	}
 	
+	/**@deprecated*/
 	public void setFont(TextFont font) {
 		g.setFont(font.getFont());
 	}

@@ -1,23 +1,23 @@
 package pixelyvulpine.api.lcdui;
 
 import java.util.Vector;
-
+import javax.microedition.lcdui.Font;
 import pixelyvulpine.api.util.GraphicsFix;
 
 public class Paragraph {
 	
 	private boolean multiline;
-	private TextFont font;
+	private Font font;
 	private String text;
 	private int width, height, startX, lastFace, lastStyle, lastSize;
 	private Vector paragraphs;
 	
-	public Paragraph(String text, TextFont font) {
+	public Paragraph(String text, Font font) {
 		this.font=font;
 		this.text=text;
 	}
 	
-	public Paragraph(String text, TextFont font, boolean multiline) {
+	public Paragraph(String text, Font font, boolean multiline) {
 		this(text, font);
 		this.multiline=multiline;
 	}
@@ -33,7 +33,7 @@ public class Paragraph {
 			g.drawString((String)paragraphs.elementAt(i), x, y, 0);
 			
 			x=0;
-			y+=font.getFontSize();
+			y+=font.getHeight();
 		}
 	}
 	
@@ -58,7 +58,7 @@ public class Paragraph {
 		
 		paragraphs.addElement("");
 		
-		int h = font.getFontSize();
+		int h = font.getHeight();
 		int w;
 		int x=startX, y=0;
 		StringBuffer temp = new StringBuffer();
@@ -73,7 +73,7 @@ public class Paragraph {
 				if(!(text.charAt(i)==' ' && text.charAt(i)=='\n'))
 					temp.append(text.charAt(i));
 				
-				w=font.getFont().stringWidth(temp.toString());
+				w=font.stringWidth(temp.toString());
 				
 				if(w + x >= width) {
 					x=0;
@@ -89,7 +89,7 @@ public class Paragraph {
 				temp.delete(0, temp.length());
 						
 				if(i<text.length() && text.charAt(i)==' ')
-					x+=font.getFont().charWidth(' ');
+					x+=font.charWidth(' ');
 				
 				if(text.charAt(i)=='\n') {
 					x=0;
@@ -120,12 +120,12 @@ public class Paragraph {
 		return multiline;
 	}
 	
-	public void setFont(TextFont font) {
+	public void setFont(Font font) {
 		this.font=font;
 		prepareDimension(width, height);
 	}
 	
-	public TextFont getFont() {
+	public Font getFont() {
 		return font;
 	}
 	
@@ -166,7 +166,7 @@ public class Paragraph {
 	}
 	
 	public int getLineWidth(int line) {
-		return font.getFont().stringWidth(getLine(line));
+		return font.stringWidth(getLine(line));
 	}
 	
 	public int getLinesNumber() {
