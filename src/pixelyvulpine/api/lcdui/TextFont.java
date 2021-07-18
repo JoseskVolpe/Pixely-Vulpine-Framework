@@ -8,7 +8,6 @@ import pixelyvulpine.api.util.GraphicsFix;
 public class TextFont {
 	
 	private Font font;
-	private Color fontColor=new Color(0,0,0);
 	private boolean multiline;
 	
 	public TextFont() {
@@ -17,7 +16,6 @@ public class TextFont {
 	
 	public TextFont(TextFont font) {
 		this.font = Font.getFont(font.getFont().getFace(), font.getFont().getStyle(), font.getFont().getSize());
-		this.fontColor=font.getColor();
 		this.multiline=font.getMultiline();
 	}
 	
@@ -45,7 +43,6 @@ public class TextFont {
 	}
 	
 	public final void render(String text, GraphicsFix g) {
-		fontColor.updateColor(g);
 		g.setFont(font);
 		
 		if(text==null) return;
@@ -136,14 +133,6 @@ public class TextFont {
 	
 	public final int getFace() {
 		return font.getFace();
-	}
-	
-	public final void setColor(Color fontColor){
-		this.fontColor = fontColor;
-	}
-	
-	public final Color getColor() {
-		return fontColor;
 	}
 	
 	public final void setMultiline(boolean multiline) {

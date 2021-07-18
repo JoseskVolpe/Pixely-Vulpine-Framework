@@ -44,6 +44,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		g.setColor(0xffffff);
 		g.fillRect(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
+		g.setColor(0x000000);
 		font.render(text.toString(), g);
 		
 		if(selected) {

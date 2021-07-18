@@ -17,6 +17,7 @@ public class Label extends Content{
 	private TextFont font = new TextFont();
 	private String text = "Label";
 	private Color backgroundColor = NO_BACKGROUND;
+	private Color fontColor = new Color(0,0,0);
 	
 	public Label(Layout layout, DimensionAttributes dimensionAttributes) {
 		
@@ -36,6 +37,7 @@ public class Label extends Content{
 	}
 	
 	public void paint(GraphicsFix g) {
+		fontColor.updateColor(g);
 		font.render(text, g);
 	}
 	
@@ -56,11 +58,11 @@ public class Label extends Content{
 	}
 	
 	public final void setColor(Color fontColor){
-		font.setColor(fontColor);
+		this.fontColor = fontColor;
 	}
 	
 	public final Color getColor() {
-		return font.getColor();
+		return fontColor;
 	}
 	
 	public final void setFont(TextFont font) {
