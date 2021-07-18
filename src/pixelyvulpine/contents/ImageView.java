@@ -159,19 +159,14 @@ public class ImageView extends Content{
 		if(renderData==null) {
 			try {
 				renderData = ImageTransform.resize(data, owidth, oheight, this.width, this.height);
+				error=false;
 			}catch(OutOfMemoryError e) {
-				try {
-					data = ImageTransform.resize(data, owidth, oheight, this.width, this.height); //Substitute original data. Image may look weird if the ImageView is resized again, but that's ok
-					renderData = data; //Pointer renderData to data
-				}catch(OutOfMemoryError e2) {
-					data=null;
 					renderData=null;
 					error=true; //Can't show this ImageView :c
-				}
 			}
 		}
 		
-		if(error) {
+		if(error || renderData==null) {
 			g.setColor(0xffffff);
 			g.drawRect(0, 0, owidth, oheight);
 			g.setColor(0xff0000);
@@ -185,10 +180,6 @@ public class ImageView extends Content{
 			g.setColor(0xff0000);
 			g.setFont(font);
 			g.drawString("Image Error", owidth/2, (oheight/2)-(font.getHeight()/2), Graphics.HCENTER|Graphics.TOP);
-			return;
-		}
-		
-		if(renderData==null) {
 			return;
 		}
 		
