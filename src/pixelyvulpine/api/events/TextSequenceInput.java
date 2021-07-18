@@ -3,6 +3,11 @@ package pixelyvulpine.api.events;
 import pixelyvulpine.Config;
 
 public class TextSequenceInput implements KeyEvent.Callback{
+	
+	public static byte INPUT_SHIFT=0;
+	public static byte INPUT_LOWERCASE=1;
+	public static byte INPUT_CAPSLOCK=2;
+	public static byte INPUT_NUMERIC=3;
 
 	public static final CharSequence[] standardCharSequence= {
 		new CharSequence('0', new char[] {' ', '\n', '0'}),
@@ -30,6 +35,15 @@ public class TextSequenceInput implements KeyEvent.Callback{
 	private CharSequence lastCharSeq;
 	private short clicks;
 	protected Thread inputThread;
+	protected byte inputMode;
+	
+	protected boolean[] modes= {
+		true,
+		true,
+		true,
+		true
+	};
+	
 	protected Runnable inputRunnable = new Runnable() {
 			public void run() {
 				try {
@@ -37,6 +51,8 @@ public class TextSequenceInput implements KeyEvent.Callback{
 					if(lastEvent==null) return;
 					if(listener!=null) {
 						listener.onCharFinished(lastEvent.getChar());
+						if(inputMode==INPUT_SHIFT)
+							setInputMode(INPUT_LOWERCASE);
 					}
 					lastEvent=null;
 				}catch(InterruptedException e) {}
@@ -58,6 +74,7 @@ public class TextSequenceInput implements KeyEvent.Callback{
 		inputThread.start();
 	}
 	
+	private boolean pound;
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		
 		switch(keyCode) {
@@ -66,15 +83,60 @@ public class TextSequenceInput implements KeyEvent.Callback{
 				if(inputThread!=null) inputThread.interrupt();
 				lastEvent=null;
 			return true;
+			case KeyEvent.KEYCODE_POUND:
+				pound=false;
+			return true;
+				
+		}
+		
+		if(inputMode == INPUT_NUMERIC) {
+			switch(keyCode) {
+				case KeyEvent.KEYCODE_0:
+					addChar('0');
+					return true;
+				case KeyEvent.KEYCODE_1:
+					addChar('1');
+					return true;
+				case KeyEvent.KEYCODE_2:
+					addChar('2');
+					return true;
+				case KeyEvent.KEYCODE_3:
+					addChar('3');
+					return true;
+				case KeyEvent.KEYCODE_4:
+					addChar('4');
+					return true;
+				case KeyEvent.KEYCODE_5:
+					addChar('5');
+					return true;
+				case KeyEvent.KEYCODE_6:
+					addChar('6');
+					return true;
+				case KeyEvent.KEYCODE_7:
+					addChar('7');
+					return true;
+				case KeyEvent.KEYCODE_8:
+					addChar('8');
+					return true;
+				case KeyEvent.KEYCODE_9:
+					addChar('9');
+					return true;
+			}
 		}
 		
 		if(listener!=null && getValidKey(keyCode)) {
 			if(lastEvent==null || lastEvent.getChar() != event.getChar()) {
 				
 				if(lastEvent!=null) {
-					listener.onCharFinished(lastEvent.getChar());
+					char c = lastEvent.getChar();
+					if(inputMode == INPUT_CAPSLOCK || inputMode == INPUT_SHIFT)
+						c=String.valueOf(c).toUpperCase().charAt(0);
+					
+					listener.onCharFinished(c);
 					if(inputThread!=null) inputThread.interrupt();
 					lastEvent=null;
+					if(inputMode==INPUT_SHIFT)
+						setInputMode(INPUT_LOWERCASE);
 				}
 				
 				CharSequence seq = getSequence(event.getChar());
@@ -88,7 +150,11 @@ public class TextSequenceInput implements KeyEvent.Callback{
 				boolean added=false;
 				short start=0;
 				for(short i=0; i<seq.sequence.length; i++) {
-					if(listener.onCharAdded(seq.getChar(i))) {
+					char c = seq.getChar(i);
+					if(inputMode == INPUT_CAPSLOCK || inputMode == INPUT_SHIFT)
+						c=String.valueOf(c).toUpperCase().charAt(0);
+					
+					if(listener.onCharAdded(c)) {
 						added=true;
 						start=i;
 						break;
@@ -101,9 +167,15 @@ public class TextSequenceInput implements KeyEvent.Callback{
 				lastEvent = event;
 				clicks=start;
 			}else {
+				
+				char c;
+				
 				do {
 					clicks++;
-				}while(!listener.onCharChanged(lastCharSeq.getChar(clicks)));
+					c = lastCharSeq.getChar(clicks);
+					if(inputMode == INPUT_CAPSLOCK || inputMode == INPUT_SHIFT)
+						c=String.valueOf(c).toUpperCase().charAt(0);
+				}while(!listener.onCharChanged(c));
 				resetThread();
 			}
 			return true;
@@ -118,6 +190,13 @@ public class TextSequenceInput implements KeyEvent.Callback{
 			case KeyEvent.KEYCODE_DEL:
 				if(listener!=null) listener.onCharErase();
 			return true;
+			case KeyEvent.KEYCODE_POUND:
+				if(!pound) {
+					addChar('#');
+					pound=true;
+				}
+			return true;
+			
 		}
 		
 		if(lastEvent==null && getSequence(event.getChar())==null) {
@@ -130,12 +209,27 @@ public class TextSequenceInput implements KeyEvent.Callback{
 
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		
+		switch(keyCode) {
+			case KeyEvent.KEYCODE_POUND:
+				if(!pound) {
+					int newI = getInputMode()+1;
+					if(newI>3) newI=0;
+					setInputMode((byte)newI);
+				}
+			return true;
+		}
+		
 		if(listener!=null && lastEvent!=null && getSequence(event.getChar())!=null && clicks<=0 && getValidKey(keyCode)) {
 			startThread();
 		}
 		
 		return false;
 		
+	}
+	
+	public final void addChar(char c) {
+		if(listener.onCharAdded(c))
+			listener.onCharFinished(c);
 	}
 	
 	public boolean finishSequence() {
@@ -145,6 +239,7 @@ public class TextSequenceInput implements KeyEvent.Callback{
 			listener.onCharFinished(lastEvent.getChar());
 			lastEvent=null;
 			if(inputThread!=null) inputThread.interrupt();
+			
 			return true;
 			
 		}
@@ -173,6 +268,36 @@ public class TextSequenceInput implements KeyEvent.Callback{
 	
 	public final void setOnTextInputListener(OnTextInputListener listener) {
 		this.listener=listener;
+	}
+	
+	public final void setInputMode(byte inputMode) {
+		
+		inputMode = (byte)(inputMode-modes.length*(inputMode/modes.length));
+		
+		if(!modes[inputMode]) {
+			setInputMode((byte)(inputMode+1));
+			return;
+		}
+		
+		this.inputMode = inputMode;
+	}
+	
+	public final byte getInputMode() {
+		return inputMode;
+	}
+	
+	public final void enableMode(byte inputMode) {
+		modes[inputMode]=true;
+	}
+	
+	public final void disableMode(byte inputMode) {
+		modes[inputMode]=false;
+	}
+	
+	public final void resetModes() {
+		for(int i=0; i<modes.length; i++) {
+			modes[i]=false;
+		}
 	}
 	
 	protected final boolean getValidKey(int keyCode) {
