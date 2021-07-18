@@ -199,6 +199,8 @@ public class TextSequenceInput implements KeyEvent.Callback{
 			
 		}
 		
+		if(!getValidKey(keyCode)) return false;
+		
 		if(lastEvent==null && getSequence(event.getChar())==null) {
 			return listener.onCharAdded(event.getChar());
 		}
