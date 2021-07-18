@@ -205,6 +205,9 @@ public class KeyEvent extends InputEvent{
 			
 			if(name.equals("END"))
 				return KEYCODE_ENDCALL;
+			
+			if(name.equals("CLEAR") || name.equals("DEL") || name.equals("DELETE") || name.equals("BACKSPACE"))
+				return KEYCODE_DEL;
 		}catch(Throwable e) {}
 		
 		if(runtimeCode==KEYCODE_LEFT_KC)
