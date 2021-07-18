@@ -274,6 +274,10 @@ public class TextSequenceInput implements KeyEvent.Callback{
 		return charSequence;
 	}
 	
+	public boolean isSelecting() {
+		return lastEvent!=null;
+	}
+	
 	public void setCharSequences(CharSequence[] charSequence) {
 		this.charSequence=charSequence;
 	}
