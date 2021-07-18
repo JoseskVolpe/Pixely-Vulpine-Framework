@@ -13,6 +13,10 @@ public class Paragraph {
 	private boolean forcePrepare=true;
 	private Vector paragraphs;
 	
+	public Paragraph() {
+		font = Font.getDefaultFont();
+	}
+	
 	public Paragraph(Font font) {
 		this.font = font;
 	}
@@ -128,6 +132,14 @@ public class Paragraph {
 		temp=null;
 		forcePrepare=false;
 		
+	}
+	
+	public void clear() {
+		if(paragraphs!=null)
+			paragraphs.removeAllElements();
+		
+		paragraphs=null;
+		forcePrepare=true;
 	}
 	
 	public void setMultiline(boolean multiline) {
