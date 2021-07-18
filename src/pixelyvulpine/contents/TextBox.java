@@ -13,10 +13,13 @@ import pixelyvulpine.api.events.TextSequenceInput;
 
 public class TextBox extends Content implements TextSequenceInput.OnTextInputListener, UserInput.InputListener{
 	
+	
+	
 	private TextFont font;
 	private StringBuffer text=new StringBuffer();
 	private TextSequenceInput input = new TextSequenceInput();
 	private boolean multiline, selected;
+	
 	
 	private GestureDetector gesture;
 
@@ -47,7 +50,6 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 				UserInput.showTextInput(getLayout(), this, text.toString());
 				return true;
 		}
-		
 		
 		return ev.dispatch(input);
 		
@@ -97,7 +99,6 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	}
 
 	public void onCharFinished(char c) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -123,9 +124,9 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		}
 	}
 
-	public void onInputCanceled(String input) {
-		
-	}
+	public void onInputCanceled(String input) {}
+	
+	
 	
 	public void setMultiline(boolean multiline) {
 		this.multiline=multiline;
@@ -135,5 +136,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	public boolean getMultiline() {
 		return multiline;
 	}
+	
+	
 
 }
