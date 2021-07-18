@@ -28,7 +28,7 @@ public class TextSequenceInput implements KeyEvent.Callback{
 	private OnTextInputListener listener;
 	private KeyEvent lastEvent;
 	private CharSequence lastCharSeq;
-	private int clicks;
+	private short clicks;
 	protected Thread inputThread;
 	protected Runnable inputRunnable = new Runnable() {
 			public void run() {
@@ -81,8 +81,8 @@ public class TextSequenceInput implements KeyEvent.Callback{
 				if(seq == null) return listener.onCharAdded(event.getChar());
 				
 				boolean added=false;
-				int start=0;
-				for(int i=0; i<seq.sequence.length; i++) {
+				short start=0;
+				for(short i=0; i<seq.sequence.length; i++) {
 					if(listener.onCharAdded(seq.getChar(i))) {
 						added=true;
 						start=i;
