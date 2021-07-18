@@ -9,7 +9,7 @@ import javax.microedition.lcdui.TextField;
 
 import pixelyvulpine.api.lcdui.Layout;
 
-public final class TextInput {
+public final class UserInput {
 	
 	public static interface InputListener{
 		public void onInputConfirmed(String output);

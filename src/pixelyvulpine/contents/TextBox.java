@@ -7,16 +7,16 @@ import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.TextFont;
-import pixelyvulpine.api.system.TextInput;
+import pixelyvulpine.api.system.UserInput;
 import pixelyvulpine.api.util.GraphicsFix;
 import pixelyvulpine.api.events.TextSequenceInput;
 
-public class TextBox extends Content implements TextSequenceInput.OnTextInputListener, TextInput.InputListener{
+public class TextBox extends Content implements TextSequenceInput.OnTextInputListener, UserInput.InputListener{
 	
 	private TextFont font;
 	private StringBuffer text=new StringBuffer();
 	private TextSequenceInput input = new TextSequenceInput();
-	private boolean selected;
+	private boolean multiline, selected;
 	
 	private GestureDetector gesture;
 
@@ -44,7 +44,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		switch(keyCode) {
 			case KeyEvent.KEYCODE_DPAD_CENTER:
-				TextInput.showTextInput(getLayout(), this, text.toString());
+				UserInput.showTextInput(getLayout(), this, text.toString());
 				return true;
 		}
 		
@@ -60,7 +60,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	private TextBox me=this;
 	public GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
 		public boolean onSingleTapUp(MotionEvent ev) {
-			TextInput.showTextInput(getLayout(), me, text.toString());
+			UserInput.showTextInput(getLayout(), me, text.toString());
 			return true;
 		}
 	};
@@ -79,6 +79,8 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 
 	public boolean onCharAdded(char c) {
 		
+		if(c=='\n' && !multiline) return false;
+		
 		text.append(c);
 		
 		return true;
@@ -86,6 +88,8 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	}
 
 	public boolean onCharChanged(char c) {
+		
+		if(c=='\n' && !multiline) return false;
 		
 		text.setCharAt(text.length()-1, c);
 		return true;
@@ -106,11 +110,30 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 
 	public void onInputConfirmed(String output) {
 		if(text.length()>0) text.delete(0, text.length());
-		text.append(output);
+		
+		if(multiline)
+			text.append(output);
+		else {
+			char c;
+			for(int i=0; i<output.length(); i++) {
+				c = output.charAt(i);
+				if(c!='\n')
+					text.append(c);
+			}
+		}
 	}
 
 	public void onInputCanceled(String input) {
 		
+	}
+	
+	public void setMultiline(boolean multiline) {
+		this.multiline=multiline;
+		font.setMultiline(multiline);
+	}
+	
+	public boolean getMultiline() {
+		return multiline;
 	}
 
 }
