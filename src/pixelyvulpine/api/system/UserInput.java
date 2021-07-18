@@ -19,6 +19,7 @@ public final class UserInput {
 	
 	private static Displayable lastContext;
 	private static MIDlet lastMIDlet;
+	private static boolean shown=false;
 	
 	public static void showDecimalInput(Layout context, InputListener inputListener, float number) {
 		showInput(context, inputListener, String.valueOf(number), 1024, TextField.DECIMAL);
@@ -102,6 +103,7 @@ public final class UserInput {
 		
 		lastContext = context;
 		lastMIDlet = midlet;
+		shown=true;
 		
 		Display.getDisplay(midlet).setCurrent(field);
 	}
@@ -115,6 +117,10 @@ public final class UserInput {
 	}
 	
 	public static void hideInput(MIDlet midlet, Displayable displayable) {
+		
+		if(!shown) return;
+		
+		shown=false;
 		Display.getDisplay(midlet).setCurrent(displayable);
 	}
 	
