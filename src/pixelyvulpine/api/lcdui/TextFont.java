@@ -8,7 +8,7 @@ import pixelyvulpine.api.util.GraphicsFix;
 public class TextFont {
 	
 	private Font font;
-	private boolean multiline;
+	/**@deprecated**/private boolean multiline;
 	
 	public TextFont() {
 		this.font = Font.getDefaultFont();
