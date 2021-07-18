@@ -20,6 +20,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	private TextSequenceInput input = new TextSequenceInput();
 	private boolean multiline, selected;
 	private int maxCharacters=2050;
+	private int caret;
 	
 	private GestureDetector gesture;
 
@@ -49,6 +50,27 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 			case KeyEvent.KEYCODE_DPAD_CENTER:
 				showUserInput();
 				return true;
+		}
+		
+		if(ev.getAction() == KeyEvent.ACTION_DOWN || ev.getAction() == KeyEvent.ACTION_REPEAT) {
+			switch(keyCode) {
+			case KeyEvent.KEYCODE_DPAD_DOWN:
+				return false;
+			case KeyEvent.KEYCODE_DPAD_LEFT:
+				if(caret>0) {
+					caret--;
+					return true;
+				}
+				return false;
+			case KeyEvent.KEYCODE_DPAD_RIGHT:
+				if(caret<text.length()) {
+					caret++;
+					return true;
+				}
+				return false;
+			case KeyEvent.KEYCODE_DPAD_UP:
+				return false;
+			}
 		}
 		
 		return ev.dispatch(input);
@@ -87,7 +109,8 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		if(c=='\n' && !multiline) return false;
 		
-		text.append(c);
+		text.insert(caret, c);
+		caret++;
 		
 		return true;
 		
@@ -97,7 +120,10 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		if(c=='\n' && !multiline) return false;
 		
-		text.setCharAt(text.length()-1, c);
+		int index = caret-1;
+		if(caret<0) index=0;
+		
+		text.setCharAt(index, c);
 		return true;
 		
 	}
@@ -108,8 +134,12 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 
 	public void onCharErase() {
 		
-		if(text.length()>0)
-			text.deleteCharAt(text.length()-1);
+		if(caret>0) {
+			text.deleteCharAt(caret-1);
+			caret--;
+			if(caret<0) caret=0;
+			if(caret>text.length() && text.length()>0) caret=text.length();
+		}
 		
 	}
 
@@ -126,6 +156,8 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 					text.append(c);
 			}
 		}
+		
+		caret=text.length();
 	}
 
 	public void onInputCanceled(String input) {}
@@ -149,5 +181,8 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		return maxCharacters;
 	}
 	
+	public int getCaretPosition() {
+		return caret;
+	}
 
 }
