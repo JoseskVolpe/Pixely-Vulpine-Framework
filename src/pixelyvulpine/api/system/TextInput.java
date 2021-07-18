@@ -89,13 +89,13 @@ public final class TextInput {
 		public void commandAction(Command arg0, Displayable arg1) {
 			
 			if(arg0==Ok) {
-				Display.getDisplay(context.getMIDlet()).setCurrent(context);
 				inputListener.onInputConfirmed(field.getString());
+				Display.getDisplay(context.getMIDlet()).setCurrent(context);
 			}
 			
 			if(arg0==Cancel) {
-				Display.getDisplay(context.getMIDlet()).setCurrent(context);
 				inputListener.onInputCanceled(input);
+				Display.getDisplay(context.getMIDlet()).setCurrent(context);
 			}
 			
 		}
