@@ -1,6 +1,8 @@
 package pixelyvulpine.contents;
 
 import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
+
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
@@ -48,16 +50,37 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	}
 	
 	public void paint(GraphicsFix g) {
+
+		int tx = g.getTranslateX();
+		int ty = g.getTranslateY();
+		int dw = g.getDimensionWidth();
+		int dh = g.getDimensionHeight();
+		int cw = g.getClipWidth();
+		int ch = g.getClipHeight();
 		
 		paintBackground(g);
+		g.translate(tx-g.getTranslateX(), ty-g.getTranslateY());
+		g.setDimension(dw, dh);
+		g.setClip(0, 0, cw, ch);
 		
 		if(multiline) {
 			paintMultiline(g);
 		}else {
 			paintSingleline(g);
 		}
+		g.translate(tx-g.getTranslateX(), ty-g.getTranslateY());
+		g.setDimension(dw, dh);
+		g.setClip(0, 0, cw, ch);
+		
+		paintInputMode(g);
+		g.translate(tx-g.getTranslateX(), ty-g.getTranslateY());
+		g.setDimension(dw, dh);
+		g.setClip(0, 0, cw, ch);
 		
 		paintForeground(g);
+		g.translate(tx-g.getTranslateX(), ty-g.getTranslateY());
+		g.setDimension(dw, dh);
+		g.setClip(0, 0, cw, ch);
 	}
 	
 	protected void paintBackground(GraphicsFix g) {
@@ -70,6 +93,29 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 			g.setColor(50,50,255);
 			g.drawRect(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
 		}
+	}
+	
+	protected void paintInputMode(GraphicsFix g) {
+		String m="";
+		
+		switch(input.getInputMode()) {
+			case TextSequenceInput.INPUT_SHIFT:
+				m="Ab";
+				break;
+			case TextSequenceInput.INPUT_CAPSLOCK:
+				m="AB";
+				break;
+			case TextSequenceInput.INPUT_LOWERCASE:
+				m="ab";
+				break;
+			case TextSequenceInput.INPUT_NUMERIC:
+				m="12";
+				break;
+		}
+		
+		g.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL));
+		g.drawString(m, g.getDimensionWidth(), g.getDimensionHeight(), Graphics.BOTTOM|Graphics.RIGHT);
+		
 	}
 	
 	protected void paintMultiline(GraphicsFix g) {
