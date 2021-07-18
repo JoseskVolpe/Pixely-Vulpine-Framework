@@ -107,6 +107,8 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 
 	public boolean onCharAdded(char c) {
 		
+		if(text.length()>=maxCharacters) return false;
+		
 		if(c=='\n' && !multiline) return false;
 		
 		text.insert(caret, c);
