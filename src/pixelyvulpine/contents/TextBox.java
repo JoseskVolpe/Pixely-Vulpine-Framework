@@ -81,7 +81,6 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		return gesture.onTouchEvent(ev);
 	}
 	
-	private TextBox me=this;
 	public GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
 		public boolean onSingleTapUp(MotionEvent ev) {
 			showUserInput();
@@ -90,7 +89,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	};
 	
 	protected void showUserInput() {
-		UserInput.showTextInput(getLayout(), me, text.toString(), maxCharacters);
+		UserInput.showTextInput(getLayout(), this, text.toString(), maxCharacters);
 	}
 	
 	public boolean isSelectable() {
