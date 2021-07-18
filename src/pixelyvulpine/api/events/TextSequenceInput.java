@@ -163,6 +163,7 @@ public class TextSequenceInput implements KeyEvent.Callback{
 				
 				if(!added) return false;
 				
+				resetThread();
 				lastCharSeq = seq;
 				lastEvent = event;
 				clicks=start;
