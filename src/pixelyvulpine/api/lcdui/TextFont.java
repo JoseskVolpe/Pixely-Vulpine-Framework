@@ -51,65 +51,6 @@ public class TextFont {
 		
 		p=null;
 		
-		
-		/*
-		
-		g.setFont(font);
-		
-		if(text==null) return;
-		
-		if(!multiline) {
-			g.drawString(text, 0, 0, 0);
-			return ;
-		}
-		
-		int h = getFontSize();
-		int w;
-		int x=0, y=0;
-		StringBuffer temp = new StringBuffer();
-		
-		for(int i=0; i<text.length(); i++) {
-			
-			if(y>=g.getDisplayClipHeight() || y>=g.getDimensionHeight()) break;
-			
-			if(i>=text.length()-1 || text.charAt(i)==' ' || text.charAt(i)=='\n') {
-				
-				if(!(text.charAt(i)==' ' && text.charAt(i)=='\n'))
-					temp.append(text.charAt(i));
-				
-				w=font.stringWidth(temp.toString());
-				
-				if(w + x >= g.getDimensionWidth()) {
-					x=0;
-					y+=h;
-					
-				}
-				
-				g.drawString(temp.toString(), x, y, 0);
-				x+=w;
-				temp.delete(0, temp.length());
-						
-				if(i<text.length() && text.charAt(i)==' ')
-					x+=font.charWidth(' ');
-				
-				if(text.charAt(i)=='\n') {
-					x=0;
-					y+=h;
-				}
-				
-				continue;
-			}
-			
-			temp.append(text.charAt(i));
-			
-		}
-		
-		if(temp!=null && temp.length()>0)
-			temp.delete(0, temp.length()-1);
-		
-		temp=null;
-		
-		*/
 	}
 	
 	public final void setFont(Font font) {
