@@ -44,7 +44,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		switch(keyCode) {
 			case KeyEvent.KEYCODE_DPAD_CENTER:
-				TextInput.showTextInput(getLayout(), this, false, text.toString(), 255);
+				TextInput.showTextInput(getLayout(), this, text.toString());
 				return true;
 		}
 		
@@ -60,7 +60,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	private TextBox me=this;
 	public GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
 		public boolean onSingleTapUp(MotionEvent ev) {
-			TextInput.showTextInput(getLayout(), me, false, text.toString(), 255);
+			TextInput.showTextInput(getLayout(), me, text.toString());
 			return true;
 		}
 	};

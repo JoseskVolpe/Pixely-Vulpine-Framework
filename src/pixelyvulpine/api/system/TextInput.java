@@ -16,11 +16,42 @@ public final class TextInput {
 		public void onInputCanceled(String input);
 	}
 	
-	public static void showTextInput(Layout context, InputListener inputListener, boolean multiline, String text, int maxSize) {
-		showInput(context, inputListener, multiline, text, maxSize, TextField.ANY);
+	public static void showDecimalInput(Layout context, InputListener inputListener, float number) {
+		showInput(context, inputListener, String.valueOf(number), 1024, TextField.DECIMAL);
 	}
 	
-	public static void showInput(Layout context, InputListener inputListener, boolean multiline, String text, int maxSize, int constraint) {
+	public static void showNumericInput(Layout context, InputListener inputListener, long number) {
+		showInput(context, inputListener, String.valueOf(number), 255, TextField.NUMERIC);
+	}
+	
+	public static void showTextInput(Layout context, InputListener inputListener, String text) {
+		int max = 2050;
+		if(text.length()>max) max=text.length()*2;
+		
+		showInput(context, inputListener, text, max, TextField.ANY);
+	}
+	
+	public static void showTextInput(Layout context, InputListener inputListener, String text, int maxSize) {
+		showInput(context, inputListener, text, maxSize, TextField.ANY);
+	}
+	
+	public static void showPasswordInput(Layout context, InputListener inputListener, String text) {
+		
+		int max = 2050;
+		if(text.length()>max) max=text.length()*2;
+		
+		showInput(context, inputListener, text, max, TextField.PASSWORD);
+	}
+	
+	public static void showPasswordInput(Layout context, InputListener inputListener, String text, int maxSize) {
+		showInput(context, inputListener, text, maxSize, TextField.PASSWORD);
+	}
+	
+	public static void showEmailInput(Layout context, InputListener inputListener, String text) {
+		showInput(context, inputListener, text, 320, TextField.EMAILADDR);
+	}
+	
+	public static void showInput(Layout context, InputListener inputListener, String text, int maxSize, int constraint) {
 		
 		Listener l = new Listener(context, inputListener, text);
 		
