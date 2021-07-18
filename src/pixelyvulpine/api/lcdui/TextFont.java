@@ -37,12 +37,23 @@ public class TextFont {
 		this.font = Font.getFont(face, style, size);
 	}
 
+	/**@deprecated**/
 	public TextFont(int face, int style, int size, boolean multiline) {
 		this.font = Font.getFont(face, style, size);
 		this.multiline=multiline;
 	}
 	
+	/**@deprecated**/
 	public final void render(String text, GraphicsFix g) {
+		
+		Paragraph p = new Paragraph(text, this, multiline);
+		p.render(g);
+		
+		p=null;
+		
+		
+		/*
+		
 		g.setFont(font);
 		
 		if(text==null) return;
@@ -97,6 +108,8 @@ public class TextFont {
 			temp.delete(0, temp.length()-1);
 		
 		temp=null;
+		
+		*/
 	}
 	
 	public final void setFont(Font font) {
@@ -135,10 +148,11 @@ public class TextFont {
 		return font.getFace();
 	}
 	
+	/**@deprecated**/
 	public final void setMultiline(boolean multiline) {
 		this.multiline = multiline;
 	}
-	
+	/**@deprecated**/
 	public final boolean getMultiline() {
 		return multiline;
 	}
