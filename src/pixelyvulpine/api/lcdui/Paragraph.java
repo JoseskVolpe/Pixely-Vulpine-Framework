@@ -152,7 +152,8 @@ public class Paragraph {
 	
 	public void setText(String text) {
 		
-		if(this.text.equals(text)) return;
+		if(this.text==null || this.text.equals(text)) return;
+		
 		
 		this.text=text;
 		prepareDimension(width, height);
