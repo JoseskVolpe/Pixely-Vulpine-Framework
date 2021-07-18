@@ -10,6 +10,7 @@ public class Paragraph {
 	private Font font;
 	private String text;
 	private int width, height, startX, lastFace, lastStyle, lastSize;
+	private boolean forcePrepare=true;
 	private Vector paragraphs;
 	
 	public Paragraph(Font font) {
@@ -40,9 +41,12 @@ public class Paragraph {
 		
 		int x = startX;
 		int y = 0;
+		Object el;
 		for(int i=0; i<paragraphs.size(); i++) {
 			
-			g.drawString((String)paragraphs.elementAt(i), x, y, 0);
+			el = paragraphs.elementAt(i);
+			if(el==null) continue;
+			g.drawString((String)el, x, y, 0);
 			
 			x=0;
 			y+=font.getHeight();
@@ -51,7 +55,7 @@ public class Paragraph {
 	
 	public void prepareDimension(int width, int height) {
 		
-		if(this.width==width && this.height==height && this.lastFace==font.getFace() && this.lastStyle==font.getStyle() && this.lastSize == font.getSize()) return;
+		if(this.width==width && this.height==height && this.lastFace==font.getFace() && this.lastStyle==font.getStyle() && this.lastSize == font.getSize() && !forcePrepare) return;
 		
 		this.width=width;
 		this.height=height;
@@ -120,6 +124,7 @@ public class Paragraph {
 			temp.delete(0, temp.length()-1);
 		
 		temp=null;
+		forcePrepare=false;
 		
 	}
 	
@@ -156,6 +161,7 @@ public class Paragraph {
 		
 		
 		this.text=text;
+		forcePrepare=true;
 		prepareDimension(width, height);
 	}
 	
