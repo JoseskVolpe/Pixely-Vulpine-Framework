@@ -80,7 +80,15 @@ public class TextSequenceInput implements KeyEvent.Callback{
 				CharSequence seq = getSequence(event.getChar());
 				if(seq == null) return listener.onCharAdded(event.getChar());
 				
-				if(!listener.onCharAdded(seq.getChar(0))) return false;
+				boolean added=false;
+				for(int i=0; i<seq.sequence.length; i++) {
+					if(listener.onCharAdded(seq.getChar(i))) {
+						added=true;
+						break;
+					}
+				}
+				
+				if(!added) return false;
 				
 				lastCharSeq = seq;
 				lastEvent = event;
