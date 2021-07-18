@@ -185,7 +185,32 @@ public class Paragraph {
 	}
 	
 	public int getCharXFromIndex(int index) {
-		return -1;
+		
+		int s=0;
+		int line=0;
+		for(int i=0; i<paragraphs.size(); i++) {
+			s+=((String)paragraphs.elementAt(i)).length();
+			
+			if(s>=index) {
+				line=i;
+				break;
+			}
+			
+		}
+		
+		int tx=0;
+		
+		if(line==0) 
+			tx=startX;
+		
+		s-=((String)paragraphs.elementAt(line)).length();
+		index-=s;
+		
+		return tx+font.stringWidth(((String)paragraphs.elementAt(line)).substring(0, index));
+	}
+	
+	public int getCharYFromIndex(int index) {
+		return font.getHeight()*getLineFromCharIndex(index);
 	}
 	
 	public int getLinesNumber() {
