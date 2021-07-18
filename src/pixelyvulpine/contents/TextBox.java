@@ -39,9 +39,17 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	}
 	
 	public void paint(GraphicsFix g) {
+		
+		g.clipRect(0, 0, g.getDimensionWidth(), g.getClipHeight());
+		
 		g.setColor(0xffffff);
 		g.fillRect(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
 		font.render(text.toString(), g);
+		
+		if(selected) {
+			g.setColor(50,50,255);
+			g.drawRect(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
+		}
 	}
 	
 	public boolean onKey(int keyCode, KeyEvent ev) {
