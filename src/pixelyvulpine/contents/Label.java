@@ -1,7 +1,5 @@
 package pixelyvulpine.contents;
 
-import javax.microedition.lcdui.Graphics;
-
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
