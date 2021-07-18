@@ -113,18 +113,38 @@ public class Paragraph {
 	
 	public void setMultiline(boolean multiline) {
 		this.multiline=multiline;
+		prepareDimension(width, height);
 	}
 	
 	public boolean getMultiline(){
 		return multiline;
 	}
 	
+	public void setFont(TextFont font) {
+		this.font=font;
+		prepareDimension(width, height);
+	}
+	
+	public TextFont getFont() {
+		return font;
+	}
+	
 	public void setStartX(int startX) {
 		this.startX=startX;
+		prepareDimension(width, height);
 	}
 	
 	public int getStartX() {
 		return startX;
+	}
+	
+	public void setText(String text) {
+		this.text=text;
+		prepareDimension(width, height);
+	}
+	
+	public String getText() {
+		return text;
 	}
 	
 	public int getLineFromCharIndex(int index) {
