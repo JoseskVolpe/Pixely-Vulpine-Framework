@@ -19,7 +19,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	private StringBuffer text=new StringBuffer();
 	private TextSequenceInput input = new TextSequenceInput();
 	private boolean multiline, selected;
-	
+	private int maxCharacters=2050;
 	
 	private GestureDetector gesture;
 
@@ -47,7 +47,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		switch(keyCode) {
 			case KeyEvent.KEYCODE_DPAD_CENTER:
-				UserInput.showTextInput(getLayout(), this, text.toString());
+				showUserInput();
 				return true;
 		}
 		
@@ -62,10 +62,14 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	private TextBox me=this;
 	public GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
 		public boolean onSingleTapUp(MotionEvent ev) {
-			UserInput.showTextInput(getLayout(), me, text.toString());
+			showUserInput();
 			return true;
 		}
 	};
+	
+	protected void showUserInput() {
+		UserInput.showTextInput(getLayout(), me, text.toString(), maxCharacters);
+	}
 	
 	public boolean isSelectable() {
 		return true;
@@ -137,6 +141,13 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		return multiline;
 	}
 	
+	public void setMaxCharacters(int maxCharacters) {
+		this.maxCharacters = maxCharacters;
+	}
+	
+	public int getMaxCharacters() {
+		return maxCharacters;
+	}
 	
 
 }
