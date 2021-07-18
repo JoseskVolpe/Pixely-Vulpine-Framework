@@ -55,20 +55,24 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		if(ev.getAction() == KeyEvent.ACTION_DOWN || ev.getAction() == KeyEvent.ACTION_REPEAT) {
 			switch(keyCode) {
 			case KeyEvent.KEYCODE_DPAD_DOWN:
+				if (input.finishSequence()) return true;
 				return false;
 			case KeyEvent.KEYCODE_DPAD_LEFT:
+				if (input.finishSequence()) return true;
 				if(caret>0) {
 					caret--;
 					return true;
 				}
 				return false;
 			case KeyEvent.KEYCODE_DPAD_RIGHT:
+				if (input.finishSequence()) return true;
 				if(caret<text.length()) {
 					caret++;
 					return true;
 				}
 				return false;
 			case KeyEvent.KEYCODE_DPAD_UP:
+				if (input.finishSequence()) return true;
 				return false;
 			}
 		}
