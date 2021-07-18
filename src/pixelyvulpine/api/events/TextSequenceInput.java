@@ -205,7 +205,17 @@ public class TextSequenceInput implements KeyEvent.Callback{
 			return listener.onCharAdded(event.getChar());
 		}
 		
-		return finishSequence();
+		if(listener!=null && lastEvent!=null && listener.onCharChanged(lastEvent.getChar())) {
+			
+			listener.onCharFinished(lastEvent.getChar());
+			lastEvent=null;
+			if(inputThread!=null) inputThread.interrupt();
+			
+			return true;
+			
+		}
+		
+		return false;
 		
 	}
 
@@ -236,9 +246,9 @@ public class TextSequenceInput implements KeyEvent.Callback{
 	
 	public boolean finishSequence() {
 		
-		if(listener!=null && lastEvent!=null && listener.onCharChanged(lastEvent.getChar())) {
+		if(listener!=null && lastEvent!=null) {
 			
-			listener.onCharFinished(lastEvent.getChar());
+			listener.onCharFinished(lastCharSeq.getChar(clicks));
 			lastEvent=null;
 			if(inputThread!=null) inputThread.interrupt();
 			
