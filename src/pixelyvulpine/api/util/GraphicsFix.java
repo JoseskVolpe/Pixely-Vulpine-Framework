@@ -4,6 +4,8 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import pixelyvulpine.api.lcdui.TextFont;
+
 public final class GraphicsFix {
 	
 	/**
@@ -228,6 +230,10 @@ public final class GraphicsFix {
 	
 	public void setFont(Font font) {
 		g.setFont(font);
+	}
+	
+	public void setFont(TextFont font) {
+		g.setFont(font.getFont());
 	}
 	
 	public void setGrayScale(int value) {
