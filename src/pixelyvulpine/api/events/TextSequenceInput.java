@@ -4,10 +4,10 @@ import pixelyvulpine.Config;
 
 public class TextSequenceInput implements KeyEvent.Callback{
 	
-	public static byte INPUT_SHIFT=0;
-	public static byte INPUT_LOWERCASE=1;
-	public static byte INPUT_CAPSLOCK=2;
-	public static byte INPUT_NUMERIC=3;
+	public final static byte INPUT_SHIFT=0;
+	public final static byte INPUT_LOWERCASE=1;
+	public final static byte INPUT_CAPSLOCK=2;
+	public final static byte INPUT_NUMERIC=3;
 
 	public static final CharSequence[] standardCharSequence= {
 		new CharSequence('0', new char[] {' ', '\n', '0'}),
