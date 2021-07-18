@@ -44,9 +44,13 @@ public class Paragraph {
 		Object el;
 		for(int i=0; i<paragraphs.size(); i++) {
 			
-			el = paragraphs.elementAt(i);
-			if(el==null) continue;
-			g.drawString((String)el, x, y, 0);
+			if(y>=g.getClipHeight() || y>=g.getDimensionHeight()) break;
+			
+			if(y+font.getHeight()>0) {
+				el = paragraphs.elementAt(i);
+				if(el==null) continue;
+				g.drawString((String)el, x, y, 0);
+			}
 			
 			x=0;
 			y+=font.getHeight();
@@ -82,6 +86,8 @@ public class Paragraph {
 		
 		for(int i=0; i<text.length(); i++) {
 			
+			paragraphs.setElementAt((String)paragraphs.lastElement()+text.charAt(i), paragraphs.size()-1);
+			
 			if(y>=height) break;
 			
 			if(i>=text.length()-1 || text.charAt(i)==' ' || text.charAt(i)=='\n') {
@@ -97,10 +103,6 @@ public class Paragraph {
 					paragraphs.addElement("");
 				}
 				
-				tmp2.delete(0, tmp2.length());
-				tmp2.append(paragraphs.lastElement());
-				tmp2.append(temp.toString());
-				paragraphs.setElementAt(tmp2.toString(), paragraphs.size()-1);
 				x+=w;
 				temp.delete(0, temp.length());
 						
@@ -178,17 +180,12 @@ public class Paragraph {
 		return -1;
 	}
 	
-	public int getLineIndex(int index) {
-		int s=0;
-		for(int i=0; i<paragraphs.size(); i++) {
-			s+=((String)paragraphs.elementAt(i)).length();
-			if(s>=index) return s-index;
-		}
-		return -1;
-	}
-	
 	public int getLineWidth(int line) {
 		return font.stringWidth(getLine(line));
+	}
+	
+	public int getCharXFromIndex(int index) {
+		return -1;
 	}
 	
 	public int getLinesNumber() {
