@@ -33,6 +33,8 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		gesture = new GestureDetector(getLayout(), gestureListener);
 		par = new Paragraph(Font.getDefaultFont());
 		
+		setMultiline(true);
+		
 	}
 	
 	public TextBox(Layout context, DimensionAttributes dimensionAttributes, Font font) {
@@ -119,6 +121,9 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	
 	protected void paintMultiline(GraphicsFix g) {
 		
+		g.clipRect(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
+		
+		paintString(g);
 		
 	}
 	

@@ -37,18 +37,21 @@ public class Paragraph {
 	}
 	
 	public void render(GraphicsFix g) {
+		render(g, 0);
+	}
+	
+	public void render(GraphicsFix g, int breakLine) {
 		g.setFont(font);
 		
 		if(text==null) return;
 		
-		prepareDimension(g.getDimensionWidth(), g.getDimensionHeight());
+		if(forcePrepare)
+			prepareDimension(g.getDimensionWidth(), g.getDimensionHeight(), breakLine);
 		
 		int x = startX;
 		int y = 0;
 		Object el;
 		for(int i=0; i<paragraphs.size(); i++) {
-			
-			if(y>=g.getClipHeight() || y>=g.getDimensionHeight()) break;
 			
 			if(y+font.getHeight()>0) {
 				el = paragraphs.elementAt(i);
@@ -62,6 +65,10 @@ public class Paragraph {
 	}
 	
 	public void prepareDimension(int width, int height) {
+		prepareDimension(width, height, width);
+	}
+	
+	public void prepareDimension(int width, int height, int breakline) {
 		
 		if(this.width==width && this.height==height && this.lastFace==font.getFace() && this.lastStyle==font.getStyle() && this.lastSize == font.getSize() && !forcePrepare) return;
 		
@@ -82,17 +89,13 @@ public class Paragraph {
 		
 		paragraphs.addElement("");
 		
-		int h = font.getHeight();
 		int w;
-		int x=startX, y=0;
+		int x=startX;
 		StringBuffer temp = new StringBuffer();
-		StringBuffer tmp2 = new StringBuffer();
 		
 		for(int i=0; i<text.length(); i++) {
 			
 			paragraphs.setElementAt((String)paragraphs.lastElement()+text.charAt(i), paragraphs.size()-1);
-			
-			if(y>=height) break;
 			
 			if(i>=text.length()-1 || text.charAt(i)==' ' || text.charAt(i)=='\n') {
 				
@@ -101,23 +104,18 @@ public class Paragraph {
 				
 				w=font.stringWidth(temp.toString());
 				
-				if(w + x >= width) {
+				if((breakline>0 && w + x >= breakline) || text.charAt(i)=='\n') {
 					x=0;
-					y+=h;
 					paragraphs.addElement("");
+				}else {
+					x+=w;
 				}
 				
-				x+=w;
+				
 				temp.delete(0, temp.length());
 						
 				if(i<text.length() && text.charAt(i)==' ')
 					x+=font.charWidth(' ');
-				
-				if(text.charAt(i)=='\n') {
-					x=0;
-					y+=h;
-					paragraphs.addElement("");
-				}
 				
 				continue;
 			}
@@ -131,7 +129,6 @@ public class Paragraph {
 		
 		temp=null;
 		forcePrepare=false;
-		
 	}
 	
 	public void clear() {
@@ -144,7 +141,6 @@ public class Paragraph {
 	
 	public void setMultiline(boolean multiline) {
 		this.multiline=multiline;
-		prepareDimension(width, height);
 	}
 	
 	public boolean getMultiline(){
@@ -153,7 +149,6 @@ public class Paragraph {
 	
 	public void setFont(Font font) {
 		this.font=font;
-		prepareDimension(width, height);
 	}
 	
 	public Font getFont() {
@@ -176,7 +171,6 @@ public class Paragraph {
 		
 		this.text=text;
 		forcePrepare=true;
-		prepareDimension(width, height);
 	}
 	
 	public String getText() {
@@ -187,7 +181,7 @@ public class Paragraph {
 		int s=0;
 		for(int i=0; i<paragraphs.size(); i++) {
 			s+=((String)paragraphs.elementAt(i)).length();
-			if(s>=index) return i;
+			if(s>=index+1) return i;
 		}
 		return -1;
 	}
@@ -203,7 +197,7 @@ public class Paragraph {
 		for(int i=0; i<paragraphs.size(); i++) {
 			s+=((String)paragraphs.elementAt(i)).length();
 			
-			if(s>=index) {
+			if(s>=index+1) {
 				line=i;
 				break;
 			}
@@ -215,6 +209,10 @@ public class Paragraph {
 		if(line==0) 
 			tx=startX;
 		
+		if(text.charAt(index)=='\n') {
+			return tx;
+		}
+		
 		s-=((String)paragraphs.elementAt(line)).length();
 		index-=s;
 		
@@ -222,6 +220,10 @@ public class Paragraph {
 	}
 	
 	public int getCharYFromIndex(int index) {
+		
+		if(text.charAt(index)=='\n') 
+			return font.getHeight()*(getLineFromCharIndex(index)+1);
+		
 		return font.getHeight()*getLineFromCharIndex(index);
 	}
 	
