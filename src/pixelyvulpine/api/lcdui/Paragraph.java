@@ -135,8 +135,8 @@ public class Paragraph {
 	}
 	
 	public void clear() {
-		if(paragraphs!=null)
-			paragraphs.removeAllElements();
+		if(paragraphs==null) return;
+		paragraphs.removeAllElements();
 		
 		paragraphs=null;
 		forcePrepare=true;

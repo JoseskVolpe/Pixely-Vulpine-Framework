@@ -86,6 +86,10 @@ public class Button extends Content{
 		}
 	};
 	
+	public void noPaint() {
+		label.noPaint();
+	}
+	
 	public void paint(GraphicsFix g) {
 		
 		if(isEnabled())

@@ -420,6 +420,21 @@ public class Canvas extends Content{
 		}
 	}
 	
+	public void noPaint() {
+		if(renderData==null) return;
+		
+		while(!renderData[0].empty()){
+			((Content)contents.elementAt(((Short)renderData[0].pop()).shortValue())).noPaint();
+			renderData[1].pop();
+			renderData[2].pop();
+			renderData[3].pop();
+			renderData[4].pop();
+		}
+		
+		renderData=null;
+		
+	}
+	
 	private short velLoss=40;
 	public final void paint(GraphicsFix g) {
 		
