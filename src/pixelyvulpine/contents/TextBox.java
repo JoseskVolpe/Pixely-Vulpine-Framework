@@ -1,3 +1,8 @@
+/*
+ * TODO: "Writing" state for non-user_input writing: Click center or press a number/letter key to eneble it, press center again to show User Input, press right soft to exit it
+ * TODO: Touch scroll
+ */
+
 package pixelyvulpine.contents;
 
 import javax.microedition.lcdui.Font;
