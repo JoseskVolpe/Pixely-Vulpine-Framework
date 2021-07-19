@@ -1,3 +1,4 @@
+![preview](https://user-images.githubusercontent.com/78318343/126109525-bbe0cfb1-46ec-4e30-9338-bc41e15261c6.png)
 # PixelyVulpine-Layout
 Powerful, modern and lightweight framework library for J2ME MIDlets
 
@@ -36,4 +37,5 @@ It might be compatible with legacy LCDUI APIs
 <img src="https://cdn.discordapp.com/attachments/807655972763729971/846164547860562000/Color_chooser_design.png">
 
 # Actual look for now:<br>
-<img src="https://i.imgur.com/e1M1bxg.png"><img src="https://i.imgur.com/V8q5W6a.png"><img src="https://i.imgur.com/fC5RdlO.png">
+<img src="https://i.imgur.com/e1M1bxg.png"><img src="https://i.imgur.com/V8q5W6a.png"><img src="https://user-images.githubusercontent.com/78318343/126109545-742ee4c9-f6d5-4221-bd9f-31bdd5f3ed54.png">
+
