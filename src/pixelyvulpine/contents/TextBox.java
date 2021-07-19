@@ -159,13 +159,19 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 				scrollx-=cx+par.getFont().charWidth(c)+scrollx-g.getDimensionWidth();
 			}
 			
+			if(multiline) {
+				if(cy+scrolly<0) {
+					scrolly-=cy+scrolly;
+				}else if(cy+par.getFont().getHeight()+scrolly>g.getDimensionHeight()) {
+					scrolly-=cy+par.getFont().getHeight()+scrolly-g.getDimensionHeight();
+				}
+			}
+			
 		}
 		
 		
 		g.translate(scrollx, scrolly);
 		g.setClip(-scrollx,-scrolly,g.getDimensionWidth(), g.getDimensionHeight());
-		//g.setColor(0x000000);
-		//g.drawString("Knots bem gostosas e inchadas", 0, 0, 0);
 		
 		renderCaret(g);
 		
