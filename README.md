@@ -1,4 +1,3 @@
-![preview](https://user-images.githubusercontent.com/78318343/126109525-bbe0cfb1-46ec-4e30-9338-bc41e15261c6.png)
 # PixelyVulpine-Layout
 Powerful, modern and lightweight framework library for J2ME MIDlets
 
