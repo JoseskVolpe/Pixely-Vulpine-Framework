@@ -154,5 +154,15 @@ public class ImageView extends Content{
 	public int getHeight() {
 		return height;
 	}
+	
+	public void setImage(Image image) {
+		this.imagePointer=image;
+		width=image.getWidth();
+		height=image.getHeight();
+	}
+	
+	public Image getImage() {
+		return imagePointer;
+	}
 
 }
