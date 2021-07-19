@@ -4,15 +4,21 @@ import javax.microedition.lcdui.Image;
 
 public class ImageTransform {
 
-	public static Image resize(Image image, int desiredWidth, int desiredHeight) {
+	public static Image createResizedImage(Image image, int desiredWidth, int desiredHeight) {
+		if(image.getWidth()==desiredWidth && image.getHeight()==desiredHeight) return image;
+		return Image.createRGBImage(resize(image, desiredWidth, desiredHeight), desiredWidth, desiredHeight, true);
+	}
+	
+	public static int[] resize(Image image, int desiredWidth, int desiredHeight) {
 		
 		int originalWidth = image.getWidth();
 		int originalHeight = image.getHeight();
-		if(originalWidth==desiredWidth && originalHeight==desiredHeight) return image;
 		
 		int data[] = new int[originalWidth*originalHeight];
 		image.getRGB(data, 0, originalWidth, 0, 0, originalWidth, originalHeight);
-		return Image.createRGBImage(resize(data,  originalWidth, originalHeight, desiredWidth, desiredHeight), desiredWidth, desiredHeight, true);
+		
+		if(originalWidth==desiredWidth && originalHeight==desiredHeight) return data;
+		return resize(data,  originalWidth, originalHeight, desiredWidth, desiredHeight);
 	}
 	
 	//Thanks Illiescu for the concept, that was a huuuuuuge study >w<

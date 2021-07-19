@@ -1,6 +1,5 @@
 package pixelyvulpine.contents;
 
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -10,136 +9,38 @@ import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.ImageTransform;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.util.GraphicsFix;
-import pixelyvulpine.api.util.ThreadFlag;
 
 public class ImageView extends Content{
 	
 	private final static byte ERRORSIZE=60;
 	
-	private int[] data, renderData;
-	private int owidth, oheight, width, height;
+	private Image imagePointer;
+	private int[] renderData;
+	private int width, height;
 	private boolean fit, error;
-	private ImageView me;
 	
 	public ImageView(Layout layout, Image image, int scaledX, int scaledY, int offsetX, int offsetY) {
-		super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(scaledX, scaledY, 0, 0), new DimensionAttributes.Offset(offsetX, offsetY, image.getWidth(), image.getHeight())));
-		
-		me=this;
-		
-		if(image==null) {
-			error=true;
-			owidth=ERRORSIZE;
-			oheight=ERRORSIZE;
-			return;
-		}
-		
-		try {
-			data=new int[image.getWidth()*image.getHeight()];
-			image.getRGB(data, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
-			renderData=data;
-		}catch(Exception e) {
-			error=true;
-			owidth=ERRORSIZE;
-			oheight=ERRORSIZE;
-			return;
-		}catch(Error e) {
-			error=true;
-			owidth=ERRORSIZE;
-			oheight=ERRORSIZE;
-			return;
-		}
-			
-		this.owidth=image.getWidth();
-		this.oheight = image.getHeight();
-		this.width=owidth;
-		this.height=oheight;
-		
+		this(layout, image, new DimensionAttributes(new DimensionAttributes.Scaled(scaledX, scaledY, 0, 0), new DimensionAttributes.Offset(offsetX, offsetY, image.getWidth(), image.getHeight())));
 	}
 	
 	public ImageView(Layout layout, Image image, DimensionAttributes dimensionAttributes) {
 		super(layout, dimensionAttributes);
 		
-		me=this;
 		if(image==null) {
 			error=true;
-			owidth=ERRORSIZE;
-			oheight=ERRORSIZE;
 			return;
 		}
 		
-		try {
-			data=new int[image.getWidth()*image.getHeight()];
-			renderData=null;
-			image.getRGB(data, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
-		}catch(Exception e) {
-			error=true;
-			owidth=ERRORSIZE;
-			oheight=ERRORSIZE;
-			return;
-		}catch(Error e) {
-			error=true;
-			owidth=ERRORSIZE;
-			oheight=ERRORSIZE;
-			return;
-		}
+		width=image.getWidth();
+		height=image.getHeight();
 		
-		this.owidth = image.getWidth();
-		this.oheight = image.getHeight();
+		imagePointer=image;
 		
 	}
 	
 	public ImageView(Layout layout, Image image, DimensionAttributes dimensionAttributes, boolean fit) {
-		super(layout, dimensionAttributes);
-		
-		
-		me=this;
+		this(layout, image, dimensionAttributes);
 		this.fit=fit;
-		if(image==null) {
-			error=true;
-			owidth=ERRORSIZE;
-			oheight=ERRORSIZE;
-			return;
-		}
-		
-		try {
-			data=new int[image.getWidth()*image.getHeight()];
-			renderData=null;
-			image.getRGB(data, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
-		}catch(Exception e) {
-			error=true;
-			owidth=ERRORSIZE;
-			oheight=ERRORSIZE;
-			return;
-		}catch(Error e) {
-			error=true;
-			owidth=ERRORSIZE;
-			oheight=ERRORSIZE;
-			return;
-		}
-		
-		this.owidth = image.getWidth();
-		this.oheight = image.getHeight();
-		
-	}
-	
-	private static int imageWidth(Image image) {
-		if(image == null) return 90;
-		
-		try {
-			return image.getWidth();
-		}catch(Exception e) {
-			return ERRORSIZE;
-		}
-	}
-	
-	private static int imageHeight(Image image) {
-		if(image == null) return 90;
-		
-		try {
-			return image.getHeight();
-		}catch(Exception e) {
-			return ERRORSIZE;
-		}
 	}
 	
 	public void noPaint() {
@@ -150,6 +51,10 @@ public class ImageView extends Content{
 		
 		rescale(width, height);
 		
+		if(error) {
+			return new int[] {Math.min(ERRORSIZE, width), Math.min(ERRORSIZE, height)};
+		}
+		
 		return new int[] {this.width, this.height};
 		
 	}
@@ -158,7 +63,7 @@ public class ImageView extends Content{
 		
 		if(renderData==null) {
 			try {
-				renderData = ImageTransform.resize(data, owidth, oheight, this.width, this.height);
+				renderData = ImageTransform.resize(imagePointer, this.width, this.height);
 				error=false;
 			}catch(OutOfMemoryError e) {
 					renderData=null;
@@ -166,20 +71,20 @@ public class ImageView extends Content{
 			}
 		}
 		
-		if(error || renderData==null) {
+		if(error || renderData==null || renderData.length<=0) {
 			g.setColor(0xffffff);
-			g.drawRect(0, 0, owidth, oheight);
+			g.drawRect(0, 0, imagePointer.getWidth(), imagePointer.getHeight());
 			g.setColor(0xff0000);
-			g.drawLine(0, 0, owidth, oheight);
-			g.drawLine(0, oheight, owidth, 0);
+			g.drawLine(0, 0, imagePointer.getWidth(), imagePointer.getHeight());
+			g.drawLine(0, imagePointer.getHeight(), imagePointer.getWidth(), 0);
 			Font font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_SMALL);
 			g.setColor(0xffffff);
 			g.setFont(font);
-			g.drawString("Image Error", owidth/2, (oheight/2)-(font.getHeight()/2), Graphics.HCENTER|Graphics.TOP);
+			g.drawString("Image Error", imagePointer.getWidth()/2, (imagePointer.getHeight()/2)-(font.getHeight()/2), Graphics.HCENTER|Graphics.TOP);
 			font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL);
 			g.setColor(0xff0000);
 			g.setFont(font);
-			g.drawString("Image Error", owidth/2, (oheight/2)-(font.getHeight()/2), Graphics.HCENTER|Graphics.TOP);
+			g.drawString("Image Error", imagePointer.getWidth()/2, (imagePointer.getHeight()/2)-(font.getHeight()/2), Graphics.HCENTER|Graphics.TOP);
 			return;
 		}
 		
@@ -203,9 +108,9 @@ public class ImageView extends Content{
 		
 		if(width==this.width && height==this.height) return;
 		
-		if(data==null) {
-			this.width=width;
-			this.height=height;
+		if(imagePointer==null) {
+			this.width=0;
+			this.height=0;
 			return;
 		}
 		
@@ -216,11 +121,11 @@ public class ImageView extends Content{
 				
 				switch(scale) {
 					case 0: //height
-						width=(int) (oheight*(height/(float)(oheight)));
+						width=(int) (imagePointer.getHeight()*(height/(float)(imagePointer.getHeight())));
 					break;
 					
 					case 1: //width
-						height = (int)(owidth*(width/(float)(owidth)));
+						height = (int)(imagePointer.getWidth()*(width/(float)(imagePointer.getWidth())));
 					break;
 				}
 			}
