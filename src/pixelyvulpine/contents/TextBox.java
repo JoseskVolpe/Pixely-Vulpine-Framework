@@ -131,13 +131,49 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		g.translate(0, (g.getDimensionHeight()/2)-(par.getFont().getHeight()/2));
 		
+		paintString(g);
+		
+		g.translate(tx-g.getTranslateX(), ty-g.getTranslateY());
+		
+	}
+	
+	private int scrollx=0;
+	private int scrolly=0;
+	protected final void paintString(GraphicsFix g) {
+		
+		int cw=g.getClipWidth();
+		int ch=g.getClipHeight();
+		int tx = g.getTranslateX();
+		int ty = g.getTranslateY();
+		
+		int cx, cy;
+		cx=cy=0;
+		if(caret>0) {
+			cx=par.getCharXFromIndex(caret-1);
+			cy=par.getCharYFromIndex(caret-1);
+			char c = text.charAt(caret-1);
+			
+			if(cx+scrollx<0) {
+				scrollx-=cx+scrollx;
+			}else if(cx+par.getFont().charWidth(c)+scrollx>g.getDimensionWidth()) {
+				scrollx-=cx+par.getFont().charWidth(c)+scrollx-g.getDimensionWidth();
+			}
+			
+		}
+		
+		
+		g.translate(scrollx, scrolly);
+		g.setClip(-scrollx,-scrolly,g.getDimensionWidth(), g.getDimensionHeight());
+		//g.setColor(0x000000);
+		//g.drawString("Knots bem gostosas e inchadas", 0, 0, 0);
+		
 		renderCaret(g);
 		
 		g.setColor(0x000000);
 		par.render(g);
 		
 		g.translate(tx-g.getTranslateX(), ty-g.getTranslateY());
-		
+		g.setClip(0, 0, cw, ch);
 	}
 	
 	protected void paintCaret(GraphicsFix g, boolean selected) {
@@ -170,6 +206,8 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		int dh = g.getDimensionHeight();
 		int cw = g.getClipWidth();
 		int ch = g.getClipHeight();
+		int cx = g.getClipX();
+		int cy = g.getClipY();
 		
 		g.translate(x,y);
 		g.setDimension(w, h);
@@ -177,7 +215,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		g.translate(tx-g.getTranslateX(), ty-g.getTranslateY());
 		g.setDimension(dw, dh);
-		g.setClip(0, 0, cw, ch);
+		g.setClip(cx, cy, cw, ch);
 		
 	}
 	
