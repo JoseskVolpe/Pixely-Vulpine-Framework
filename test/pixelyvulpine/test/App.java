@@ -17,7 +17,7 @@ import pixelyvulpine.test.scenes.*;
 
 public class App extends MIDlet implements CommandListener, LayoutLoader {
 
-	private static final String layoutName="scrollTest";
+	private static final String layoutName="listTest";
 	
 	private boolean started = false;
 	
@@ -102,6 +102,10 @@ public class App extends MIDlet implements CommandListener, LayoutLoader {
 		
 		if(layoutName.equals("vibrate")) {
 			return new Vibrator(this);
+		}
+		
+		if(layoutName.equals("listTest")) {
+			return new ListTest(this);
 		}
 		
 		return null;

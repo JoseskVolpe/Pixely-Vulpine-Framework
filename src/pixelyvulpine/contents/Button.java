@@ -131,7 +131,6 @@ public class Button extends Content{
 	
 	public final void setFont(Font font) {
 		label.setFont(font);
-		label.impact();
 	}
 	
 	public final Font getFont() {

@@ -241,5 +241,13 @@ public class ImageView extends Content{
 		error=false;
 		
 	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
 
 }
