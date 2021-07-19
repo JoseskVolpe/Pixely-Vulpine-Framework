@@ -17,8 +17,10 @@ public class ListTest extends Layout{
 		
 		animation=Layout.ANIMATION_SLIDE_LEFT;
 		
-		List l = new List(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100)));
+		List l = new List(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,50)));
+		List l2 = new List(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,50)));
 		addContent(l);
+		addContent(l2);
 		
 		Image ic = null;
 		
@@ -26,14 +28,14 @@ public class ListTest extends Layout{
 			ic=Image.createImage("/icons/dark/navbar/select.png");
 		}catch(IOException e) {}
 		
-		for(int i=0; i<300/2; i++) {
+		for(int i=0; i<50; i++) {
 			
 			Command c = new Command("Command "+i, Command.ITEM, 1);
 			c.setIcon(ic);
 			l.add(c);
 			
 			javax.microedition.lcdui.Command c2 = new javax.microedition.lcdui.Command("Legacy Command "+i, Command.ITEM, 1);
-			l.add(c2);
+			l2.add(c2);
 		}
 		
 	}
