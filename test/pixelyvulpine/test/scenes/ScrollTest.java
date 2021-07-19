@@ -39,12 +39,12 @@ public class ScrollTest extends EmptyScrollLayout{
 		
 		Label l = new Label(this,  new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,40)), this.getTitle());
 		l.setColor(new Color(255,255,255));
-		l.getFont().setStyle(Font.STYLE_BOLD);
+		l.setFontStyle(Font.STYLE_BOLD);
 		l.impact();
 		l.setPositioning(Content.POSITIONING_ANCHORED);
 		l.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
 		
-		Canvas LCanvas = new Canvas(this,  new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0,0,l.getFont().getFontSize())));
+		Canvas LCanvas = new Canvas(this,  new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0,0,l.getFont().getHeight())));
 		LCanvas.addContent(l);
 		LCanvas.setBackgroundColor(null);
 		LCanvas.setForegroundColor(null);

@@ -8,7 +8,6 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.midlet.MIDlet;
 
 import pixelyvulpine.api.lcdui.Layout;
-import pixelyvulpine.api.lcdui.TextFont;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.DimensionAttributes.Scaled;
@@ -26,7 +25,7 @@ public class Vibrator extends Layout implements CommandListener{
 		animation = Layout.ANIMATION_SLIDE_LEFT;
 		setBackgroundColor(new Color(150,10, 37));
 		
-		vibrate = new Button(this, new Button.ButtonPadding(0,10,0,0), "¡Vibrate lewd! x3", new TextFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE));
+		vibrate = new Button(this, new Button.ButtonPadding(0,10,0,0), "¡Vibrate lewd! x3", Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE));
 		vibrate.setClickCommand(vib);
 		
 		Canvas center = new Canvas(this, new DimensionAttributes(new Scaled(0,0,100,100)));

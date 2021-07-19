@@ -1,6 +1,7 @@
 package pixelyvulpine.contents;
 
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Font;
 
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
@@ -8,7 +9,6 @@ import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
-import pixelyvulpine.api.lcdui.TextFont;
 import pixelyvulpine.api.util.GraphicsFix;
 
 public class Button extends Content{
@@ -28,7 +28,7 @@ public class Button extends Content{
 		label.impact();
 	}
 	
-	public Button(Layout context, ButtonPadding buttonPadding, String text, TextFont font) {
+	public Button(Layout context, ButtonPadding buttonPadding, String text, Font font) {
 		this(context, buttonPadding, text);
 		
 		label.impact();
@@ -41,7 +41,7 @@ public class Button extends Content{
 		label = new Label(context, dimensionAttributes, text);
 	}
 	
-	public Button(Layout context, DimensionAttributes dimensionAttributes, String text, TextFont font) {
+	public Button(Layout context, DimensionAttributes dimensionAttributes, String text, Font font) {
 		this(context, dimensionAttributes, text);
 		
 		label.setFont(font);
@@ -125,12 +125,12 @@ public class Button extends Content{
 		return label.getText();
 	}
 	
-	public final void setFont(TextFont font) {
+	public final void setFont(Font font) {
 		label.setFont(font);
 		label.impact();
 	}
 	
-	public final TextFont getFont() {
+	public final Font getFont() {
 		return label.getFont();
 	}
 	

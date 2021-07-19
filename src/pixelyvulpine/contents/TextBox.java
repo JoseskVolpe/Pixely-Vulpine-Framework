@@ -41,16 +41,15 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		par.setFont(font);
 	}
 	
-	public int[] prepaint(int w, int h) {
-		
-		par.setText(text.toString());
-		par.prepareDimension(w, h);
-		
-		return new int[] {w,h};
+	public void noPaint() {
+		par.clear();
 	}
 	
 	public void paint(GraphicsFix g) {
 
+		par.setText(text.toString());
+		par.prepareDimension(g.getDimensionWidth(), g.getDimensionHeight());
+		
 		int tx = g.getTranslateX();
 		int ty = g.getTranslateY();
 		int dw = g.getDimensionWidth();
