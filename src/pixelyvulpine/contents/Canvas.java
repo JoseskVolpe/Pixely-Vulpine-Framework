@@ -516,7 +516,7 @@ public class Canvas extends Content{
 		
 		
 		
-		g.setClip(0, 0, lw-lx*2, lh-ly*2);
+		g.clipRect(0, 0, lw-lx*2, lh-ly*2);
 		
 		paintContent(g);
 	}
@@ -529,6 +529,8 @@ public class Canvas extends Content{
 		int dh=g.getDimensionHeight();
 		int lcw=g.getClipWidth();
 		int lch=g.getClipHeight();
+		int lcx=g.getClipX();
+		int lcy=g.getClipY();
 		
 		short i=0;
 		int rx, ry, rw, rh;
@@ -539,6 +541,8 @@ public class Canvas extends Content{
 			ry=((Integer)renderData[2].elementAt(index)).intValue();
 			rw=((Integer)renderData[3].elementAt(index)).intValue();
 			rh=((Integer)renderData[4].elementAt(index)).intValue();
+			
+			if(rx>=dw || ry>=dh || rx+rw<0 || ry+rh<0) continue;
 			
 			Content c = (Content)contents.elementAt(i);
 			
@@ -551,7 +555,7 @@ public class Canvas extends Content{
 			c.paint(g);
 			
 			g.translate(tx-g.getTranslateX()-rx,  ty-g.getTranslateY()-ry);
-			g.setClip(0, 0 ,lcw, lch);
+			g.setClip(lcx, lcy ,lcw, lch);
 			
 		}
 		

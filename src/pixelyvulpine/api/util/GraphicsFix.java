@@ -50,6 +50,10 @@ public final class GraphicsFix {
 	
 	public void clipRect(int x, int y, int width, int height) {
 		g.clipRect(x, y, width, height);
+		clipX=g.getClipX();
+		clipY=g.getClipY();
+		clipW=g.getClipWidth();
+		clipH=g.getClipHeight();
 	}
 	
 	public void copyArea(int x_src, int y_src, int width, int height, int x_dest, int y_dest, int anchor) {
