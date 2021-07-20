@@ -54,13 +54,11 @@ public class Button extends Content{
 	protected void onSelect() {
 		getLayout().dispatchCommand(selectCom);
 		selected=true;
-		System.out.println("select "+getText());
 	}
 	
 	protected void onDeselect() {
 		getLayout().dispatchCommand(deselectCom);
 		selected=false;
-		System.out.println("deselect "+getText());
 	}
 	
 	protected boolean onClick() {

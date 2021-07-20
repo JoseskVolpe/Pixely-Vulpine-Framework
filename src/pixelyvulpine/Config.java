@@ -26,7 +26,7 @@ public final class Config {
 	private static boolean showTouch;
 	private static String deviceBrand="unknown";
 	private static long numpadTextInputTimeout=1300; //In millis
-	private static boolean debugViews=true;
+	private static boolean debugViews=false;
 	private static boolean XRayMode=false;
 	
 	static {
