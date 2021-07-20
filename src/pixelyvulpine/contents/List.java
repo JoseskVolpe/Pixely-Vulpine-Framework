@@ -7,7 +7,6 @@ import javax.microedition.lcdui.Font;
 
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
-import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
