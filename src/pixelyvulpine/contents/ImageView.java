@@ -27,7 +27,6 @@ public class ImageView extends Content{
 		super(layout, dimensionAttributes);
 		
 		if(image==null) {
-			error=true;
 			return;
 		}
 		
@@ -61,7 +60,7 @@ public class ImageView extends Content{
 	
 	protected void paint(GraphicsFix g) {
 		
-		if(width==0 || height==0) return;
+		if(width<=0 || height<=0) return;
 		
 		if(renderData==null) {
 			try {
@@ -108,11 +107,10 @@ public class ImageView extends Content{
 	
 	public void rescale(int width, int height) {
 		
-		//if(width==this.width && height==this.height) return;
-		
 		if(imagePointer==null) {
 			this.width=0;
 			this.height=0;
+			renderData=null;
 			return;
 		}
 		
