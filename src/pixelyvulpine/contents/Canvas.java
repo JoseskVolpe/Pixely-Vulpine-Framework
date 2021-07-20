@@ -39,6 +39,8 @@ public class Canvas extends Content{
 	
 	public Canvas(Layout layout, DimensionAttributes dimensionAttributes) {
 		super(layout, dimensionAttributes);
+		
+		forcePaint=true;
 	}
 	
 	public void Stopped() {
@@ -436,7 +438,7 @@ public class Canvas extends Content{
 	}
 	
 	private short velLoss=40;
-	public final void paint(GraphicsFix g) {
+	protected final void paint(GraphicsFix g) {
 		
 		canvasX = g.getTranslateX();
 		canvasY = g.getTranslateY();
@@ -552,7 +554,7 @@ public class Canvas extends Content{
 			int tx=g.getTranslateX();
 			int ty=g.getTranslateY();
 			
-			c.paint(g);
+			c.dispatchPaint(g);
 			
 			g.translate(tx-g.getTranslateX()-rx,  ty-g.getTranslateY()-ry);
 			g.setClip(lcx, lcy ,lcw, lch);
@@ -688,7 +690,6 @@ public class Canvas extends Content{
 			break;
 		}
 		if(event.getKeycode()!=next && event.getKeycode()!=back) return scroll(event);
-		
 		Content c;
 		if(selected==null) {
 			if (event.getKeycode()==next) {
@@ -752,6 +753,8 @@ public class Canvas extends Content{
 	}
 	
 	private boolean setSelectedEvent(Content selected) {
+		
+		if(this.selected==selected) return true;
 		
 		if(this.selected!=null)
 			this.selected.dispatchSelected(false);

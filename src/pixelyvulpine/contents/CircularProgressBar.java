@@ -44,7 +44,7 @@ public class CircularProgressBar extends Content {
 		return new int[] {Math.max(width, height), Math.max(width, height)};
 	}
 	
-	public void paint(GraphicsFix g) {
+	protected void paint(GraphicsFix g) {
 		
 		int clipW = g.getDimensionWidth();
 		int clipH = g.getDimensionHeight();

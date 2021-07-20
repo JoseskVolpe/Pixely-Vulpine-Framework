@@ -52,7 +52,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		par.clear();
 	}
 	
-	public void paint(GraphicsFix g) {
+	protected void paint(GraphicsFix g) {
 
 		par.setText(text.toString());
 		par.prepareDimension(g.getDimensionWidth(), g.getDimensionHeight());

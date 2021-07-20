@@ -26,6 +26,8 @@ public final class Config {
 	private static boolean showTouch;
 	private static String deviceBrand="unknown";
 	private static long numpadTextInputTimeout=1300; //In millis
+	private static boolean debugViews=true;
+	private static boolean XRayMode=false;
 	
 	static {
 		try {
@@ -118,6 +120,22 @@ public final class Config {
 	
 	public final static long getNumpadTextInputTimeout() {
 		return numpadTextInputTimeout;
+	}
+	
+	public final static void setDebugViews(boolean debugViews) {
+		Config.debugViews=debugViews;
+	}
+	
+	public final static boolean getDebugViews() {
+		return debugViews;
+	}
+	
+	public final static void setXRayMode(boolean XRayMode) {
+		Config.XRayMode=XRayMode;
+	}
+	
+	public final static boolean getXRayMode() {
+		return XRayMode;
 	}
 	
 }

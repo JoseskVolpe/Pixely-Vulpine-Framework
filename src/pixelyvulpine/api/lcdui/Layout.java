@@ -244,7 +244,7 @@ public class Layout extends Canvas{
 				GraphicsFix gf = new GraphicsFix(g);
 				
 				try {
-					canvas.paint(gf);
+					canvas.dispatchPaint(gf);
 				}catch(Exception e) {
 					Crash.showCrashMessage(app, e, "There was an exception trying to render activity "+getTitle(), Crash.FRAMEWORK_CRASH);
 					return;

@@ -54,11 +54,13 @@ public class Button extends Content{
 	protected void onSelect() {
 		getLayout().dispatchCommand(selectCom);
 		selected=true;
+		System.out.println("select "+getText());
 	}
 	
 	protected void onDeselect() {
 		getLayout().dispatchCommand(deselectCom);
 		selected=false;
+		System.out.println("deselect "+getText());
 	}
 	
 	protected boolean onClick() {
@@ -90,7 +92,7 @@ public class Button extends Content{
 		label.noPaint();
 	}
 	
-	public void paint(GraphicsFix g) {
+	protected void paint(GraphicsFix g) {
 		
 		if(isEnabled())
 			if(selected) {
@@ -103,7 +105,7 @@ public class Button extends Content{
 		
 		g.fillRect(0, 0, getRenderWidth(g), getRenderHeight(g));
 		
-		label.paint(g);
+		label.dispatchPaint(g);
 		
 	}
 	

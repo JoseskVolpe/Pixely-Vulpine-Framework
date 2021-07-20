@@ -40,7 +40,7 @@ public class Label extends Content{
 		par.clear();
 	}
 	
-	public void paint(GraphicsFix g) {
+	protected void paint(GraphicsFix g) {
 		fontColor.updateColor(g);
 		par.setText(text);
 		par.prepareDimension(g.getDimensionWidth(), g.getDimensionHeight());

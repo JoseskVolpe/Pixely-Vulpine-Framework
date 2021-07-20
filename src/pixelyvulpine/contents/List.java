@@ -23,6 +23,8 @@ public class List extends Content{
 	public List(Layout layout, DimensionAttributes dimensionAttributes) {
 		super(layout, dimensionAttributes);
 		
+		forcePaint=true;
+		
 		canvas=new ScrollableCanvas(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100)));
 		canvas.setForegroundColor(new Color(0,0,0)); //TODO REMOVEME
 		
@@ -40,7 +42,7 @@ public class List extends Content{
 	}
 	
 	public void paint(GraphicsFix g) {
-		canvas.paint(g);
+		canvas.dispatchPaint(g);
 	}
 	
 	public void add(Command c) {
@@ -85,6 +87,14 @@ public class List extends Content{
 	
 	public boolean isSelectable() {
 		return canvas.isSelectable();
+	}
+	
+	public void onSelect() {
+		canvas.onSelect();
+	}
+	
+	public void onDeselect() {
+		canvas.onDeselect();
 	}
 
 }

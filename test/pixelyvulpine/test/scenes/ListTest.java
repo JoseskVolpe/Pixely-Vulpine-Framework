@@ -28,7 +28,7 @@ public class ListTest extends Layout{
 			ic=Image.createImage("/icons/dark/navbar/select.png");
 		}catch(IOException e) {}
 		
-		for(int i=0; i<50; i++) {
+		for(int i=0; i<10; i++) {
 			
 			Command c = new Command("Command "+i, Command.ITEM, 1);
 			c.setIcon(ic);

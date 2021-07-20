@@ -4,13 +4,18 @@ import java.util.Vector;
 
 import javax.microedition.lcdui.Graphics;
 
+import pixelyvulpine.Config;
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.util.GraphicsFix;
+import pixelyvulpine.contents.Canvas;
 
 public class Content{
 
+	protected Debug debug;
+	protected boolean forcePaint;
+	
 	/**Fixed position on canvas*/
 	public final static byte POSITIONING_FIXED=0;
 	
@@ -48,6 +53,8 @@ public class Content{
 		this.layout = layout;
 		this.dimensionAttributes=dimensionAttributes;
 		
+		debug = new Debug(this);
+		
 	}
 	
 	public void Stopped() {
@@ -62,7 +69,15 @@ public class Content{
 		
 	}
 	
-	public void paint(GraphicsFix g) {
+	public final void dispatchPaint(GraphicsFix g) {
+		
+		if(!Config.getXRayMode() || forcePaint)
+			paint(g);
+		
+		debug.paint(g);
+	}
+	
+	protected void paint(GraphicsFix g) {
 		
 		
 		

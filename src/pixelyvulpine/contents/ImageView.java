@@ -59,7 +59,7 @@ public class ImageView extends Content{
 		
 	}
 	
-	public void paint(GraphicsFix g) {
+	protected void paint(GraphicsFix g) {
 		
 		if(renderData==null) {
 			try {
