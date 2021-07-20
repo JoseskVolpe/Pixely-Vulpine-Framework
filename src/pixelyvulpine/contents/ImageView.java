@@ -61,6 +61,8 @@ public class ImageView extends Content{
 	
 	protected void paint(GraphicsFix g) {
 		
+		if(width==0 || height==0) return;
+		
 		if(renderData==null) {
 			try {
 				renderData = ImageTransform.resize(imagePointer, this.width, this.height);
