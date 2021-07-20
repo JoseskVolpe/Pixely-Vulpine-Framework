@@ -15,7 +15,6 @@ import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.contents.Canvas;
 import pixelyvulpine.contents.Label;
 import pixelyvulpine.contents.List;
-import pixelyvulpine.contents.CircularProgressBar.CircularProgressBarDimensionAttributes.Offset;
 
 public class ListTest extends Layout implements CommandListener{
 
