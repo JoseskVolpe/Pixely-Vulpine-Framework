@@ -955,6 +955,10 @@ public class Canvas extends Content{
 		
 	}
 	
+	public final Vector getViews(){
+		return contents;
+	}
+	
 	public final void setBackgroundColor(Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
 	}
