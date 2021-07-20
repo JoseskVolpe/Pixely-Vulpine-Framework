@@ -195,8 +195,6 @@ public class Layout extends Canvas{
 				return;
 			}
 			
-			g.translate(-g.getTranslateX(), -g.getTranslateY());
-			
 			try {
 			
 				if(!started) 
@@ -216,8 +214,6 @@ public class Layout extends Canvas{
 						
 					tw = getWidth();
 					th = getHeight()-navheight;
-					
-					
 						
 				}else {
 					tw = getWidth();
@@ -225,7 +221,6 @@ public class Layout extends Canvas{
 				}
 					
 				g.translate(xToAnimation(0), yToAnimation(0));
-				g.setClip(0, 0, tw, th);
 					
 				try {
 					canvas.prepaint(tw, th);
