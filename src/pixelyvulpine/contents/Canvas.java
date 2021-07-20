@@ -754,8 +754,6 @@ public class Canvas extends Content{
 	
 	private boolean setSelectedEvent(Content selected) {
 		
-		if(this.selected==selected) return true;
-		
 		if(this.selected!=null)
 			this.selected.dispatchSelected(false);
 		
@@ -839,7 +837,7 @@ public class Canvas extends Content{
 			for(int i=renderData[0].size()-1; i>=0; i--) {
 				c = contentFromRenderData(i);
 				int[] cd = getRenderData(i);
-				if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED && cd[0]+canvasX < canvasDisplayW && cd[0]+cd[2]+canvasX>=0 && cd[1]+canvasY < canvasDisplayH && cd[1]+cd[3]+canvasY>=0) {
+				if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED && cd[0] < canvasWidth && cd[0]+cd[2]+canvasX>=0 && cd[1]< canvasHeight && cd[1]+cd[3]+canvasY>=0) {
 					setSelectedEvent(c);
 					break;
 				}
