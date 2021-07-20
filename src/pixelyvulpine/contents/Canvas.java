@@ -276,7 +276,7 @@ public class Canvas extends Content{
 				}
 				
 				
-				if(rX+clipW>=0 && rX<=getLayout().getWidth() && rY+clipH>=0 && rY<=getLayout().getHeight()) {
+				if(rX+clipW>=0 && rX<=lw && rY+clipH>=0 && rY<=lh) {
 					
 					addToRender(renderData, i, rX, rY, clipW, clipH);
 				}else {
