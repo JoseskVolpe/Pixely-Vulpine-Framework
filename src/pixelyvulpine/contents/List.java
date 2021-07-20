@@ -26,7 +26,6 @@ public class List extends Content{
 		forcePaint=true;
 		
 		canvas=new ScrollableCanvas(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100)));
-		canvas.setForegroundColor(new Color(0,0,0)); //TODO REMOVEME
 		
 	}
 	
@@ -77,6 +76,10 @@ public class List extends Content{
 		commandContents.removeElementAt(i);
 		commands.removeElementAt(i);
 		return true;
+	}
+	
+	public Command getCommand(int index) {
+		return ((Command)commands.elementAt(index));
 	}
 	
 	public boolean onTouch(MotionEvent e) {
