@@ -18,7 +18,7 @@ public class List extends Content{
 	private ScrollableCanvas canvas;
 	private Vector commands = new Vector(0,1); //Command
 	private Vector commandContents = new Vector(0,1); //Canvas
-	private Font font = Font.getDefaultFont();
+	private Font font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_LARGE);
 	
 	public List(Layout layout, DimensionAttributes dimensionAttributes) {
 		super(layout, dimensionAttributes);
@@ -53,7 +53,7 @@ public class List extends Content{
 		cc.setContentAlignment(Canvas.ALIGNMENT_CENTER);
 		
 		if(c instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) c).getIcon() != null) {
-			ImageView i = new ImageView(getLayout(), ((pixelyvulpine.api.lcdui.Command) c).getIcon(), 0, 0, 0, 0);
+			ImageView i = new ImageView(getLayout(), ((pixelyvulpine.api.lcdui.Command) c).getIcon(), new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100), new DimensionAttributes.Offset(0,0,0,0)));
 			i.setScalePictureToFit(true);
 			cc.addContent(i);
 		}

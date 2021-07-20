@@ -106,7 +106,7 @@ public class ImageView extends Content{
 	
 	public void rescale(int width, int height) {
 		
-		if(width==this.width && height==this.height) return;
+		//if(width==this.width && height==this.height) return;
 		
 		if(imagePointer==null) {
 			this.width=0;
@@ -118,6 +118,7 @@ public class ImageView extends Content{
 			if(fit) {
 				byte scale=0;
 				if(Math.max(width, height) == height) scale=1;
+				if(width==height) scale=2;
 				
 				switch(scale) {
 					case 0: //height
@@ -126,6 +127,9 @@ public class ImageView extends Content{
 					
 					case 1: //width
 						height = (int)(imagePointer.getWidth()*(width/(float)(imagePointer.getWidth())));
+					break;
+					
+					case 2: //Equal size
 					break;
 				}
 			}
