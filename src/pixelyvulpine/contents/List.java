@@ -42,6 +42,7 @@ public class List extends Content{
 	}
 	
 	public void paint(GraphicsFix g) {
+		
 		canvas.dispatchPaint(g);
 	}
 	
@@ -52,14 +53,15 @@ public class List extends Content{
 		cc.setArrangement(Canvas.ARRANGEMENT_HORIZONTAL);
 		cc.setContentAlignment(Canvas.ALIGNMENT_CENTER);
 		
-		if(c instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) c).getIcon() != null) {
-			ImageView i = new ImageView(getLayout(), ((pixelyvulpine.api.lcdui.Command) c).getIcon(), new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100), new DimensionAttributes.Offset(0,0,0,0)));
+		if(c instanceof pixelyvulpine.api.lcdui.Command) {
+			ImageView i = new CommandIcon(getLayout(), (pixelyvulpine.api.lcdui.Command)c, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100), new DimensionAttributes.Offset(0,0,0,0)));
 			i.setScalePictureToFit(true);
 			cc.addContent(i);
 		}
 		
 		Button b = new Button(getLayout(), new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100), new DimensionAttributes.Offset(0,0,0,0)), c.getLabel());
 		b.setFont(font);
+		b.setClickCommand(c);
 		cc.addContent(b);
 		canvas.addContent(cc);
 		
@@ -97,4 +99,22 @@ public class List extends Content{
 		canvas.onDeselect();
 	}
 
+	private class CommandIcon extends ImageView{
+
+		private pixelyvulpine.api.lcdui.Command c;
+		
+		public CommandIcon(Layout layout, pixelyvulpine.api.lcdui.Command c, DimensionAttributes dimensionAttributes) {
+			super(layout, c.getIcon(), dimensionAttributes, true);
+			
+			this.c=c;
+		}
+		
+		public int[] prepaint(int w, int h) {
+			if(getImage()!=c.getIcon())
+				setImage(c.getIcon());
+			return super.prepaint(w, h);
+		}
+		
+	}
+	
 }
