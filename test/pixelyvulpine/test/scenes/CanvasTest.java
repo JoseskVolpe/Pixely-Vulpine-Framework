@@ -35,85 +35,85 @@ public class CanvasTest extends Layout{
 		LCanvas.setForegroundColor(null);
 		this.addContent(LCanvas);
 		
-		Canvas rowC;
+		CustomCanvas rowC;
 		
-		rowC=new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
+		rowC=new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
 		rowC.setZIndex(1);
 		addContent(rowC);
-		rowC=new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
+		rowC=new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
 		rowC.setZIndex(1);
 		addContent(rowC);
-		rowC=new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
+		rowC=new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
 		rowC.setZIndex(1);
 		addContent(rowC);
-		rowC=new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
+		rowC=new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
 		rowC.setZIndex(1);
 		addContent(rowC);
-		rowC=new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
+		rowC=new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
 		rowC.setZIndex(1);
 		addContent(rowC);
-		rowC=new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
+		rowC=new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0, 0, 90, 40)));
 		rowC.setZIndex(1);
 		addContent(rowC);
 		
 		
-		Canvas testrb = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(-1,-1,0,0), new DimensionAttributes.Offset(-3,-3,40,40)));
+		CustomCanvas testrb = new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(-1,-1,0,0), new DimensionAttributes.Offset(-3,-3,40,40)));
 		testrb.setPositioning(Content.POSITIONING_ANCHORED);
 		testrb.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_RIGHT);
 		testrb.setVerticalAnchor(Content.VERTICAL_ANCHOR_BOTTOM);
 		testrb.setZIndex(2);
 		this.addContent(testrb);
 		
-		Canvas testlb = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(1,-1,0,0), new DimensionAttributes.Offset(3,-3,40,40)));
+		CustomCanvas testlb = new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(1,-1,0,0), new DimensionAttributes.Offset(3,-3,40,40)));
 		testlb.setPositioning(Content.POSITIONING_ANCHORED);
 		testlb.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_LEFT);
 		testlb.setVerticalAnchor(Content.VERTICAL_ANCHOR_BOTTOM);
 		testlb.setZIndex(2);
 		this.addContent(testlb);
 		
-		Canvas testrt = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(-1,1,0,0), new DimensionAttributes.Offset(-3,3,40,40)));
+		CustomCanvas testrt = new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(-1,1,0,0), new DimensionAttributes.Offset(-3,3,40,40)));
 		testrt.setPositioning(Content.POSITIONING_ANCHORED);
 		testrt.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_RIGHT);
 		testrt.setVerticalAnchor(Content.VERTICAL_ANCHOR_TOP);
 		testrt.setZIndex(2);
 		this.addContent(testrt);
 
-		Canvas testlt = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(1,1,0,0), new DimensionAttributes.Offset(3,3,40,40)));
+		CustomCanvas testlt = new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(1,1,0,0), new DimensionAttributes.Offset(3,3,40,40)));
 		testlt.setPositioning(Content.POSITIONING_ANCHORED);
 		testlt.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_LEFT);
 		testlt.setVerticalAnchor(Content.VERTICAL_ANCHOR_TOP);
 		testlt.setZIndex(2);
 		this.addContent(testlt);
 		
-		Canvas testcl = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(1,0,0,0), new DimensionAttributes.Offset(3,0,40,40)));
+		CustomCanvas testcl = new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(1,0,0,0), new DimensionAttributes.Offset(3,0,40,40)));
 		testcl.setPositioning(Content.POSITIONING_ANCHORED);
 		testcl.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_LEFT);
 		testcl.setVerticalAnchor(Content.VERTICAL_ANCHOR_CENTER);
 		testcl.setZIndex(2);
 		this.addContent(testcl);
 		
-		Canvas testcc = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,0,0), new DimensionAttributes.Offset(0,0,40,40)));
+		CustomCanvas testcc = new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,0,0), new DimensionAttributes.Offset(0,0,40,40)));
 		testcc.setPositioning(Content.POSITIONING_ANCHORED);
 		testcc.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
 		testcc.setVerticalAnchor(Content.VERTICAL_ANCHOR_CENTER);
 		testcc.setZIndex(2);
 		this.addContent(testcc);
 		
-		Canvas testcr = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(-1,0,0,0), new DimensionAttributes.Offset(-3,0,40,40)));
+		CustomCanvas testcr = new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(-1,0,0,0), new DimensionAttributes.Offset(-3,0,40,40)));
 		testcr.setPositioning(Content.POSITIONING_ANCHORED);
 		testcr.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_RIGHT);
 		testcr.setVerticalAnchor(Content.VERTICAL_ANCHOR_CENTER);
 		testcr.setZIndex(2);
 		this.addContent(testcr);
 		
-		Canvas testct = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,1,0,0), new DimensionAttributes.Offset(0,3,40,40)));
+		CustomCanvas testct = new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,1,0,0), new DimensionAttributes.Offset(0,3,40,40)));
 		testct.setPositioning(Content.POSITIONING_ANCHORED);
 		testct.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
 		testct.setVerticalAnchor(Content.VERTICAL_ANCHOR_TOP);
 		testct.setZIndex(2);
 		this.addContent(testct);
 		
-		Canvas testcb = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,-1,0,0), new DimensionAttributes.Offset(0,-3,40,40)));
+		CustomCanvas testcb = new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,-1,0,0), new DimensionAttributes.Offset(0,-3,40,40)));
 		testcb.setPositioning(Content.POSITIONING_ANCHORED);
 		testcb.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
 		testcb.setVerticalAnchor(Content.VERTICAL_ANCHOR_BOTTOM);
@@ -121,7 +121,7 @@ public class CanvasTest extends Layout{
 		this.addContent(testcb);
 		
 		
-		Canvas testABS = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(10,10,0,0), new DimensionAttributes.Offset(5,5,40,40)));
+		CustomCanvas testABS = new CustomCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(10,10,0,0), new DimensionAttributes.Offset(5,5,40,40)));
 		testABS.setPositioning(Content.POSITIONING_ABSOLUTE);
 		testABS.setZIndex(3);
 		this.addContent(testABS);
@@ -164,6 +164,18 @@ public class CanvasTest extends Layout{
 	public boolean onContentError(Content content, Throwable e) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	private static class CustomCanvas extends Canvas{
+
+		public CustomCanvas(Layout layout, DimensionAttributes dimensionAttributes) {
+			super(layout, dimensionAttributes);
+			
+			this.setBackgroundColor(new Color(120,10,10,10));
+			this.setForegroundColor(new Color(120,255,0,0));
+			
+		}
+		
 	}
 
 }
