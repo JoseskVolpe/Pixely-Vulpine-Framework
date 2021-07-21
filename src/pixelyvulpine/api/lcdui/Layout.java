@@ -611,7 +611,12 @@ public class Layout extends Canvas{
 	public final void cancelCommandList(CommandList list) {
 		commandLists.removeElement(list);
 		list.assembleContext(null);
-		if(currentCL==list) currentCL=null;
+		if(currentCL==list) {
+			for(int i=0; i<currentCL.size(); i++) {
+				super.removeCommand(currentCL.getCommand(i));
+			}
+			currentCL=null;
+		}
 		updateCommands();
 	}
 	
