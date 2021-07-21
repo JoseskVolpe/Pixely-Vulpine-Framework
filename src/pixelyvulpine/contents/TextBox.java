@@ -5,12 +5,16 @@
 
 package pixelyvulpine.contents;
 
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
+import pixelyvulpine.api.lcdui.Command;
+import pixelyvulpine.api.lcdui.CommandList;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
@@ -19,15 +23,17 @@ import pixelyvulpine.api.system.UserInput;
 import pixelyvulpine.api.util.GraphicsFix;
 import pixelyvulpine.api.events.TextSequenceInput;
 
-public class TextBox extends Content implements TextSequenceInput.OnTextInputListener, UserInput.InputListener{
+public class TextBox extends Content implements TextSequenceInput.OnTextInputListener, UserInput.InputListener, CommandListener{
 	
 	
 	protected Paragraph par;
 	protected StringBuffer text=new StringBuffer();
 	protected TextSequenceInput input = new TextSequenceInput();
-	private boolean multiline, selected;
+	private boolean multiline, selected, writing;
 	private int maxCharacters=2050;
 	private int caret;
+	private Command back;
+	private CommandList cList;
 	
 	private GestureDetector gesture;
 
@@ -39,6 +45,12 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		par = new Paragraph(Font.getDefaultFont());
 		
 		setMultiline(true);
+		
+		cList = new CommandList(CommandList.PRIORITY_VIEW);
+		
+		back = new Command("Back", Command.BACK, 0);
+		back.setCommandListenerBypass(this);
+		cList.addCommand(back);
 		
 	}
 	
@@ -203,6 +215,8 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	
 	protected final void renderCaret(GraphicsFix g) {
 		
+		if(!isWriting()) return;
+		
 		int x, y, w, h;
 		h=par.getFont().getHeight();
 		
@@ -237,34 +251,38 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	
 	public boolean onKey(int keyCode, KeyEvent ev) {
 		
-		switch(keyCode) {
-			case KeyEvent.KEYCODE_DPAD_CENTER:
-				showUserInput();
-				return true;
-		}
+		if(ev.getAction() == KeyEvent.ACTION_DOWN)
+			switch(keyCode) {
+				case KeyEvent.KEYCODE_DPAD_CENTER:
+					if(isWriting())
+						showUserInput();
+					else
+						beginWriting();
+					return true;
+			}
 		
 		if(ev.getAction() == KeyEvent.ACTION_DOWN || ev.getAction() == KeyEvent.ACTION_REPEAT) {
 			switch(keyCode) {
 			case KeyEvent.KEYCODE_DPAD_DOWN:
-				if (input.finishSequence()) return true;
-				return false;
+				if(!isWriting()) return false;
+				input.finishSequence();
+				return true;
 			case KeyEvent.KEYCODE_DPAD_LEFT:
+				if(!isWriting()) return false;
 				if (input.finishSequence()) return true;
-				if(caret>0) {
+				if(caret>0)
 					caret--;
-					return true;
-				}
-				return false;
+				return true;
 			case KeyEvent.KEYCODE_DPAD_RIGHT:
+				if(!isWriting()) return false;
 				if (input.finishSequence()) return true;
-				if(caret<text.length()) {
+				if(caret<text.length()) 
 					caret++;
-					return true;
-				}
-				return false;
+				return true;
 			case KeyEvent.KEYCODE_DPAD_UP:
-				if (input.finishSequence()) return true;
-				return false;
+				if(!isWriting()) return false;
+				input.finishSequence();
+				return true;
 			}
 		}
 		
@@ -299,7 +317,17 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		selected=false;
 	}
 
+	public void commandAction(javax.microedition.lcdui.Command c, Displayable d) {
+		
+		if(c==back) {
+			endWriting();
+		}
+		
+	}
+	
 	public boolean onCharAdded(char c) {
+		
+		if(!isWriting()) beginWriting();
 		
 		if(text.length()>=maxCharacters) return false;
 		
@@ -358,7 +386,20 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 
 	public void onInputCanceled(String input) {}
 	
+	protected final void beginWriting() {
+		writing=true;
+		getLayout().addCommandList(cList);
+	}
 	
+	protected final void endWriting() {
+		input.finishSequence();
+		writing=false;
+		getLayout().cancelCommandList(cList);
+	}
+	
+	protected final boolean isWriting() {
+		return writing;
+	}
 	
 	public void setMultiline(boolean multiline) {
 		this.multiline=multiline;
