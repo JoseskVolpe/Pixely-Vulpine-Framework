@@ -64,8 +64,6 @@ public class Layout extends Canvas{
 	private pixelyvulpine.contents.Canvas focused;
 	private boolean fullscreen, painted;
 	private short deltaTime;
-	private CommandListener listener;
-	private Vector commands = new Vector();
 	
 	
 	private paintThreadClass paintThread;
@@ -121,6 +119,12 @@ public class Layout extends Canvas{
 		navbar.setBackgroundColor(navigationBarColor);
 		navbar.setForegroundColor(null);
 		focused=canvas;
+		super.setCommandListener(activityCommandListener);
+		
+		CommandList ml = new CommandList(CommandList.PRIORITY_MAIN_COMMANDS);
+		mainCommands=ml;
+		addCommandList(ml);
+		
 	}
 	
 	public final void setup() {
@@ -481,17 +485,30 @@ public class Layout extends Canvas{
 		
 	}
 	
+	private static boolean pressed;
+	
 	protected final void keyPressed(int keyCode){
+		
+		pressed=true;
+		
 		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_DOWN, keyCode);
 		keyEvent(event);
 	}
 	
 	protected final void keyRepeated(int keyCode) {
+		
+		if(!pressed) return;
+		
 		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_REPEAT, keyCode);
 		keyEvent(event);
 	}
 
 	protected final void keyReleased(int keyCode){
+		
+		if(!pressed) return;
+ 		
+		pressed=false;
+		
 		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_UP, keyCode);
 		keyEvent(event);
 	}
@@ -570,23 +587,90 @@ public class Layout extends Canvas{
 		
 	}
 	
+	private CommandListener listener;
+	private ActivityCommandListener activityCommandListener = new ActivityCommandListener();
+	private CommandList mainCommands = new CommandList(CommandList.PRIORITY_MAIN_COMMANDS);
+	private Vector commandLists = new Vector();
+	private CommandList currentCL;
 	public final void addCommand(Command command) {
-		commands.addElement(command);
-		super.addCommand(command);
+		mainCommands.addCommand(command);
+		updateCommands(mainCommands);
 	}
 
 	public final void removeCommand(Command command) {
-		commands.removeElement(command);
-		super.removeCommand(command);
+		mainCommands.removeCommand(command);
+		updateCommands(mainCommands);
+	}
+	
+	public final void addCommandList(CommandList list) {
+		commandLists.addElement(list);
+		list.assembleContext(this);
+		updateCommands();
+	}
+	
+	public final void cancelCommandList(CommandList list) {
+		commandLists.removeElement(list);
+		list.assembleContext(null);
+		if(currentCL==list) currentCL=null;
+		updateCommands();
+	}
+	
+	public final void updateCommands(CommandList list) {
+		if(list==currentCL) {
+			updateCommands();
+		}
+	}
+	
+	private void updateCommands() {
+		
+		CommandList current=currentCL;
+		for(int i=commandLists.size()-1; i>=0; i--) {
+			if(current==null || current.getPriority()>((CommandList)commandLists.elementAt(i)).getPriority())
+				current=(CommandList)commandLists.elementAt(i);
+		}
+		
+		if(currentCL!=null)
+			for(int i=0; i<currentCL.size(); i++) {
+				super.removeCommand(currentCL.getCommand(i));
+			}
+		
+		currentCL=current;
+		
+		if(this.fullscreen) {
+			//TODO: Update custom navbar
+		}else{
+			
+			for(int i=0; i<currentCL.size(); i++) {
+				super.addCommand(currentCL.getCommand(i));
+			}
+			
+		}
+		
 	}
 	
 	public final void setCommandListener(CommandListener l) {
 		listener=l;
-		super.setCommandListener(l);
 	}
 	
 	public final CommandListener getCommandListener() {
 		return listener;
+	}
+	
+	private final class ActivityCommandListener implements CommandListener{
+
+		public void commandAction(Command arg0, Displayable arg1) {
+			
+			if(arg0 instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) arg0).getCommandListenerBypass()!=null) {
+				((pixelyvulpine.api.lcdui.Command) arg0).getCommandListenerBypass().commandAction(arg0, arg1);
+				return;
+			}
+			
+			//No View's command found
+			if(listener!=null) 
+				listener.commandAction(arg0, arg1);
+			
+		}
+		
 	}
 	
 	public final void dispatchCommand(Command c) {
@@ -603,7 +687,7 @@ public class Layout extends Canvas{
 					if(c instanceof pixelyvulpine.api.lcdui.Command)
 						((pixelyvulpine.api.lcdui.Command)c).setView(view);
 						
-					getCommandListener().commandAction(c, me);
+					activityCommandListener.commandAction(c, me);
 				}
 			}
 		}

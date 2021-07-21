@@ -1,11 +1,13 @@
 package pixelyvulpine.api.lcdui;
 
+import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Image;
 
 public class Command extends javax.microedition.lcdui.Command{
 
 	private Image icon;
 	private Content view;
+	private CommandListener listener;
 	
 	public Command(String label, int commandType, int priority) {
 		super(label, commandType, priority);
@@ -34,6 +36,14 @@ public class Command extends javax.microedition.lcdui.Command{
 	
 	public final Content getView() {
 		return view;
+	}
+	
+	public final void setCommandListenerBypass(CommandListener listener) {
+		this.listener=listener;
+	}
+	
+	public final CommandListener getCommandListenerBypass() {
+		return listener;
 	}
 
 }
