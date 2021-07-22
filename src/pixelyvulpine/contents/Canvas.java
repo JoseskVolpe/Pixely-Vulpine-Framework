@@ -393,7 +393,7 @@ public class Canvas extends Content{
 		if(backgroundColor!=null && backgroundColor.getAlpha()>0) {
 			if(Display.getDisplay(getLayout().getMIDlet()).numAlphaLevels() <=2 || backgroundColor.getAlpha()>=255 || saveRam) {
 				backgroundColor.updateColor(g);
-				g.fillRect(0, 0, g.getDimensionWidth()-2, g.getDimensionHeight()-2);
+				g.fillRect(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
 			}else {
 				int color[];
 				/*
