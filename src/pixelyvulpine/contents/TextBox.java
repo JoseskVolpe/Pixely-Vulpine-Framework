@@ -9,6 +9,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import pixelyvulpine.Config;
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
@@ -45,11 +46,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		setMultiline(true);
 		
-		cList = new CommandList(CommandList.PRIORITY_VIEW);
 		
-		back = new Command("Back", Command.BACK, 0);
-		back.setCommandListenerBypass(this);
-		cList.addCommand(back);
 		
 	}
 	
@@ -387,6 +384,11 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	
 	protected final void beginWriting() {
 		writing=true;
+		cList = new CommandList(CommandList.PRIORITY_VIEW);
+		
+		back = new Command("Back", Config.getIcon(Config.ICON_BACK), Command.BACK, 0);
+		back.setCommandListenerBypass(this);
+		cList.addCommand(back);
 		getLayout().addCommandList(cList);
 	}
 	
@@ -394,6 +396,8 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		input.finishSequence();
 		writing=false;
 		getLayout().cancelCommandList(cList);
+		
+		cList = null;
 	}
 	
 	protected final boolean isWriting() {

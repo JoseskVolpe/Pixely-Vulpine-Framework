@@ -258,9 +258,6 @@ public class Layout extends Canvas{
 					navbar.dispatchPaint(gf);
 					g.translate(0, -th);
 					g.setClip(0, 0, getWidth(), getHeight());
-					
-					
-					int nx, ny;
 				}
 				
 			}catch(Exception e) {
@@ -473,7 +470,7 @@ public class Layout extends Canvas{
 		pressed=true;
 		
 		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_DOWN, keyCode);
-		keyEvent(event);
+		keyEvent(event,false);
 	}
 	
 	protected final void keyRepeated(int keyCode) {
@@ -481,7 +478,7 @@ public class Layout extends Canvas{
 		if(!pressed) return;
 		
 		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_REPEAT, keyCode);
-		keyEvent(event);
+		keyEvent(event,false);
 	}
 
 	protected final void keyReleased(int keyCode){
@@ -491,12 +488,12 @@ public class Layout extends Canvas{
 		pressed=false;
 		
 		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_UP, keyCode);
-		keyEvent(event);
+		keyEvent(event, false);
 	}
 	
-	private final void keyEvent(KeyEvent event) {
+	private final void keyEvent(KeyEvent event, boolean symbolic) {
 		
-		if(!navbar.dispatchKeyEvent(event.getKeycode(), event)) {
+		if(symbolic || !navbar.dispatchKeyEvent(event.getKeycode(), event)) {
 			if(!getFocusedCanvas().dispatchKeyEvent(event.getKeycode(), event)) {
 				
 			}
@@ -620,6 +617,9 @@ public class Layout extends Canvas{
 			for(int i=0; i<currentCL.size(); i++) {
 				super.removeCommand(currentCL.getCommand(i));
 			}
+		navbar.setBarButton(null, Navbar.LEFT);
+		navbar.setBarButton(null, Navbar.CENTER);
+		navbar.setBarButton(null, Navbar.RIGHT);
 		
 		currentCL=current;
 		
@@ -627,40 +627,16 @@ public class Layout extends Canvas{
 			//TODO: Update custom navbar
 			Command left=null, center=null, right=null;
 			for(int i=currentCL.size()-1; i>=0; i--) {
-				switch(currentCL.getCommand(i).getCommandType()) {
-				case Command.BACK:
+				switch(navbar.getSoftPosition(currentCL.getCommand(i).getCommandType())) {
+				case Navbar.RIGHT:
 					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority())
 						right=currentCL.getCommand(i);
 					break;
-				case Command.CANCEL:
-					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority())
-						right=currentCL.getCommand(i);
-					break;
-				case Command.EXIT:
-					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority())
-						right=currentCL.getCommand(i);
-					break;
-				case Command.HELP:
+				case Navbar.LEFT:
 					if(left==null || left.getPriority()>=currentCL.getCommand(i).getPriority())
 						left=currentCL.getCommand(i);
 					break;
-				case Command.ITEM:
-					if(left==null || left.getPriority()>=currentCL.getCommand(i).getPriority())
-						left=currentCL.getCommand(i);
-					break;
-				case Command.OK:
-					if(left==null || left.getPriority()>=currentCL.getCommand(i).getPriority())
-						left=currentCL.getCommand(i);
-					break;
-				case Command.SCREEN:
-					if(left==null || left.getPriority()>=currentCL.getCommand(i).getPriority())
-						left=currentCL.getCommand(i);
-					break;
-				case Command.STOP:
-					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority())
-						right=currentCL.getCommand(i);
-					break;
-				case pixelyvulpine.api.lcdui.Command.CENTER_INDICATOR:
+				case Navbar.CENTER:
 					if(center==null || center.getPriority()>=currentCL.getCommand(i).getPriority())
 						center=currentCL.getCommand(i);
 					break;
@@ -672,7 +648,11 @@ public class Layout extends Canvas{
 			this.navbar.setBarButton(right, Navbar.RIGHT);
 		}else{
 			for(int i=0; i<currentCL.size(); i++) {
-				if(currentCL.getCommand(i).getCommandType() == pixelyvulpine.api.lcdui.Command.CENTER_INDICATOR) continue;
+				if(currentCL.getCommand(i).getCommandType() == pixelyvulpine.api.lcdui.Command.CENTER) {
+					if(navbar.center.command == null || navbar.center.command.getPriority()>=currentCL.getCommand(i).getPriority())
+						navbar.setBarButton(currentCL.getCommand(i), Navbar.CENTER);
+					continue;
+				}
 				super.addCommand(currentCL.getCommand(i));
 			}
 			
@@ -691,6 +671,23 @@ public class Layout extends Canvas{
 	private final class ActivityCommandListener implements CommandListener{
 
 		public void commandAction(Command arg0, Displayable arg1) {
+			
+			if(arg0 instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) arg0).isSymbolic()) {
+				
+				switch(navbar.getSoftPosition(arg0.getCommandType())) {
+					case Navbar.LEFT:
+						keyEvent(new KeyEvent(current, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SOFT_LEFT), true);
+					break;
+					case Navbar.CENTER:
+						keyEvent(new KeyEvent(current, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_CENTER), true);
+					break;
+					case Navbar.RIGHT:
+						keyEvent(new KeyEvent(current, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SOFT_RIGHT), true);
+					break;
+				}
+				
+				return;
+			}
 			
 			if(arg0 instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) arg0).getCommandListenerBypass()!=null) {
 				((pixelyvulpine.api.lcdui.Command) arg0).getCommandListenerBypass().commandAction(arg0, arg1);
@@ -739,6 +736,31 @@ public class Layout extends Canvas{
 		public static final byte CENTER=0;
 		public static final byte RIGHT=1;
 		
+		public int getSoftPosition(int commandType) {
+			switch(commandType) {
+			case Command.BACK:
+				return RIGHT;
+			case Command.CANCEL:
+				return RIGHT;
+			case Command.EXIT:
+				return RIGHT;
+			case Command.HELP:
+				return LEFT;
+			case Command.ITEM:
+				return LEFT;
+			case Command.OK:
+				return LEFT;
+			case Command.SCREEN:
+				return LEFT;
+			case Command.STOP:
+				return RIGHT;
+			case pixelyvulpine.api.lcdui.Command.CENTER:
+				return CENTER;
+			default:
+				throw new IllegalArgumentException();
+			}
+		}
+		
 		private NavbarButton left, center, right;
 		
 		public Navbar(Layout activity) {
@@ -780,6 +802,8 @@ public class Layout extends Canvas{
 					return left.callCommand(ev);
 				case KeyEvent.KEYCODE_SOFT_RIGHT:
 					return right.callCommand(ev);
+				case KeyEvent.KEYCODE_DPAD_CENTER:
+					return center.callCommand(ev);
 			}
 			
 			return false;
@@ -834,6 +858,7 @@ public class Layout extends Canvas{
 				if(command instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) command).getIcon()!=null) {
 					
 					view = new ImageView(getLayout(), ((pixelyvulpine.api.lcdui.Command) command).getIcon(), 0,0,0,0);
+					((ImageView)view).setScalePictureToFit(true);
 					return;
 				}
 				
@@ -843,7 +868,7 @@ public class Layout extends Canvas{
 			}
 			
 			public boolean callCommand(KeyEvent ev) {
-				if(command==null) return false;
+				if(command==null || (command instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) command).isSymbolic())) return false;
 				
 				if(ev.getAction()==KeyEvent.ACTION_UP)
 					dispatchCommand(command);

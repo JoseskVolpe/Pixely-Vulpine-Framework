@@ -11,6 +11,7 @@ import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Command;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
+import pixelyvulpine.api.lcdui.SymbolicCommand;
 import pixelyvulpine.contents.Button;
 import pixelyvulpine.contents.Canvas;
 import pixelyvulpine.contents.ImageView;
@@ -160,11 +161,10 @@ public class ScrollTest extends EmptyScrollLayout{
 		//setFullScreenMode(false);
 		
 		this.addCommand(new Command("Test1", Command.BACK, 1));
-		/*this.addCommand(new Command("Test2", Command.BACK, 1));
+		this.addCommand(new Command("Test2", Command.BACK, 1));
 		this.addCommand(new Command("Test3", Command.BACK, 1));
 		this.addCommand(new Command("Test4", Command.BACK, 1));
-		this.addCommand(new Command("Test5", Command.BACK, 1));*/
-		this.addCommand(new Command("OK", Command.CENTER_INDICATOR, 1));
+		this.addCommand(new Command("Test5", Command.BACK, 1));
 		this.addCommand(new Command("Test6", Command.OK, 1));
 		
 	}

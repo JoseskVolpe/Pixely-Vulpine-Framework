@@ -1,11 +1,18 @@
 package pixelyvulpine;
 
 import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Image;
 
 import pixelyvulpine.api.util.CSVReader;
 
 public final class Config {
 
+	public final static byte ICON_BACK=0;
+	public final static byte ICON_SELECT=1;
+	public final static byte ICON_WRITE=2;
+	public final static byte ICON_NEXT=3;
+	private static Image icons[]=new Image[4];
+	
 	public final static String framework_version="0.0.1";
 	public final static String framework_version_tag="dev";
 	/*
@@ -145,6 +152,14 @@ public final class Config {
 	
 	public final static Font getNavbarFont() {
 		return navbarFont;
+	}
+	
+	public final static void setIcon(Image icon, int type) {
+		icons[type]=icon;
+	}
+	
+	public final static Image getIcon(int type) {
+		return icons[type];
 	}
 	
 }
