@@ -1,6 +1,6 @@
 package pixelyvulpine;
 
-import java.io.IOException;
+import javax.microedition.lcdui.Font;
 
 import pixelyvulpine.api.util.CSVReader;
 
@@ -14,7 +14,7 @@ public final class Config {
 	 * alpha: alpha release
 	 * beta: beta release
 	 * stable: main release
-	 * custom: cutom, modified framework
+	 * custom: custom, modified framework
 	 */
 	
 	private static long longPressTimeout=1000; //in millis
@@ -28,6 +28,7 @@ public final class Config {
 	private static long numpadTextInputTimeout=1300; //In millis
 	private static boolean debugViews=false;
 	private static boolean XRayMode=false;
+	private static Font navbarFont=Font.getDefaultFont();
 	
 	static {
 		try {
@@ -136,6 +137,14 @@ public final class Config {
 	
 	public final static boolean getXRayMode() {
 		return XRayMode;
+	}
+	
+	public final static void setNavbarFont(Font font) {
+		Config.navbarFont = font;
+	}
+	
+	public final static Font getNavbarFont() {
+		return navbarFont;
 	}
 	
 }

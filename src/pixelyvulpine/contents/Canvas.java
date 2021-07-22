@@ -57,6 +57,7 @@ public class Canvas extends Content{
 	
 	public int[] prepaint(int lw, int lh) {
 		
+		
 		if(foregroundColor!=null && foregroundColor.getAlpha()<=0) {
 			lw-=2;
 			lh-=2;
@@ -115,7 +116,7 @@ public class Canvas extends Content{
 				cy = new int[] {c.getDimension().getScaledDimension().y, c.getDimension().getOffsetDimension().y};
 				cw = new int[] {c.getDimension().getScaledDimension().width, c.getDimension().getOffsetDimension().width};
 				ch = new int[] {c.getDimension().getScaledDimension().height, c.getDimension().getOffsetDimension().height};
-				 
+				
 				clipW = (int)(lw*(cw[0]/100.f))+cw[1];
 				clipH = (int)(lh*(ch[0]/100.f))+ch[1];
 				

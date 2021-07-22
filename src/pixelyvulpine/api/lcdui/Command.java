@@ -5,21 +5,32 @@ import javax.microedition.lcdui.Image;
 
 public class Command extends javax.microedition.lcdui.Command{
 
+	public static final int CENTER_INDICATOR = 0;
+	
 	private Image icon;
 	private Content view;
 	private CommandListener listener;
+	private int commandType;
 	
 	public Command(String label, int commandType, int priority) {
-		super(label, commandType, priority);
+		super(label, getLegacyCommandType(commandType), priority);
 		
+		this.commandType=commandType;
 		icon=null;
 		
 	}
 	
 	public Command(String label, Image icon, int commandType, int priority) {
-		super(label, commandType, priority);
+		this(label, commandType, priority);
 		
 		this.icon = icon;
+	}
+	
+	private static int getLegacyCommandType(int commandType) {
+		if(commandType==CENTER_INDICATOR)
+			return Command.OK;
+		else
+			return commandType;
 	}
 	
 	public void setIcon(Image icon) {
@@ -28,6 +39,10 @@ public class Command extends javax.microedition.lcdui.Command{
 	
 	public Image getIcon() {
 		return icon;
+	}
+	
+	public int getCommandType() {
+		return commandType;
 	}
 	
 	public final void setView(Content view) {

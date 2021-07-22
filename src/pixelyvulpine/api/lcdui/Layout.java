@@ -1,9 +1,6 @@
 package pixelyvulpine.api.lcdui;
 
-import java.io.IOException;
-import java.util.Stack;
 import java.util.Vector;
-
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -11,24 +8,17 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 
 import pixelyvulpine.Config;
-import pixelyvulpine.api.events.GestureDetector;
-import pixelyvulpine.api.events.InputEvent;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.GraphicsFix;
+import pixelyvulpine.contents.ImageView;
+import pixelyvulpine.contents.Label;
 
 public class Layout extends Canvas{
-	
-	private static final byte NAVHEIGHT = 10;//in percent
-	
-	public static final byte NAVBUTTON_LEFT=0;
-	public static final byte NAVBUTTON_CENTER=1;
-	public static final byte NAVBUTTON_RIGHT=2;
 	
 	public static final int NO_ANIMATION = 0;
 	public static final int ANIMATION_SMOOTH_SLIDE_UP=1;
@@ -40,15 +30,9 @@ public class Layout extends Canvas{
 	public static final int ANIMATION_SMOOTH_SLIDE_RIGHT=7;
 	public static final int ANIMATION_SLIDE_RIGHT=8;
 	
-	private static final long touch_delay = 1000; //In millis
-	private static final int touch_sensibility = 8; //In pixels
-	
 	protected int animation = ANIMATION_SMOOTH_SLIDE_UP;
 	
 	protected MIDlet app;
-	//private josesk.app.j2me.Canvas canvas;
-	private static boolean navigationBar = false;
-	private static pixelyvulpine.contents.Canvas navbar;
 	
 	private static long timeStart;
 	private static Layout current;
@@ -58,9 +42,8 @@ public class Layout extends Canvas{
 	private Color navigationBarColor = new Color(34,34,34);
 	private Color navigationPressColor = new Color(69,69,69);
 	
-	private static short navheight;
-	
 	protected pixelyvulpine.contents.Canvas canvas;
+	private Navbar navbar;
 	private pixelyvulpine.contents.Canvas focused;
 	private boolean fullscreen, painted;
 	private short deltaTime;
@@ -115,7 +98,8 @@ public class Layout extends Canvas{
 		this.app = app;
 		
 		canvas = new pixelyvulpine.contents.Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100), new DimensionAttributes.Offset(0,0, 0, 0)));
-		navbar = new pixelyvulpine.contents.Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0, 0, NAVHEIGHT)));
+		
+		navbar = new Navbar(this);
 		navbar.setBackgroundColor(navigationBarColor);
 		navbar.setForegroundColor(null);
 		focused=canvas;
@@ -211,13 +195,11 @@ public class Layout extends Canvas{
 					g.fillRect(xToAnimation(0), yToAnimation(0), getWidth(), getHeight());
 					
 				int tw=0, th=0;
-				if(navigationBar) {
+				if(fullscreen && currentCL!=null && currentCL.size()>0) {
 						
-					double p = NAVHEIGHT/100.f;
-					navheight = (short)(Math.max(getHeight(), getWidth())*p);
 						
 					tw = getWidth();
-					th = getHeight()-navheight;
+					th = getHeight()-Config.getNavbarFont().getHeight();
 						
 				}else {
 					tw = getWidth();
@@ -267,13 +249,13 @@ public class Layout extends Canvas{
 				
 				g.translate(0 - g.getTranslateX(), 0 - g.getTranslateY());
 				g.setClip(0, 0, getWidth(), getHeight());
-				if(navigationBar) {
+				if(fullscreen && currentCL!=null && currentCL.size()>0) {
 					
 					
 					g.translate(0, th);
-					g.setClip(0, 0, getWidth(), navheight);
+					g.setClip(0, 0, getWidth(), Config.getNavbarFont().getHeight());
 					navbar.prepaint(getWidth(), g.getClipHeight());
-					navbar.paint(gf);
+					navbar.dispatchPaint(gf);
 					g.translate(0, -th);
 					g.setClip(0, 0, getWidth(), getHeight());
 					
@@ -350,7 +332,7 @@ public class Layout extends Canvas{
 	/**
 	 * Removes content on layout
 	 * @param content
-	 * @return remove sucessfully
+	 * @return remove successfully
 	 */
 	public final boolean removeContent(Content content) {
 		
@@ -412,15 +394,14 @@ public class Layout extends Canvas{
 		return navigationPressColor;
 	}
 	
+	/**@deprecated**/
 	public final static void setNavigationBar(boolean navigationBar) {
-		if(navigationBar && current!=null) {
-			current.setFullScreenMode(true);
-		}
-		Layout.navigationBar = navigationBar;
+		
 	}
 	
+	/**@deprecated**/
 	public final static boolean getNavigationBar() {
-		return navigationBar;
+		return false;
 	}
 	
 	public final static int xToAnimation(float x) {
@@ -514,10 +495,11 @@ public class Layout extends Canvas{
 	}
 	
 	private final void keyEvent(KeyEvent event) {
-		//TODO: Soft keys commands
 		
-		if(!getFocusedCanvas().dispatchKeyEvent(event.getKeycode(), event)) {
-			
+		if(!navbar.dispatchKeyEvent(event.getKeycode(), event)) {
+			if(!getFocusedCanvas().dispatchKeyEvent(event.getKeycode(), event)) {
+				
+			}
 		}
 		
 	}
@@ -643,9 +625,54 @@ public class Layout extends Canvas{
 		
 		if(this.fullscreen) {
 			//TODO: Update custom navbar
-		}else{
+			Command left=null, center=null, right=null;
+			for(int i=currentCL.size()-1; i>=0; i--) {
+				switch(currentCL.getCommand(i).getCommandType()) {
+				case Command.BACK:
+					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority())
+						right=currentCL.getCommand(i);
+					break;
+				case Command.CANCEL:
+					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority())
+						right=currentCL.getCommand(i);
+					break;
+				case Command.EXIT:
+					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority())
+						right=currentCL.getCommand(i);
+					break;
+				case Command.HELP:
+					if(left==null || left.getPriority()>=currentCL.getCommand(i).getPriority())
+						left=currentCL.getCommand(i);
+					break;
+				case Command.ITEM:
+					if(left==null || left.getPriority()>=currentCL.getCommand(i).getPriority())
+						left=currentCL.getCommand(i);
+					break;
+				case Command.OK:
+					if(left==null || left.getPriority()>=currentCL.getCommand(i).getPriority())
+						left=currentCL.getCommand(i);
+					break;
+				case Command.SCREEN:
+					if(left==null || left.getPriority()>=currentCL.getCommand(i).getPriority())
+						left=currentCL.getCommand(i);
+					break;
+				case Command.STOP:
+					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority())
+						right=currentCL.getCommand(i);
+					break;
+				case pixelyvulpine.api.lcdui.Command.CENTER_INDICATOR:
+					if(center==null || center.getPriority()>=currentCL.getCommand(i).getPriority())
+						center=currentCL.getCommand(i);
+					break;
+				}
+			}
 			
+			this.navbar.setBarButton(left, Navbar.LEFT);
+			this.navbar.setBarButton(center, Navbar.CENTER);
+			this.navbar.setBarButton(right, Navbar.RIGHT);
+		}else{
 			for(int i=0; i<currentCL.size(); i++) {
+				if(currentCL.getCommand(i).getCommandType() == pixelyvulpine.api.lcdui.Command.CENTER_INDICATOR) continue;
 				super.addCommand(currentCL.getCommand(i));
 			}
 			
@@ -669,10 +696,9 @@ public class Layout extends Canvas{
 				((pixelyvulpine.api.lcdui.Command) arg0).getCommandListenerBypass().commandAction(arg0, arg1);
 				return;
 			}
-			
 			//No View's command found
-			if(listener!=null) 
-				listener.commandAction(arg0, arg1);
+			if(getCommandListener()!=null) 
+				getCommandListener().commandAction(arg0, arg1);
 			
 		}
 		
@@ -682,12 +708,15 @@ public class Layout extends Canvas{
 		dispatchCommand(c, null);
 	}
 	
+	
 	public final void dispatchCommand(final Command c, final Content view) {
+		if(c==null) return;
+	
 		final Layout me = this;
 		new Thread(new Runnable() {
 			
 			public void run() {
-				if(getCommandListener()!=null && c!=null) {
+				if(c!=null) {
 					
 					if(c instanceof pixelyvulpine.api.lcdui.Command)
 						((pixelyvulpine.api.lcdui.Command)c).setView(view);
@@ -699,12 +728,130 @@ public class Layout extends Canvas{
 		).start();
 	}
 	
-	public final void setFullScreenMode(boolean fullscreen) {
+	public void setFullScreenMode(boolean fullscreen) {
 		this.fullscreen=fullscreen;
-		if(!fullscreen) {
-			setNavigationBar(false);
-		}
 		super.setFullScreenMode(fullscreen);
+	}
+	
+	private class Navbar extends pixelyvulpine.contents.Canvas {
+
+		public static final byte LEFT=-1;
+		public static final byte CENTER=0;
+		public static final byte RIGHT=1;
+		
+		private NavbarButton left, center, right;
+		
+		public Navbar(Layout activity) {
+			super(activity, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,0)));
+			
+			this.setArrangement(pixelyvulpine.contents.Canvas.ARRANGEMENT_HORIZONTAL);
+			
+			left = new NavbarButton(activity);
+			left.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_LEFT);
+			center = new NavbarButton(activity);
+			center.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
+			right = new NavbarButton(activity);
+			right.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_RIGHT);
+			
+			this.addContent(left);
+			this.addContent(center);
+			this.addContent(right);
+		}
+		
+		public void setBarButton(Command command, int side) {
+			switch(side) {
+				case LEFT:
+					left.setCommand(command);
+					break;
+				case CENTER:
+					center.setCommand(command);
+					break;
+				case RIGHT:
+					right.setCommand(command);
+					break;
+			
+			}
+		}
+		
+		public boolean onKey(int keycode, KeyEvent ev) {
+			
+			switch(keycode) {
+				case KeyEvent.KEYCODE_SOFT_LEFT:
+					return left.callCommand(ev);
+				case KeyEvent.KEYCODE_SOFT_RIGHT:
+					return right.callCommand(ev);
+			}
+			
+			return false;
+		}
+		
+		private class NavbarButton extends Content{
+
+			private Command command;
+			private Content view;
+			
+			public NavbarButton(Layout layout) {
+				super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100)));
+				setPositioning(POSITIONING_ANCHORED);
+				setVerticalAnchor(Content.VERTICAL_ANCHOR_CENTER);
+			}
+			
+			public int[] prepaint(int w, int h) {
+				
+				if(view!=null) {
+					if(view instanceof ImageView) {
+						w = view.prepaint(w, h)[0];
+					}
+					if(view instanceof Label) {
+						w = view.getDimension().offset.width;
+					}
+				}else {
+					w=0;
+					h=0;
+				}
+				
+				//System.out.println(view+" "+this.getHorizontalAnchor());
+				
+				return new int[] {w, h};
+			}
+			
+			protected void paint(GraphicsFix g) {
+				
+				//System.out.println(view+" "+g.getTranslateX());
+				
+				if(view!=null)
+					view.dispatchPaint(g);
+			}
+			
+			public void setCommand(Command command) {
+				
+				this.command=command;
+				if(command==null) {
+					view=null;
+					return;
+				}
+				
+				if(command instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) command).getIcon()!=null) {
+					
+					view = new ImageView(getLayout(), ((pixelyvulpine.api.lcdui.Command) command).getIcon(), 0,0,0,0);
+					return;
+				}
+				
+				view = new Label(getLayout(), new DimensionAttributes(), command.getLabel(), Config.getNavbarFont());
+				((Label)view).impact();
+				
+			}
+			
+			public boolean callCommand(KeyEvent ev) {
+				if(command==null) return false;
+				
+				if(ev.getAction()==KeyEvent.ACTION_UP)
+					dispatchCommand(command);
+				return true;
+			}
+			
+		}
+		
 	}
 	
 }
