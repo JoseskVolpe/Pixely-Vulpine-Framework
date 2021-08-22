@@ -128,8 +128,10 @@ public final class GraphicsFix {
 			rw=lw-(x+lx);
 		}
 		
-		if(rw>0 && rh>0)
-			g.drawRGB(rgbData, rOffset, rScanlength, rx, ry, rw, rh, processAlpha);
+		try {
+			if(rw>0 && rh>0)
+				g.drawRGB(rgbData, rOffset, rScanlength, rx, ry, rw, rh, processAlpha);
+		}catch(Exception e) {}
 		
 		g.translate(lx, ly);
 		g.setClip(lcx, lcy, lw, lh);
