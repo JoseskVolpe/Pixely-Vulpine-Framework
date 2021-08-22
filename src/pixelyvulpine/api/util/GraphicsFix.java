@@ -95,7 +95,9 @@ public final class GraphicsFix {
 		g.translate(-lx, -ly);
 		g.setClip(lcx+lx, lcy+ly, lw, lh);
 		
-		g.drawRGB(rgbData, offset, scanlength, x+lx, y+ly, width, height, processAlpha);
+		try {
+			g.drawRGB(rgbData, offset, scanlength, x+lx, y+ly, width, height, processAlpha);
+		}catch(Exception e) {}
 		
 		g.translate(lx, ly);
 		g.setClip(lcx, lcy, lw, lh);
