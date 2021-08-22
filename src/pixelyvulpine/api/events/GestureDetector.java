@@ -164,7 +164,7 @@ public class GestureDetector {
 				moved=true;
 				moveEvent=event;
 				
-				if(!doubleTap && !movedSensi && (Math.abs(event.getPointerCoords().x-downEvent.getPointerCoords().x)>=Config.getLongpressTouchDistance() || Math.abs(event.getPointerCoords().y-downEvent.getPointerCoords().y)>=Config.getLongpressTouchDistance())) {
+				if(!doubleTap && !movedSensi && downEvent!=null && (Math.abs(event.getPointerCoords().x-downEvent.getPointerCoords().x)>=Config.getLongpressTouchDistance() || Math.abs(event.getPointerCoords().y-downEvent.getPointerCoords().y)>=Config.getLongpressTouchDistance())) {
 					movedSensi=true;
 					interrupt(longPressDelay);
 					interrupt(showDelay);
@@ -172,6 +172,8 @@ public class GestureDetector {
 					
 				
 				if(!longPress) {
+					
+					if(downEvent==null) break;
 					
 					c = event.getHistorySize();
 					lx=downEvent.getPointerCoords().x;
@@ -194,6 +196,8 @@ public class GestureDetector {
 				interrupt(showDelay);
 				
 				upEvent=event;
+				
+				if(downEvent==null) break;
 				
 				c = event.getHistorySize();
 				lx=downEvent.getPointerCoords().x;
