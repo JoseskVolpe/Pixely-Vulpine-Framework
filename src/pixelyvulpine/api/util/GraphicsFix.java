@@ -95,9 +95,41 @@ public final class GraphicsFix {
 		g.translate(-lx, -ly);
 		g.setClip(lcx+lx, lcy+ly, lw, lh);
 		
-		try {
-			g.drawRGB(rgbData, offset, scanlength, x+lx, y+ly, width, height, processAlpha);
-		}catch(Exception e) {}
+		int rx=x+lx;
+		int ry=y+ly;
+		int rw=width;
+		int rh=height;
+		int rOffset=offset;
+		int rScanlength=scanlength;
+		
+		if(ry+rh>=lh && ry<0) {
+			rh=lh;
+			
+			rOffset-=width*(y+ly);
+			ry=0;
+		}else if(ry<0) {
+			rh=height+y+ly;
+			
+			rOffset-=width*(y+ly);
+			ry=0;
+		}else if(ry+rh>=lh) {
+			rh=lh-(y+ly);
+		}
+		
+		if(rx<0 && rx+rw>=lw) {
+			rw=lw;
+			rOffset+=-(x+lx);
+			rx=0;
+		}else if(rx<0) {
+			rw=width+x+lx;
+			rOffset+=-(x+lx);
+			rx=0;
+		}else if(rx+rw>=lw) {
+			rw=lw-(x+lx);
+		}
+		
+		if(rw>0 && rh>0)
+			g.drawRGB(rgbData, rOffset, rScanlength, rx, ry, rw, rh, processAlpha);
 		
 		g.translate(lx, ly);
 		g.setClip(lcx, lcy, lw, lh);
