@@ -113,7 +113,10 @@ public final class GraphicsFix {
 			rOffset-=width*(y+ly);
 			ry=0;
 		}else if(ry+rh>=lh) {
-			rh=lh-(y+ly);
+			if(height>lh)
+				rh=lh-(y+ly);
+			else
+				rh=height;
 		}
 		
 		if(rx<0 && rx+rw>=lw) {
@@ -125,14 +128,17 @@ public final class GraphicsFix {
 			rOffset+=-(x+lx);
 			rx=0;
 		}else if(rx+rw>=lw) {
-			rw=lw-(x+lx);
+			if(width>lw)
+				rw=lw-(x+lx);
+			else
+				rw=width;
 		}
 		
 		try {
 			if(rw>0 && rh>0)
 				g.drawRGB(rgbData, rOffset, rScanlength, rx, ry, rw, rh, processAlpha);
+				
 		}catch(Exception e) {}
-		
 		g.translate(lx, ly);
 		g.setClip(lcx, lcy, lw, lh);
 	}
