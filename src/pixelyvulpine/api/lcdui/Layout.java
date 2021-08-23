@@ -850,8 +850,15 @@ public class Layout extends Canvas{
 				
 				//System.out.println(view+" "+g.getTranslateX());
 				
-				if(view!=null)
+				if(view!=null) {
+					
+					int ly = g.getTranslateY();
+					
+					g.translate(0, (g.getClipHeight()/2)-(view.getDimension().getOffsetDimension().height/2));
 					view.dispatchPaint(g);
+					
+					g.translate(0, ly-g.getTranslateY());
+				}
 			}
 			
 			public void setCommand(Command command) {
