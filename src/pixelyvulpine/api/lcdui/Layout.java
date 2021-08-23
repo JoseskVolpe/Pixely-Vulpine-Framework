@@ -47,6 +47,7 @@ public class Layout extends Canvas{
 	private pixelyvulpine.contents.Canvas focused;
 	private boolean fullscreen, painted;
 	private short deltaTime;
+	private short navHeight;
 	
 	
 	private paintThreadClass paintThread;
@@ -171,6 +172,11 @@ public class Layout extends Canvas{
 	private long lastT;
 	protected final void paint(Graphics g) {
 		
+		navHeight = (short)Config.getNavbarFont().getHeight();
+		if(this.hasPointerEvents()) {
+			navHeight=(short) (g.getClipHeight()/13);
+		}
+		
 		if(paintThread==null) {
 			Crash.showCrashMessage(app, new IllegalStateException(), "No Paint Thread found\n¿Was the Activity changed by setCurrent() method?", Crash.FRAMEWORK_CRASH);
 			return;
@@ -199,7 +205,7 @@ public class Layout extends Canvas{
 						
 						
 					tw = getWidth();
-					th = getHeight()-Config.getNavbarFont().getHeight();
+					th = getHeight()-navHeight;
 						
 				}else {
 					tw = getWidth();
@@ -253,7 +259,7 @@ public class Layout extends Canvas{
 					
 					
 					g.translate(0, th);
-					g.setClip(0, 0, getWidth(), Config.getNavbarFont().getHeight());
+					g.setClip(0, 0, getWidth(), navHeight);
 					navbar.prepaint(getWidth(), g.getClipHeight());
 					navbar.dispatchPaint(gf);
 					g.translate(0, -th);
