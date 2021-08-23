@@ -307,6 +307,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	
 	public void onDeselect() {
 		selected=false;
+		if(writing) endWriting();
 	}
 
 	public void commandAction(javax.microedition.lcdui.Command c, Displayable d) {
