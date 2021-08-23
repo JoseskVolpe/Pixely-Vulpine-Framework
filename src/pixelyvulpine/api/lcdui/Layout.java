@@ -730,6 +730,7 @@ public class Layout extends Canvas{
 		super.setFullScreenMode(fullscreen);
 	}
 	
+	private static Command downCommand;
 	private class Navbar extends pixelyvulpine.contents.Canvas {
 
 		public static final byte LEFT=-1;
@@ -868,9 +869,13 @@ public class Layout extends Canvas{
 			}
 			
 			public boolean callCommand(KeyEvent ev) {
+				
+				if(ev.getAction()==KeyEvent.ACTION_DOWN)
+					downCommand=command;
+				
 				if(command==null || (command instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) command).isSymbolic())) return false;
 				
-				if(ev.getAction()==KeyEvent.ACTION_UP)
+				if(ev.getAction()==KeyEvent.ACTION_UP && downCommand==command)
 					dispatchCommand(command);
 				return true;
 			}
