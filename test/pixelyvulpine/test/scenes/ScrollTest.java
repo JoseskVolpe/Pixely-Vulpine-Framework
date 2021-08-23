@@ -56,6 +56,8 @@ public class ScrollTest extends EmptyScrollLayout{
 		label.impact();
 		this.addContent(label);
 		Canvas canvas = new ScrollableCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,30)));
+		canvas.setBackgroundColor(new Color(150,25,25,25));
+		canvas.setForegroundColor(new Color(150,255,0,0));
 		canvas.setArrangement(Canvas.ARRANGEMENT_HORIZONTAL);
 		this.addContent(canvas);
 		Button button = new Button(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,2,90,40)), "Boop UwU");
