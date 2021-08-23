@@ -32,7 +32,7 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	private boolean multiline, selected, writing;
 	private int maxCharacters=2050;
 	private int caret;
-	private Command back;
+	private Command back, write;
 	private CommandList cList;
 	
 	private GestureDetector gesture;
@@ -246,14 +246,10 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 	}
 	
 	public boolean onKey(int keyCode, KeyEvent ev) {
-		
 		if(ev.getAction() == KeyEvent.ACTION_DOWN)
 			switch(keyCode) {
 				case KeyEvent.KEYCODE_DPAD_CENTER:
-					if(isWriting())
-						showUserInput();
-					else
-						beginWriting();
+					beginWriting();
 					return true;
 			}
 		
@@ -317,6 +313,10 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		
 		if(c==back) {
 			endWriting();
+		}
+		
+		if(c==write) {
+			showUserInput();
 		}
 		
 	}
@@ -387,8 +387,12 @@ public class TextBox extends Content implements TextSequenceInput.OnTextInputLis
 		cList = new CommandList(CommandList.PRIORITY_VIEW);
 		
 		back = new Command("Back", Config.getIcon(Config.ICON_BACK), Command.BACK, 0);
+		write = new Command("Write", Config.getIcon(Config.ICON_WRITE), Command.CENTER, 0);
+		
 		back.setCommandListenerBypass(this);
+		write.setCommandListenerBypass(this);
 		cList.addCommand(back);
+		cList.addCommand(write);
 		getLayout().addCommandList(cList);
 	}
 	
