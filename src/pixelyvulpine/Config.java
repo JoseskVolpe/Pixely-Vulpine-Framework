@@ -14,15 +14,16 @@ public final class Config {
 	private static Image icons[]=new Image[4];
 	
 	public final static String framework_version="0.0.1";
-	public final static String framework_version_tag="dev";
-	/*
-	 * dev: not released
-	 * pre-alpha: pre-alpha release
-	 * alpha: alpha release
-	 * beta: beta release
-	 * stable: main release
+	/**
+	 * dev: not released;
+	 * pre-alpha: pre-alpha release;
+	 * alpha: alpha release;
+	 * beta: beta release;
+	 * stable: main release;
 	 * custom: custom, modified framework
 	 */
+	public final static String framework_version_tag="dev";
+	
 	
 	private static long longPressTimeout=1000; //in millis
 	private static short minimumFlingVelocity = 8; //in pixels
