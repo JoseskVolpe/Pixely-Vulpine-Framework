@@ -11,6 +11,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.midlet.MIDlet;
 
 import pixelyvulpine.Config;
+import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
 import pixelyvulpine.api.system.Crash;
@@ -840,6 +841,8 @@ public class Layout extends Canvas{
 				super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100)));
 				setPositioning(POSITIONING_ANCHORED);
 				setVerticalAnchor(Content.VERTICAL_ANCHOR_CENTER);
+				
+				gd = new GestureDetector(getLayout(), gestureListener);
 			}
 			
 			public int[] prepaint(int w, int h) {
@@ -878,23 +881,35 @@ public class Layout extends Canvas{
 				}
 			}
 			
+			private GestureDetector gd;
+			
 			public boolean onTouch(MotionEvent ev) {
+				
+				boolean ret = gd.onTouchEvent(ev);
 				
 				switch(ev.getAction()) {
 					case MotionEvent.ACTION_DOWN:
 						downCommand=command;
 					break;
-					case MotionEvent.ACTION_UP:
-						if(command!=null && command==downCommand) {
-							dispatchCommand(command);
-						}
-						downCommand=null;
-					break;
 				}
 				
-				return false;
+				return ret;
 				
 			}
+			
+			protected GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener(){
+				public boolean onSingleTapUp(MotionEvent ev) {
+					if(command!=null && command==downCommand)
+						dispatchCommand(command);
+						
+					downCommand=null;
+					
+					return true;
+				}
+				public void onLongPress(MotionEvent ev) {
+					
+				}
+			};
 			
 			public void setCommand(Command command) {
 				
