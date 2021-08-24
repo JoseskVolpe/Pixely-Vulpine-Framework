@@ -28,7 +28,7 @@ public class Debug {
 		int cy = g.getClipY();
 		int cw = g.getClipWidth();
 		int ch = g.getClipHeight();
-		g.setClip(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
+		g.setClip(0, 0, g.getDimensionWidth()+1, g.getDimensionHeight()+1);
 		g.drawRect(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
 		g.setClip(cx, cy, cw, ch);
 	}
