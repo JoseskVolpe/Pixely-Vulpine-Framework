@@ -538,11 +538,26 @@ public class Layout extends Canvas{
 	
 	private Vector historicalCoords = new Vector(0,1);
 	private int touchX, touchY, touchAction=MotionEvent.ACTION_UP;
+	private boolean navTouch;
 	private void pointerEvent(MotionEvent e) {
 		
 		touchX=e.getPointerCoords().x;
 		touchY=e.getPointerCoords().y;
 		touchAction = e.getAction();
+		
+		if(navTouch || (e.getAction()==MotionEvent.ACTION_DOWN && e.getPointerCoords().y>=this.getHeight()-navHeight && fullscreen && currentCL!=null && currentCL.size()>0)) {
+			
+			if(e.getAction() == MotionEvent.ACTION_DOWN) 
+				navTouch=true;
+			else if(e.getAction()==MotionEvent.ACTION_UP)
+				navTouch=false;
+			
+			e.getPointerCoords().y -= this.getHeight()-navHeight;
+			
+			navbar.dispatchTouchEvent(e);
+			
+			return;
+		}
 		
 		if(!canvas.dispatchTouchEvent(e)) {
 			onTouchEvent(e);
@@ -854,11 +869,31 @@ public class Layout extends Canvas{
 					
 					int ly = g.getTranslateY();
 					
-					g.translate(0, (g.getClipHeight()/2)-(view.getDimension().getOffsetDimension().height/2));
+					if(view instanceof Label) 
+						g.translate(0, (navHeight/2)-(view.getDimension().getOffsetDimension().height/2));
+					
 					view.dispatchPaint(g);
 					
-					g.translate(0, ly-g.getTranslateY());
+					g.translate(0, -g.getTranslateY()+ly);
 				}
+			}
+			
+			public boolean onTouch(MotionEvent ev) {
+				
+				switch(ev.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						downCommand=command;
+					break;
+					case MotionEvent.ACTION_UP:
+						if(command!=null && command==downCommand) {
+							dispatchCommand(command);
+						}
+						downCommand=null;
+					break;
+				}
+				
+				return false;
+				
 			}
 			
 			public void setCommand(Command command) {
@@ -871,8 +906,7 @@ public class Layout extends Canvas{
 				
 				if(command instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) command).getIcon()!=null) {
 					
-					view = new ImageView(getLayout(), ((pixelyvulpine.api.lcdui.Command) command).getIcon(), 0,0,0,0);
-					((ImageView)view).setScalePictureToFit(true);
+					view = new ImageView(getLayout(), ((pixelyvulpine.api.lcdui.Command) command).getIcon(), new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100), new DimensionAttributes.Offset(0, 0, 0, 0)), true);
 					return;
 				}
 				
