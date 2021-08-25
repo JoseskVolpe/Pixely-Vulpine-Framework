@@ -907,7 +907,7 @@ public class Layout extends Canvas{
 					return true;
 				}
 				public void onLongPress(MotionEvent ev) {
-					
+					//TODO: Secondary command
 				}
 			};
 			
