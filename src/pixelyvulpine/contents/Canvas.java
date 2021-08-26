@@ -821,7 +821,7 @@ public class Canvas extends Content{
 		
 		if(selected == null) {
 			Content c;
-			for(int i=renderData[0].size()-1; i>=0; i--) {
+			for(int i=0; i<renderData[0].size(); i++) {
 				c = contentFromRenderData(i);
 				int[] cd = getRenderData(i);
 				if(c.isSelectable() && c.getPositioning()==Content.POSITIONING_FIXED && cd[0] < canvasWidth && cd[0]+cd[2]+canvasX>=0 && cd[1]< canvasHeight && cd[1]+cd[3]+canvasY>=0) {
@@ -841,9 +841,10 @@ public class Canvas extends Content{
 	public boolean isSelectable() {
 		if(contents==null || contents.size()<=0) return false;
 		
-		for(int i=0; i<contents.size(); i++) {
-			if(((Content)contents.elementAt(i)).isSelectable()) return true;
-		}
+		for(int i=0; i<contents.size(); i++) 
+			if(((Content)contents.elementAt(i)).isSelectable()) 
+				return true;
+		
 		
 		if(!(minX==maxX && minY==maxY)) return true;
 		
