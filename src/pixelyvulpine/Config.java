@@ -11,7 +11,8 @@ public final class Config {
 	public final static byte ICON_SELECT=1;
 	public final static byte ICON_WRITE=2;
 	public final static byte ICON_NEXT=3;
-	private static Image icons[]=new Image[4];
+	public final static byte ICON_MENU=4;
+	private static Image icons[]=new Image[5];
 	
 	public final static String framework_version="0.0.1";
 	/**
