@@ -28,6 +28,26 @@ public class List extends Content{
 		
 	}
 	
+	public List(Layout layout, DimensionAttributes dimensionAttributes, Command[] commands) {
+		this(layout, dimensionAttributes);
+		
+		if(commands!=null) {
+			for(int i=0; i<commands.length; i++) {
+				add(commands[i]);
+			}
+		}
+	}
+	
+	public List(Layout layout, DimensionAttributes dimensionAttributes, Vector commands) {
+		this(layout, dimensionAttributes);
+		
+		if(commands!=null) {
+			for(int i=0; i<commands.size(); i++) {
+				add((Command)commands.elementAt(i));
+			}
+		}
+	}
+	
 	public void noPaint() {
 		canvas.noPaint();
 	}
