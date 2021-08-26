@@ -45,6 +45,8 @@ public class Layout extends Canvas{
 	
 	protected pixelyvulpine.contents.Canvas canvas;
 	private Navbar navbar;
+	private Vector commandsMenu = new Vector();
+	private Command menu;
 	private pixelyvulpine.contents.Canvas focused;
 	private boolean fullscreen, painted;
 	private short deltaTime;
@@ -644,6 +646,8 @@ public class Layout extends Canvas{
 		navbar.setBarButton(null, Navbar.RIGHT);
 		
 		currentCL=current;
+		commandsMenu.removeAllElements();
+		menu=null;
 		
 		if(this.fullscreen) {
 			//TODO: Update custom navbar
@@ -651,16 +655,56 @@ public class Layout extends Canvas{
 			for(int i=currentCL.size()-1; i>=0; i--) {
 				switch(navbar.getSoftPosition(currentCL.getCommand(i).getCommandType())) {
 				case Navbar.RIGHT:
-					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority())
+					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority()) {
+						if(right!=null) {
+							if(left!=menu) {
+								commandsMenu.addElement(left);
+								menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
+								left = menu;
+							}
+							commandsMenu.addElement(right);
+						}
 						right=currentCL.getCommand(i);
+					}else {
+						if(left!=menu) {
+							commandsMenu.addElement(left);
+							menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
+							left = menu;
+						}
+						commandsMenu.addElement(currentCL.getCommand(i));
+					}
 					break;
 				case Navbar.LEFT:
-					if(left==null || left.getPriority()>=currentCL.getCommand(i).getPriority())
+					if(left==null)
 						left=currentCL.getCommand(i);
+					else {
+						if(left!=menu) {
+							commandsMenu.addElement(left);
+							menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
+							left = menu;
+						}
+						commandsMenu.addElement(currentCL.getCommand(i));
+					}
 					break;
 				case Navbar.CENTER:
-					if(center==null || center.getPriority()>=currentCL.getCommand(i).getPriority())
+					if(center==null || center.getPriority()>=currentCL.getCommand(i).getPriority()) {
+						if(center!=null){
+							if(left!=menu) {
+								commandsMenu.addElement(left);
+								menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
+								left = menu;
+							}
+							commandsMenu.addElement(center);
+						}
 						center=currentCL.getCommand(i);
+					}else {
+						commandsMenu.addElement(currentCL.getCommand(i));
+						if(left!=menu) {
+							commandsMenu.addElement(left);
+							menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
+							left = menu;
+						}
+					}
 					break;
 				}
 			}
