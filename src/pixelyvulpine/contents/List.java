@@ -67,23 +67,10 @@ public class List extends Content{
 	public void add(Command c) {
 		commands.addElement(c);
 		
-		Canvas cc = new Canvas(getLayout(), new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,0), new DimensionAttributes.Offset(0,0,0,font.getHeight()+4)));
-		cc.setArrangement(Canvas.ARRANGEMENT_HORIZONTAL);
-		cc.setContentAlignment(Canvas.ALIGNMENT_CENTER);
-		
-		if(c instanceof pixelyvulpine.api.lcdui.Command) {
-			ImageView i = new CommandIcon(getLayout(), (pixelyvulpine.api.lcdui.Command)c, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100), new DimensionAttributes.Offset(0,0,0,0)));
-			i.setScalePictureToFit(true);
-			cc.addContent(i);
-		}
-		
-		Button b = new Button(getLayout(), new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100), new DimensionAttributes.Offset(0,0,0,0)), c.getLabel());
-		b.setFont(font);
-		b.setClickCommand(c);
-		cc.addContent(b);
-		canvas.addContent(cc);
+		ListItem cc = new ListItem(getLayout(), c);
 		
 		commandContents.addElement(cc);
+		canvas.addContent(cc);
 		
 	}
 	
@@ -92,6 +79,7 @@ public class List extends Content{
 		int i = commands.indexOf(c);
 		if(i<0) return false;
 		
+		canvas.removeContent((Content)commandContents.elementAt(i));
 		commandContents.removeElementAt(i);
 		commands.removeElementAt(i);
 		return true;
@@ -123,18 +111,91 @@ public class List extends Content{
 
 	private class CommandIcon extends ImageView{
 
-		private pixelyvulpine.api.lcdui.Command c;
+		private Command c;
 		
-		public CommandIcon(Layout layout, pixelyvulpine.api.lcdui.Command c, DimensionAttributes dimensionAttributes) {
-			super(layout, c.getIcon(), dimensionAttributes, true);
+		public CommandIcon(Layout layout, Command c) {
+			super(layout, null, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100), new DimensionAttributes.Offset(0,0,0,0)), true);
 			
 			this.c=c;
+			
+			if(c instanceof pixelyvulpine.api.lcdui.Command)
+				setImage(((pixelyvulpine.api.lcdui.Command)c).getIcon());
 		}
 		
 		public int[] prepaint(int w, int h) {
-			if(getImage()!=c.getIcon())
-				setImage(c.getIcon());
-			return super.prepaint(w, h);
+			
+			if(c!=null && c instanceof pixelyvulpine.api.lcdui.Command) {
+			
+				if(getImage()!=((pixelyvulpine.api.lcdui.Command)c).getIcon())
+					setImage(((pixelyvulpine.api.lcdui.Command)c).getIcon());
+				
+				return super.prepaint(w, h);
+			
+			}else {
+				return new int[] {0,0};
+			}
+		}
+		
+	}
+	
+	private class ListItem extends Content{
+
+		private boolean selected;
+		private Command command;
+		private CommandIcon icon;
+		private Label label;
+		private int[] iconDim;
+		
+		public ListItem(Layout layout, Command command) {
+			super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0, 0, 0, Font.getDefaultFont().getHeight()+4)));
+			
+			this.command = command;
+			icon = new CommandIcon(layout, command);
+			label = new Label(layout, new DimensionAttributes(), command.getLabel());
+		}
+		
+		public int[] prepaint(int w, int h) {
+			
+			iconDim = icon.prepaint(w, h-4);
+			label.prepaint(w-iconDim[0], h-4);
+			
+			return new int[] {w, h};
+		}
+		
+		public void paint(GraphicsFix g) {
+			
+			if(selected) {
+				g.setColor(0x1212ff);
+				g.fillRect(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
+				g.setColor(0x0000ff);
+				g.drawRect(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
+			}
+			
+			g.translate(0, 2);
+			icon.dispatchPaint(g);
+			g.translate(iconDim[0], 0);
+			label.dispatchPaint(g);
+			
+		}
+		
+		public boolean onKey(int key, KeyEvent ev) {
+			return false;	
+		}
+		
+		public boolean onTouch(MotionEvent ev) {
+			return false;
+		}
+		
+		public boolean isSelectable() {
+			return true;
+		}
+		
+		public void onSelect() {
+			selected=true;
+		}
+		
+		public void onDeselect() {
+			selected=false;
 		}
 		
 	}

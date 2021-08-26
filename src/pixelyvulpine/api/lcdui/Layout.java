@@ -18,6 +18,7 @@ import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.GraphicsFix;
 import pixelyvulpine.contents.ImageView;
 import pixelyvulpine.contents.Label;
+import pixelyvulpine.contents.List;
 
 public class Layout extends Canvas{
 	
@@ -988,6 +989,33 @@ public class Layout extends Canvas{
 			
 		}
 		
+	}
+
+	private class CommandsMenu extends pixelyvulpine.contents.Canvas implements CommandListener{
+		
+		private List l;
+		private CommandList cl;
+		private pixelyvulpine.api.lcdui.Command back, select;
+		
+		CommandsMenu(Layout layout, Vector commands){
+			super(layout, new DimensionAttributes());
+			
+			cl = new CommandList(CommandList.PRIORITY_MAIN_COMMANDS);
+			back = new pixelyvulpine.api.lcdui.Command("Back", Config.getIcon(Config.ICON_BACK), Command.BACK, 0);
+			back.setCommandListenerBypass(this);
+			cl.addCommand(back);
+			select = new pixelyvulpine.api.lcdui.Command("Select", Config.getIcon(Config.ICON_SELECT), pixelyvulpine.api.lcdui.Command.CENTER, 0);
+			select.setSymbolic(true);
+			cl.addCommand(select);
+			
+			
+			l = new List(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100)), commands);
+			this.addContent(l);
+		}
+
+		public void commandAction(Command arg0, Displayable arg1) {
+			
+		}
 	}
 	
 }

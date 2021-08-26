@@ -18,8 +18,8 @@ import pixelyvulpine.test.scenes.*;
 
 public class App extends MIDlet implements CommandListener, LayoutLoader {
 
-	private static final String layoutName="scrollTest";
-	//private static final String layoutName="listTest";
+	//private static final String layoutName="scrollTest";
+	private static final String layoutName="listTest";
 	
 	private boolean started = false;
 	

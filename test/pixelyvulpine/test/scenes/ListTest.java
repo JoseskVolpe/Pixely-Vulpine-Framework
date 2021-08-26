@@ -30,6 +30,7 @@ public class ListTest extends Layout implements CommandListener{
 		
 		t = new Label(this, new DimensionAttributes());
 		t.setText("Select something ewe");
+		t.setFont(Font.getDefaultFont());
 		t.setColor(new Color(255,255,255));
 		t.impact();
 		tc.addContent(t);
