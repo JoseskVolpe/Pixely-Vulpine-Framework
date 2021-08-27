@@ -893,8 +893,19 @@ public class Layout extends Canvas{
 			public int[] prepaint(int w, int h) {
 				
 				if(view!=null) {
+					
 					if(view instanceof ImageView) {
+						if(((ImageView)view).getImage()!=((pixelyvulpine.api.lcdui.Command)command).getIcon()) {
+							((ImageView)view).setImage(((pixelyvulpine.api.lcdui.Command)command).getIcon());
+						}
 						w = view.prepaint(w, h)[0];
+						if(((pixelyvulpine.api.lcdui.Command)command).getIcon()==null)
+							updateView();
+					}else {
+						if(command instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command)command).getIcon()!=null) {
+							updateView();
+							w = view.prepaint(w, h)[0];
+						}
 					}
 					if(view instanceof Label) {
 						w = view.getDimension().offset.width;
@@ -959,6 +970,11 @@ public class Layout extends Canvas{
 			public void setCommand(Command command) {
 				
 				this.command=command;
+				updateView();
+				
+			}
+			
+			private void updateView() {
 				if(command==null) {
 					view=null;
 					return;
@@ -972,7 +988,6 @@ public class Layout extends Canvas{
 				
 				view = new Label(getLayout(), new DimensionAttributes(), command.getLabel(), Config.getNavbarFont());
 				((Label)view).impact();
-				
 			}
 			
 			public boolean callCommand(KeyEvent ev) {

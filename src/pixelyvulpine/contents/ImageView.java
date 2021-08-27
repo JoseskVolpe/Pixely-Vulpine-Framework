@@ -161,6 +161,9 @@ public class ImageView extends Content{
 	
 	public void setImage(Image image) {
 		this.imagePointer=image;
+		
+		if(image==null) return;
+		
 		width=image.getWidth();
 		height=image.getHeight();
 	}

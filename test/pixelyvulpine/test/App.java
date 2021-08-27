@@ -19,7 +19,7 @@ import pixelyvulpine.test.scenes.*;
 public class App extends MIDlet implements CommandListener, LayoutLoader {
 
 	//private static final String layoutName="scrollTest";
-	private static final String layoutName="listTest";
+	private static final String layoutName="listTest2";
 	
 	private boolean started = false;
 	
@@ -113,6 +113,10 @@ public class App extends MIDlet implements CommandListener, LayoutLoader {
 		
 		if(layoutName.equals("listTest")) {
 			return new ListTest(this);
+		}
+		
+		if(layoutName.equals("listTest2")) {
+			return new ListTest2(this);
 		}
 		
 		return null;
