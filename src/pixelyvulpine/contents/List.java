@@ -3,21 +3,28 @@ package pixelyvulpine.contents;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 
+import pixelyvulpine.Config;
+import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
+import pixelyvulpine.api.lcdui.CommandList;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.util.GraphicsFix;
 
-public class List extends Content{
+public class List extends Content implements CommandListener{
 
 	private ScrollableCanvas canvas;
 	private Vector commands = new Vector(0,1); //Command
 	private Vector commandContents = new Vector(0,1); //Canvas
-	private Font font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_LARGE);
+	private CommandList cList;
+	private pixelyvulpine.api.lcdui.Command select;
+	private CommandListener listener;
 	
 	public List(Layout layout, DimensionAttributes dimensionAttributes) {
 		super(layout, dimensionAttributes);
@@ -25,6 +32,7 @@ public class List extends Content{
 		forcePaint=true;
 		
 		canvas=new ScrollableCanvas(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100)));
+		
 		
 	}
 	
@@ -67,7 +75,7 @@ public class List extends Content{
 	public void add(Command c) {
 		commands.addElement(c);
 		
-		ListItem cc = new ListItem(getLayout(), c);
+		ListItem cc = new ListItem(getLayout(),this,c);
 		
 		commandContents.addElement(cc);
 		canvas.addContent(cc);
@@ -102,13 +110,33 @@ public class List extends Content{
 	}
 	
 	public void onSelect() {
+		cList = new CommandList(CommandList.PRIORITY_VIEW);
+		select = new pixelyvulpine.api.lcdui.Command("Select", Config.getIcon(Config.ICON_SELECT), pixelyvulpine.api.lcdui.Command.CENTER, 0);
+		select.setCommandListenerBypass(this);
+		cList.addCommand(select);
+		
+		getLayout().addCommandList(cList);
 		canvas.onSelect();
 	}
 	
 	public void onDeselect() {
 		canvas.onDeselect();
+		
+		getLayout().cancelCommandList(cList);
+	}
+	
+	public void setCommandListener(CommandListener listener) {
+		this.listener=listener;
 	}
 
+	public void commandAction(Command arg0, Displayable arg1) {
+		if(arg0==select) {
+			if(listener!=null)
+				listener.commandAction(((ListItem)canvas.getSelected()).command, arg1);
+			((ListItem)canvas.getSelected()).selectionEvent();
+		}
+	}
+	
 	private class CommandIcon extends ImageView{
 
 		private Command c;
@@ -145,13 +173,17 @@ public class List extends Content{
 		private CommandIcon icon;
 		private Label label;
 		private int[] iconDim;
+		private GestureDetector detector;
+		private List list;
 		
-		public ListItem(Layout layout, Command command) {
+		public ListItem(Layout layout, List list, Command command) {
 			super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0, 0, 0, Font.getDefaultFont().getHeight()+4)));
 			
+			this.list=list;
 			this.command = command;
 			icon = new CommandIcon(layout, command);
 			label = new Label(layout, new DimensionAttributes(), command.getLabel());
+			detector = new GestureDetector(layout, gestureListener);
 		}
 		
 		public int[] prepaint(int w, int h) {
@@ -178,12 +210,20 @@ public class List extends Content{
 			
 		}
 		
-		public boolean onKey(int key, KeyEvent ev) {
-			return false;	
+		public boolean onTouch(MotionEvent ev) {
+			return detector.onTouchEvent(ev);
 		}
 		
-		public boolean onTouch(MotionEvent ev) {
-			return false;
+		protected GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener(){
+			public boolean onSingleTapUp(MotionEvent ev) {
+				selectionEvent();
+				return true;
+			}
+		};
+		
+		public void selectionEvent() {
+				
+			getLayout().dispatchCommand(command, list);
 		}
 		
 		public boolean isSelectable() {
@@ -192,6 +232,11 @@ public class List extends Content{
 		
 		public void onSelect() {
 			selected=true;
+			
+			if(command instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command)command).getIcon()!=null) 
+				select.setIcon(((pixelyvulpine.api.lcdui.Command)command).getIcon());
+			else
+				select.setIcon(Config.getIcon(Config.ICON_SELECT));
 		}
 		
 		public void onDeselect() {
