@@ -1,5 +1,6 @@
 package pixelyvulpine.api.lcdui;
 
+import java.util.Stack;
 import java.util.Vector;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
@@ -205,7 +206,7 @@ public class Layout extends Canvas{
 					g.fillRect(xToAnimation(0), yToAnimation(0), getWidth(), getHeight());
 					
 				int tw=0, th=0;
-				if(fullscreen && currentCL!=null && currentCL.size()>0) {
+				if(fullscreen && !navbar.isEmpty()) {
 						
 						
 					tw = getWidth();
@@ -259,7 +260,7 @@ public class Layout extends Canvas{
 				
 				g.translate(0 - g.getTranslateX(), 0 - g.getTranslateY());
 				g.setClip(0, 0, getWidth(), getHeight());
-				if(fullscreen && currentCL!=null && currentCL.size()>0) {
+				if(fullscreen && !navbar.isEmpty()) {
 					
 					
 					g.translate(0, th);
@@ -549,7 +550,7 @@ public class Layout extends Canvas{
 		touchY=e.getPointerCoords().y;
 		touchAction = e.getAction();
 		
-		if(navTouch || (e.getAction()==MotionEvent.ACTION_DOWN && e.getPointerCoords().y>=this.getHeight()-navHeight && fullscreen && currentCL!=null && currentCL.size()>0)) {
+		if(navTouch || (e.getAction()==MotionEvent.ACTION_DOWN && e.getPointerCoords().y>=this.getHeight()-navHeight && fullscreen && !navbar.isEmpty())) {
 			
 			if(e.getAction() == MotionEvent.ACTION_DOWN) 
 				navTouch=true;
@@ -595,7 +596,6 @@ public class Layout extends Canvas{
 	private ActivityCommandListener activityCommandListener = new ActivityCommandListener();
 	private CommandList mainCommands = new CommandList(CommandList.PRIORITY_MAIN_COMMANDS);
 	private Vector commandLists = new Vector();
-	private CommandList currentCL;
 	public final void addCommand(Command command) {
 		mainCommands.addCommand(command);
 		updateCommands(mainCommands);
@@ -607,7 +607,52 @@ public class Layout extends Canvas{
 	}
 	
 	public final void addCommandList(CommandList list) {
+		
+		//Add element
+		if(commandLists.size()<=0) {
+			commandLists.addElement(list);
+			return;
+		}
+		
+		int i=(commandLists.size()-1)/2;
+		int pr = list.getPriority();
+		
+		int cPr = ((CommandList)commandLists.elementAt(i)).getPriority();
+		
+		if( cPr < pr) { // Middle's priority is lower than adding command list
+			
+			while(i<commandLists.size()) {
+				
+				i++;
+				
+				if(i>=commandLists.size()) break;
+				
+				cPr = ((CommandList)commandLists.elementAt(i)).getPriority();
+				
+				if(cPr<pr) {
+					break;
+				}
+				
+			}
+			
+		}else { //Middle's ZIndex is higher or equal adding content
+			
+			while(i>0) {
+				
+				i--;
+				cPr = ((CommandList)commandLists.elementAt(i)).getPriority();
+				
+				if(cPr>=cPr)
+					break;
+				
+			}
+			
+		}
+		
 		commandLists.addElement(list);
+		//
+		
+		
 		list.assembleContext(this);
 		updateCommands();
 	}
@@ -615,48 +660,52 @@ public class Layout extends Canvas{
 	public final void cancelCommandList(CommandList list) {
 		commandLists.removeElement(list);
 		list.assembleContext(null);
-		if(currentCL==list) {
-			for(int i=0; i<currentCL.size(); i++) {
-				super.removeCommand(currentCL.getCommand(i));
-			}
-			currentCL=null;
-		}
 		updateCommands();
 	}
 	
+	
+	/**
+	 * @deprecated Will be removed
+	 * TODO: Remove function
+	 */
 	public final void updateCommands(CommandList list) {
-		if(list==currentCL) {
-			updateCommands();
-		}
+		updateCommands();
 	}
 	
-	private void updateCommands() {
+	private Stack displayCommands = new Stack();
+	public final void updateCommands() {
 		
-		CommandList current=currentCL;
-		for(int i=commandLists.size()-1; i>=0; i--) {
-			if(current==null || current.getPriority()>((CommandList)commandLists.elementAt(i)).getPriority())
-				current=(CommandList)commandLists.elementAt(i);
-		}
-		
-		if(currentCL!=null)
-			for(int i=0; i<currentCL.size(); i++) {
-				super.removeCommand(currentCL.getCommand(i));
-			}
+		while(!displayCommands.isEmpty())
+			super.removeCommand((Command)displayCommands.pop());
 		navbar.setBarButton(null, Navbar.LEFT);
 		navbar.setBarButton(null, Navbar.CENTER);
 		navbar.setBarButton(null, Navbar.RIGHT);
-		
-		currentCL=current;
+	
 		commandsMenu.removeAllElements();
 		menu=null;
 		
+		CommandList current;
+		for(int i=0; i<commandLists.size(); i++) {
+			
+			current = (CommandList)commandLists.elementAt(i);
+			if(current.getExclusive() == CommandList.EXCLUSIVE_IGNORABLE && i>0) continue;
+			
+			setNavbarCommands(current);
+			
+			if(current.getExclusive() == CommandList.EXCLUSIVE_STOPPABLE) break;
+			
+		}
+		
+	}
+	
+	//TODO: Fullscreen bug wich higher priority command lists won't apply
+	private void setNavbarCommands(CommandList list) {
 		if(this.fullscreen) {
-			//TODO: Update custom navbar
 			Command left=null, center=null, right=null;
-			for(int i=currentCL.size()-1; i>=0; i--) {
-				switch(navbar.getSoftPosition(currentCL.getCommand(i).getCommandType())) {
+			for(int i=list.size()-1; i>=0; i--) {
+				switch(navbar.getSoftPosition(list.getCommand(i).getCommandType())) {
 				case Navbar.RIGHT:
-					if(right==null || right.getPriority()>=currentCL.getCommand(i).getPriority()) {
+					if(right==null || right.getPriority()>=list.getCommand(i).getPriority()) {
 						if(right!=null) {
 							if(left!=menu) {
 								commandsMenu.addElement(left);
@@ -665,30 +714,30 @@ public class Layout extends Canvas{
 							}
 							commandsMenu.addElement(right);
 						}
-						right=currentCL.getCommand(i);
+						right=list.getCommand(i);
 					}else {
 						if(left!=menu) {
 							commandsMenu.addElement(left);
 							menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
 							left = menu;
 						}
-						commandsMenu.addElement(currentCL.getCommand(i));
+						commandsMenu.addElement(list.getCommand(i));
 					}
 					break;
 				case Navbar.LEFT:
 					if(left==null)
-						left=currentCL.getCommand(i);
+						left=list.getCommand(i);
 					else {
 						if(left!=menu) {
 							commandsMenu.addElement(left);
 							menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
 							left = menu;
 						}
-						commandsMenu.addElement(currentCL.getCommand(i));
+						commandsMenu.addElement(list.getCommand(i));
 					}
 					break;
 				case Navbar.CENTER:
-					if(center==null || center.getPriority()>=currentCL.getCommand(i).getPriority()) {
+					if(center==null || center.getPriority()>=list.getCommand(i).getPriority()) {
 						if(center!=null){
 							if(left!=menu) {
 								commandsMenu.addElement(left);
@@ -697,9 +746,9 @@ public class Layout extends Canvas{
 							}
 							commandsMenu.addElement(center);
 						}
-						center=currentCL.getCommand(i);
+						center=list.getCommand(i);
 					}else {
-						commandsMenu.addElement(currentCL.getCommand(i));
+						commandsMenu.addElement(list.getCommand(i));
 						if(left!=menu) {
 							commandsMenu.addElement(left);
 							menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
@@ -709,22 +758,22 @@ public class Layout extends Canvas{
 					break;
 				}
 			}
-			
+
 			this.navbar.setBarButton(left, Navbar.LEFT);
 			this.navbar.setBarButton(center, Navbar.CENTER);
 			this.navbar.setBarButton(right, Navbar.RIGHT);
 		}else{
-			for(int i=0; i<currentCL.size(); i++) {
-				if(currentCL.getCommand(i).getCommandType() == pixelyvulpine.api.lcdui.Command.CENTER) {
-					if(navbar.center.command == null || navbar.center.command.getPriority()>=currentCL.getCommand(i).getPriority())
-						navbar.setBarButton(currentCL.getCommand(i), Navbar.CENTER);
+			for(int i=0; i<list.size(); i++) {
+				if(list.getCommand(i).getCommandType() == pixelyvulpine.api.lcdui.Command.CENTER) {
+					if(navbar.center.command == null || navbar.center.command.getPriority()>=list.getCommand(i).getPriority())
+						navbar.setBarButton(list.getCommand(i), Navbar.CENTER);
 					continue;
 				}
-				super.addCommand(currentCL.getCommand(i));
+				super.addCommand(list.getCommand(i));
+				displayCommands.addElement(list.getCommand(i));
 			}
-			
+
 		}
-		
 	}
 	
 	public final void setCommandListener(CommandListener l) {
@@ -875,6 +924,11 @@ public class Layout extends Canvas{
 			}
 			
 			return false;
+		}
+		
+		private boolean isEmpty() {
+			if(left!=null || center!=null || right!=null) return false;
+			return true;
 		}
 		
 		private class NavbarButton extends Content{
