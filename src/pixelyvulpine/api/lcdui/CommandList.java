@@ -60,7 +60,7 @@ public class CommandList extends Vector{
 		
 		boolean r = super.removeElement(command);
 		
-		if(context!=null)
+		if(r && context!=null)
 			context.updateCommands();
 		
 		return r;
