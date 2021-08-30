@@ -179,7 +179,7 @@ public class Layout extends Canvas{
 		
 		navHeight = (short)Config.getNavbarFont().getHeight();
 		if(this.hasPointerEvents()) {
-			navHeight=(short) (g.getClipHeight()/13);
+			navHeight=(short) ( Math.max(g.getClipHeight(), g.getClipWidth()) /13);
 		}
 		
 		if(paintThread==null) {
@@ -598,12 +598,12 @@ public class Layout extends Canvas{
 	private Vector commandLists = new Vector();
 	public final void addCommand(Command command) {
 		mainCommands.addCommand(command);
-		updateCommands(mainCommands);
+		updateCommands();
 	}
 
 	public final void removeCommand(Command command) {
 		mainCommands.removeCommand(command);
-		updateCommands(mainCommands);
+		updateCommands();
 	}
 	
 	public final void addCommandList(CommandList list) {
@@ -685,23 +685,34 @@ public class Layout extends Canvas{
 		menu=null;
 		
 		CommandList current;
-		for(int i=0; i<commandLists.size(); i++) {
+		COMMANDUPDATE:
+		for(int i=commandLists.size()-1; i>=0; i--) {
 			
 			current = (CommandList)commandLists.elementAt(i);
-			if(current.getExclusive() == CommandList.EXCLUSIVE_IGNORABLE && i>0) continue;
+			if(i<commandLists.size()-1)
+				switch(current.getExclusive()) {
+					case CommandList.EXCLUSIVE_IGNORABLE:
+						continue;
+					case CommandList.EXCLUSIVE_IGNORABLE | CommandList.EXCLUSIVE_STOPPABLE:
+						continue;
+				}
 			
 			setNavbarCommands(current);
 			
-			if(current.getExclusive() == CommandList.EXCLUSIVE_STOPPABLE) break;
+			switch(current.getExclusive()) {
+				case CommandList.EXCLUSIVE_STOPPABLE:
+					break COMMANDUPDATE;
+				case CommandList.EXCLUSIVE_IGNORABLE | CommandList.EXCLUSIVE_STOPPABLE:
+					break COMMANDUPDATE;
+			}
 			
 		}
 		
 	}
 	
-	//TODO: Fullscreen bug wich higher priority command lists won't apply
 	private void setNavbarCommands(CommandList list) {
 		if(this.fullscreen) {
-			Command left=null, center=null, right=null;
+			Command left=navbar.left.command, center=navbar.center.command, right=navbar.right.command;
 			for(int i=list.size()-1; i>=0; i--) {
 				switch(navbar.getSoftPosition(list.getCommand(i).getCommandType())) {
 				case Navbar.RIGHT:
