@@ -4,7 +4,7 @@ import java.util.Vector;
 
 import javax.microedition.lcdui.Command;
 
-public class CommandList {
+public class CommandList extends Vector{
 	
 	public final static int PRIORITY_MAIN_COMMANDS=Integer.MAX_VALUE; /**Application commands added on Context*/
 	public final static int PRIORITY_APPLICATION = 0; /**Barrier between framework and application*/
@@ -20,35 +20,54 @@ public class CommandList {
 	private int priority;
 	private byte exclusive = EXCLUSIVE_DEFAULT;
 	private Layout context;
-	private Vector commands = new Vector();
 	
 	/**
-	 * 
 	 * @param priority - Lower priority comes first
 	 */
 	public CommandList(int priority) {
 		this.priority=priority;
 	}
 	
+	/**
+	 * @deprecated
+	 * @param command
+	 */
 	public final void addCommand(Command command) {
-		commands.addElement(command);
+		addElement(command);	
+	}
+	
+	public final void addElement(Object command) {
+		if(!(command instanceof Command))
+			throw new IllegalArgumentException("Element is not a command!");
+		
+		super.addElement(command);
+		
 		if(context!=null)
 			context.updateCommands();
-			
 	}
 
+	/**
+	 * @deprecated
+	 * @param command
+	 */
 	public final void removeCommand(Command command) {
-		commands.removeElement(command);
+		removeElement(command);
+	}
+	
+	public final boolean removeElement(Object command) {
+		if(!(command instanceof Command))
+			throw new IllegalArgumentException("Element is not a command!");
+		
+		boolean r = super.removeElement(command);
+		
 		if(context!=null)
 			context.updateCommands();
+		
+		return r;
 	}
-	
-	public final int size() {
-		return commands.size();
-	}
-	
+
 	public final Command getCommand(int index) {
-		return (Command)commands.elementAt(index);
+		return (Command)elementAt(index);
 	}
 	
 	public final int getPriority() {
