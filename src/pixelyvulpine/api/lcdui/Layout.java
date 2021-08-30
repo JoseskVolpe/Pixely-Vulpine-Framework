@@ -187,7 +187,7 @@ public class Layout extends Canvas{
 		
 		navHeight = (short)Config.getNavbarFont().getHeight();
 		if(this.hasPointerEvents()) {
-			navHeight=(short) ( Math.max(g.getClipHeight(), g.getClipWidth()) /13);
+			navHeight=(short)(Config.getNavbarFont().getHeight()*2);
 		}
 		
 		if(paintThread==null) {
