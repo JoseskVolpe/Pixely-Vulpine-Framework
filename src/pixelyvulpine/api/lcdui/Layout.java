@@ -35,6 +35,14 @@ public class Layout extends Canvas{
 	
 	protected int animation = ANIMATION_SMOOTH_SLIDE_UP;
 	
+	
+	public static final byte NAVBAR_AUTO=0;
+	public static final byte NAVBAR_SHOW=1;
+	public static final byte NAVBAR_HIDE=2;
+	
+	private byte navbar_visibility=NAVBAR_AUTO;
+	
+	
 	protected MIDlet app;
 	
 	private static long timeStart;
@@ -206,7 +214,7 @@ public class Layout extends Canvas{
 					g.fillRect(xToAnimation(0), yToAnimation(0), getWidth(), getHeight());
 					
 				int tw=0, th=0;
-				if(fullscreen && !navbar.isEmpty()) {
+				if(navbar.isNavbarVisible()) {
 						
 						
 					tw = getWidth();
@@ -260,7 +268,7 @@ public class Layout extends Canvas{
 				
 				g.translate(0 - g.getTranslateX(), 0 - g.getTranslateY());
 				g.setClip(0, 0, getWidth(), getHeight());
-				if(fullscreen && !navbar.isEmpty()) {
+				if(navbar.isNavbarVisible()) {
 					
 					
 					g.translate(0, th);
@@ -358,6 +366,14 @@ public class Layout extends Canvas{
 	
 	public final void setNavigationPressColor(Color navigationPressColor) {
 		this.navigationPressColor = navigationPressColor;
+	}
+	
+	public final void setNavbarVisibility(byte visibility) {
+		this.navbar_visibility=visibility;
+	}
+	
+	public final byte getNavbarVisibility() {
+		return navbar_visibility;
 	}
 	
 	public final static Layout getCurrent() {
@@ -550,7 +566,7 @@ public class Layout extends Canvas{
 		touchY=e.getPointerCoords().y;
 		touchAction = e.getAction();
 		
-		if(navTouch || (e.getAction()==MotionEvent.ACTION_DOWN && e.getPointerCoords().y>=this.getHeight()-navHeight && fullscreen && !navbar.isEmpty())) {
+		if(navTouch || (e.getAction()==MotionEvent.ACTION_DOWN && e.getPointerCoords().y>=this.getHeight()-navHeight && navbar.isNavbarVisible())) {
 			
 			if(e.getAction() == MotionEvent.ACTION_DOWN) 
 				navTouch=true;
@@ -908,6 +924,13 @@ public class Layout extends Canvas{
 			this.addContent(right);
 		}
 		
+		public boolean isNavbarVisible() {
+			if(!fullscreen || getNavbarVisibility()==NAVBAR_HIDE)
+				return false;
+			
+			return getNavbarVisibility()==NAVBAR_SHOW || left.command!=null || center.command!=null || right.command!=null;
+		}
+		
 		public void setBarButton(Command command, int side) {
 			switch(side) {
 				case LEFT:
@@ -935,11 +958,6 @@ public class Layout extends Canvas{
 			}
 			
 			return false;
-		}
-		
-		private boolean isEmpty() {
-			if(left!=null || center!=null || right!=null) return false;
-			return true;
 		}
 		
 		private class NavbarButton extends Content{
