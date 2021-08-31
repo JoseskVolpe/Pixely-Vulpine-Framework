@@ -324,6 +324,9 @@ public class Canvas extends Content{
 	
 	protected final void addToRender(Stack renderData[], int id, int rX, int rY, int clipW, int clipH) {
 		
+		if((Content)contents.elementAt(id)==null)
+			return;
+		
 		if(renderData[0].size()<=0) {
 			renderData[0].addElement(new Short((short)id));
 			renderData[1].addElement(new Integer(rX));
@@ -391,8 +394,13 @@ public class Canvas extends Content{
 					}
 				}*/
 				
-				int w=g.getDimensionWidth()-2;
-				int h=g.getDimensionHeight()-2;
+				int w=g.getDimensionWidth();
+				int h=g.getDimensionHeight();
+				
+				if(foregroundColor!=null && foregroundColor.getAlpha()>0) {
+					w-=1;
+					h-=1;
+				}
 				
 				int hex = backgroundColor.getHex();
 				color = new int[w*h];
@@ -950,8 +958,14 @@ public class Canvas extends Content{
 	
 	public final boolean removeContent(Content content) {
 		
+		
 		int i =contents.indexOf(content);
 		if(i<0) return false;
+		
+		if(selected==content) {
+			content.dispatchSelected(false);
+			selected=null;
+		}
 		
 		contents.setElementAt(null, i);
 		
@@ -964,9 +978,6 @@ public class Canvas extends Content{
 			}
 		}
 		contentsToRemove.insertElementAt(new Integer(i), add);
-		
-		
-		if(selected==content) selected=null;
 		
 		return true;
 		

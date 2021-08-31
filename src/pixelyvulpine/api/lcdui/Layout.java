@@ -200,7 +200,7 @@ public class Layout extends Canvas{
 		}
 		
 		if(paintThread==null) {
-			Crash.showCrashMessage(app, new IllegalStateException(), "No Paint Thread found\n¿Was the Activity changed by setCurrent() method?", Crash.FRAMEWORK_CRASH);
+			Crash.showCrashMessage(app, new IllegalStateException(), "No Paint Thread found\n¿Was the Activity changed by setCurrent() method?", Crash.FRAMEWORK_CRASH); //TODO: Better optimized render thread - remove this dependency to call Pixely Vulpine's method 
 			return;
 		}
 			
@@ -405,6 +405,7 @@ public class Layout extends Canvas{
 	
 	public final boolean closeMenu() {
 		if(focused instanceof CommandsMenu) {
+			focused.dispatchSelected(false);
 			overlay.removeContent(focused);
 			cancelCommandList(((CommandsMenu) focused).blocker);
 			cancelCommandList(((CommandsMenu) focused).cl);
@@ -648,12 +649,12 @@ public class Layout extends Canvas{
 	private CommandList mainCommands = new CommandList(CommandList.PRIORITY_MAIN_COMMANDS);
 	private Vector commandLists = new Vector();
 	public final void addCommand(Command command) {
-		mainCommands.addCommand(command);
+		mainCommands.addElement(command);
 		updateCommands();
 	}
 
 	public final void removeCommand(Command command) {
-		mainCommands.removeCommand(command);
+		mainCommands.removeElement(command);
 		updateCommands();
 	}
 	
@@ -1014,9 +1015,10 @@ public class Layout extends Canvas{
 
 			private Command command;
 			private Content view;
+			private int vW;
 			
 			public NavbarButton(Layout layout) {
-				super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100)));
+				super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,33,100)));
 				setPositioning(POSITIONING_ANCHORED);
 				setVerticalAnchor(Content.VERTICAL_ANCHOR_CENTER);
 				
@@ -1031,20 +1033,20 @@ public class Layout extends Canvas{
 						if(((ImageView)view).getImage()!=((pixelyvulpine.api.lcdui.Command)command).getIcon()) {
 							((ImageView)view).setImage(((pixelyvulpine.api.lcdui.Command)command).getIcon());
 						}
-						w = view.prepaint(w, h)[0];
+						vW = view.prepaint(w, h)[0];
 						if(((pixelyvulpine.api.lcdui.Command)command).getIcon()==null)
 							updateView();
 					}else {
 						if(command instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command)command).getIcon()!=null) {
 							updateView();
-							w = view.prepaint(w, h)[0];
+							vW = view.prepaint(w, h)[0];
 						}
 					}
 					if(view instanceof Label) {
-						w = view.getDimension().offset.width;
+						vW = view.getDimension().offset.width;
 					}
 				}else {
-					w=0;
+					vW=0;
 					h=0;
 				}
 				
@@ -1059,14 +1061,16 @@ public class Layout extends Canvas{
 				
 				if(view!=null) {
 					
+					int lx = g.getTranslateX();
 					int ly = g.getTranslateY();
 					
+					g.translate((g.getDimensionWidth()/2)-(vW/2), 0);
 					if(view instanceof Label) 
 						g.translate(0, (navHeight/2)-(view.getDimension().getOffsetDimension().height/2));
 					
 					view.dispatchPaint(g);
 					
-					g.translate(0, -g.getTranslateY()+ly);
+					g.translate(-g.getTranslateX()-lx, -g.getTranslateY()+ly);
 				}
 			}
 			
@@ -1120,6 +1124,7 @@ public class Layout extends Canvas{
 				}
 				
 				view = new Label(getLayout(), new DimensionAttributes(), command.getLabel(), Config.getNavbarFont());
+				((Label)view).setColor(new Color(255,255,255)); //TODO: Adapt text color
 				((Label)view).impact();
 			}
 			
@@ -1149,7 +1154,11 @@ public class Layout extends Canvas{
 		CommandsMenu(Layout layout, Vector commands){
 			super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100)));
 			
+			this.setBackgroundColor(new Color(200, 0,0,0)); //TODO: Allow developer to change menu's background color
+			
 			l = new List(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100)), commands);
+			l.setCommandListener(this);
+			l.setTextColor(new Color(255,255,255));
 			this.addContent(l);
 			
 			lastFocused = focused;
@@ -1164,11 +1173,20 @@ public class Layout extends Canvas{
 			cl.addElement(back);
 			addCommandList(cl);
 		}
+		
+		public boolean onTouch(MotionEvent ev){
+			super.onTouch(ev);
+			return true;
+		}
 
 		public void commandAction(Command arg0, Displayable arg1) {
 			if(arg0==back) {
 				closeMenu();
+				return;
 			}
+			
+			getLayout().dispatchCommand(arg0);
+			closeMenu();
 		}
 	}
 	

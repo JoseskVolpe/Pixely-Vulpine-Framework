@@ -11,6 +11,7 @@ import pixelyvulpine.Config;
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
+import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.CommandList;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
@@ -24,6 +25,8 @@ public class List extends Content implements CommandListener{
 	private Vector commandContents = new Vector(0,1); //Canvas
 	private CommandList cList;
 	private pixelyvulpine.api.lcdui.Command select;
+	private Color color = new Color(0,0,0);
+	private Font font = Font.getDefaultFont();
 	private CommandListener listener;
 	
 	public List(Layout layout, DimensionAttributes dimensionAttributes) {
@@ -49,11 +52,14 @@ public class List extends Content implements CommandListener{
 	public List(Layout layout, DimensionAttributes dimensionAttributes, Vector commands) {
 		this(layout, dimensionAttributes);
 		
-		if(commands!=null) {
-			for(int i=0; i<commands.size(); i++) {
-				add((Command)commands.elementAt(i));
+		if(commands instanceof CommandList)
+			cList=(CommandList) commands;
+		else
+			if(commands!=null) {
+				for(int i=0; i<commands.size(); i++) {
+					add((Command)commands.elementAt(i));
+				}
 			}
-		}
 	}
 	
 	public void noPaint() {
@@ -70,6 +76,20 @@ public class List extends Content implements CommandListener{
 	public void paint(GraphicsFix g) {
 		
 		canvas.dispatchPaint(g);
+	}
+	
+	public void setTextColor(Color color) {
+		this.color=color;
+		for(int i=0; i<commandContents.size(); i++) {
+			((ListItem)commandContents.elementAt(i)).label.setColor(color);
+		}
+	}
+	
+	public void setFont(Font font) {
+		this.font=font;
+		for(int i=0; i<commandContents.size(); i++) {
+			((ListItem)commandContents.elementAt(i)).label.setFont(font);
+		}
 	}
 	
 	public void add(Command c) {
@@ -183,6 +203,8 @@ public class List extends Content implements CommandListener{
 			this.command = command;
 			icon = new CommandIcon(layout, command);
 			label = new Label(layout, new DimensionAttributes(), command.getLabel());
+			label.setFont(font);
+			label.setColor(color);
 			detector = new GestureDetector(layout, gestureListener);
 		}
 		
@@ -242,6 +264,7 @@ public class List extends Content implements CommandListener{
 		}
 		
 		public void onDeselect() {
+			
 			selected=false;
 		}
 		

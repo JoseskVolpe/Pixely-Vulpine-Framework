@@ -167,6 +167,20 @@ public class ScrollTest extends EmptyScrollLayout{
 		this.addCommand(new Command("Test4", Command.BACK, 1));
 		this.addCommand(new Command("Test5", Command.BACK, 1));
 		this.addCommand(new Command("Test6", Command.OK, 1));
+		this.addCommand(new Command("Test7", Command.OK, 1));
+		this.addCommand(new Command("Test8", Command.OK, 1));
+		this.addCommand(new Command("Test9", Command.OK, 1));
+		this.addCommand(new Command("Test10", Command.OK, 1));
+		this.addCommand(new Command("Test11", Command.OK, 1));
+		this.addCommand(new Command("Test12", Command.OK, 1));
+		this.addCommand(new Command("Test13", Command.OK, 1));
+		this.addCommand(new Command("Test14", Command.OK, 1));
+		this.addCommand(new Command("Test15", Command.OK, 1));
+		this.addCommand(new Command("Test16", Command.OK, 1));
+		this.addCommand(new Command("Test17", Command.OK, 1));
+		this.addCommand(new Command("Test18", Command.OK, 1));
+		this.addCommand(new Command("Test19", Command.OK, 1));
+		this.addCommand(new Command("Test20", Command.OK, 1));
 		
 	}
 	
