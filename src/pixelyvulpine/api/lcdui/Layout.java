@@ -53,9 +53,10 @@ public class Layout extends Canvas{
 	private Color navigationBarColor = new Color(34,34,34);
 	private Color navigationPressColor = new Color(69,69,69);
 	
-	protected pixelyvulpine.contents.Canvas canvas;
+	protected pixelyvulpine.contents.Canvas canvas, overlay;
 	private Navbar navbar;
 	private Vector commandsMenu = new Vector();
+	private List displayingMenu;
 	private Command menu;
 	private pixelyvulpine.contents.Canvas focused;
 	private boolean fullscreen, painted;
@@ -111,11 +112,16 @@ public class Layout extends Canvas{
 	public Layout(MIDlet app) {
 		this.app = app;
 		
-		canvas = new pixelyvulpine.contents.Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100), new DimensionAttributes.Offset(0,0, 0, 0)));
+		canvas = new pixelyvulpine.contents.Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100)));
+		overlay = new pixelyvulpine.contents.Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100)));
 		
 		navbar = new Navbar(this);
 		navbar.setBackgroundColor(navigationBarColor);
 		navbar.setForegroundColor(null);
+		navbar.setZIndex(0);
+		navbar.setPositioning(Content.POSITIONING_ANCHORED);
+		navbar.setVerticalAnchor(Content.VERTICAL_ANCHOR_BOTTOM);
+		overlay.addContent(navbar);
 		focused=canvas;
 		super.setCommandListener(activityCommandListener);
 		
@@ -229,6 +235,7 @@ public class Layout extends Canvas{
 					
 				try {
 					canvas.prepaint(tw, th);
+					overlay.prepaint(getWidth(), getHeight());
 				}catch(Exception e) {
 					Crash.showCrashMessage(app, e, "There was an exception trying to prepaint activity "+getTitle(), Crash.FRAMEWORK_CRASH);
 				}catch(Error e) {
@@ -245,6 +252,9 @@ public class Layout extends Canvas{
 				
 				try {
 					canvas.dispatchPaint(gf);
+					g.translate(-g.getTranslateX(), -g.getTranslateY());
+					g.setClip(0, 0, getWidth(), getHeight());
+					overlay.dispatchPaint(gf);
 				}catch(Exception e) {
 					Crash.showCrashMessage(app, e, "There was an exception trying to render activity "+getTitle(), Crash.FRAMEWORK_CRASH);
 					return;
@@ -252,9 +262,6 @@ public class Layout extends Canvas{
 					Crash.showCrashMessage(app, e, "There was an error trying to render activity "+getTitle(), Crash.FRAMEWORK_CRASH);
 					return;
 				}
-				
-				g.translate(xToAnimation(0) - g.getTranslateX(), yToAnimation(0) - g.getTranslateY());
-				g.setClip(0, 0, getWidth(), getHeight());
 				
 				try {
 					paintLayout(g);
@@ -268,7 +275,7 @@ public class Layout extends Canvas{
 				
 				g.translate(0 - g.getTranslateX(), 0 - g.getTranslateY());
 				g.setClip(0, 0, getWidth(), getHeight());
-				if(navbar.isNavbarVisible()) {
+				/*if(navbar.isNavbarVisible()) {
 					
 					
 					g.translate(0, th);
@@ -277,7 +284,7 @@ public class Layout extends Canvas{
 					navbar.dispatchPaint(gf);
 					g.translate(0, -th);
 					g.setClip(0, 0, getWidth(), getHeight());
-				}
+				}*/
 				
 			}catch(Exception e) {
 				
@@ -566,6 +573,7 @@ public class Layout extends Canvas{
 		touchY=e.getPointerCoords().y;
 		touchAction = e.getAction();
 		
+		/*
 		if(navTouch || (e.getAction()==MotionEvent.ACTION_DOWN && e.getPointerCoords().y>=this.getHeight()-navHeight && navbar.isNavbarVisible())) {
 			
 			if(e.getAction() == MotionEvent.ACTION_DOWN) 
@@ -578,9 +586,9 @@ public class Layout extends Canvas{
 			navbar.dispatchTouchEvent(e);
 			
 			return;
-		}
+		}*/
 		
-		if(!canvas.dispatchTouchEvent(e)) {
+		if(!overlay.dispatchTouchEvent(e) && !canvas.dispatchTouchEvent(e)) {
 			onTouchEvent(e);
 		}
 	}
@@ -924,6 +932,11 @@ public class Layout extends Canvas{
 			this.addContent(right);
 		}
 		
+		public int[] prepaint(int w, int h) {
+			super.prepaint(w, navHeight);
+			return new int[] {w, navHeight};
+		}
+		
 		public boolean isNavbarVisible() {
 			if(!fullscreen || getNavbarVisibility()==NAVBAR_HIDE)
 				return false;
@@ -958,6 +971,11 @@ public class Layout extends Canvas{
 			}
 			
 			return false;
+		}
+		
+		public boolean onTouch(MotionEvent ev) {
+			super.onTouch(ev);
+			return true;
 		}
 		
 		private class NavbarButton extends Content{
