@@ -23,6 +23,7 @@ import pixelyvulpine.contents.List;
 
 public class Layout extends Canvas{
 	
+	//TODO: Animation class
 	public static final int NO_ANIMATION = 0;
 	public static final int ANIMATION_SMOOTH_SLIDE_UP=1;
 	public static final int ANIMATION_SLIDE_UP=2;
