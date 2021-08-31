@@ -144,7 +144,7 @@ public class ScrollTest extends EmptyScrollLayout{
 		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
 		
 		
-		Label ml = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0,0,120)), "*te lambe* :3\nIsso é um teste, isso, um teste UwU\nTestando múltiplas linhas nisso aqui, só isso");
+		Label ml = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0,0,120)), "SO, you have come this far UwU\n¿Don't ya?\nYou may asking what the yiff is this... This is a scroll test page for a WIP UI framework, it's a open-source project, and you may find it at github.com/JoseskVolpe/Pixely-Vulpine-Framework.\n*Licks you* cutie :3");
 		ml.setMultiline(true);
 		ml.setColor(new Color(255,255,255));
 		this.addContent(ml);
@@ -161,15 +161,34 @@ public class ScrollTest extends EmptyScrollLayout{
 		//setNavigationBar(true);
 		//setFullScreenMode(false);
 		
+		Image yes=null;
+		Image no=null;
+		Image fox=null;
+		
+		try {
+			yes=Image.createImage("/icons/dark/navbar/yes.png");
+			no=Image.createImage("/icons/dark/navbar/no.png");
+			fox=Image.createImage("/icons/dark/navbar/fox.png");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		Command c;
 		this.addCommand(new Command("Test1", Command.BACK, 1));
 		this.addCommand(new Command("Test2", Command.BACK, 1));
 		this.addCommand(new Command("Test3", Command.BACK, 1));
 		this.addCommand(new Command("Test4", Command.BACK, 1));
 		this.addCommand(new Command("Test5", Command.BACK, 1));
 		this.addCommand(new Command("Test6", Command.OK, 1));
-		this.addCommand(new Command("Test7", Command.OK, 1));
-		this.addCommand(new Command("Test8", Command.OK, 1));
-		this.addCommand(new Command("Test9", Command.OK, 1));
+		c = new Command("Test7", Command.OK, 1);
+		c.setIcon(no);
+		this.addCommand(c);
+		c = new Command("Test8", Command.OK, 1);
+		c.setIcon(yes);
+		this.addCommand(c);
+		c=new Command("Test9", Command.OK, 1);
+		c.setIcon(fox);
+		this.addCommand(c);
 		this.addCommand(new Command("Test10", Command.OK, 1));
 		this.addCommand(new Command("Test11", Command.OK, 1));
 		this.addCommand(new Command("Test12", Command.OK, 1));
@@ -188,13 +207,6 @@ public class ScrollTest extends EmptyScrollLayout{
 		
 		
 		
-	}
-
-	public boolean contentPressed(Content content) {
-		
-		System.out.println(((Button)content).getText());
-		
-		return false;
 	}
 
 	public boolean onContentLoad(Content content) {

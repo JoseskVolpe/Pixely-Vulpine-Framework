@@ -50,15 +50,24 @@ public class App extends MIDlet implements CommandListener, LayoutLoader {
 			
 			Image logoI = null;
 			Image iconBack = null;
+			Image iconSelec = null;
+			Image iconW = null;
+			Image iconM = null;
 			
 			try {
 				logoI=Image.createImage("/joseskvolpe.png");
 				iconBack=Image.createImage("/icons/dark/navbar/back.png");
+				iconSelec=Image.createImage("/icons/dark/navbar/select.png");
+				iconW=Image.createImage("/icons/dark/navbar/pencil.png");
+				iconM=Image.createImage("/icons/dark/navbar/menu.png");
 			}catch(IOException e) {
 				e.printStackTrace();
 			}
 			
 			Config.setIcon(iconBack, Config.ICON_BACK);
+			Config.setIcon(iconSelec, Config.ICON_SELECT);
+			Config.setIcon(iconW, Config.ICON_WRITE);
+			Config.setIcon(iconM, Config.ICON_MENU);
 			Logo logo = new Logo(this, logoI, layoutName, new Color(0,0,0));
 			logo.loadLayout(this);
 			//Layout.setCurrent(this, logo);
