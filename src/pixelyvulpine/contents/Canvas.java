@@ -24,7 +24,8 @@ public class Canvas extends Content{
 	public static final byte ARRANGEMENT_VERTICAL=0;
 	public static final byte ARRANGEMENT_HORIZONTAL=1;
 	
-	protected Vector contents = new Vector(0, 1);
+	protected Vector contents = new Vector(0);
+	protected Stack contentsToRemove = new Stack();
 	protected Stack[] renderData;
 	protected Content selected;
 	
@@ -523,6 +524,7 @@ public class Canvas extends Content{
 		
 		short i=0;
 		int rx, ry, rw, rh;
+		Content c;
 		for(int index=renderData[0].size()-1; index>=0; index--) {
 			//Although it's a Stack, no more pop(), it'll corrupt the data when we're making a InputEvent
 			i=((Short)renderData[0].elementAt(index)).shortValue();
@@ -531,9 +533,8 @@ public class Canvas extends Content{
 			rw=((Integer)renderData[3].elementAt(index)).intValue();
 			rh=((Integer)renderData[4].elementAt(index)).intValue();
 			
-			if(rx>=dw || ry>=dh || rx+rw<0 || ry+rh<0) continue;
-			
-			Content c = (Content)contents.elementAt(i);
+			c = (Content)contents.elementAt(i);
+			if(rx>=dw || ry>=dh || rx+rw<0 || ry+rh<0 || c==null) continue;
 			
 			g.translate(rx, ry);
 			g.setDimension(rw, rh);
@@ -550,6 +551,19 @@ public class Canvas extends Content{
 		
 		g.setDimension(dw, dh);
 		
+		sweepContents();
+	}
+	
+	//TODO: Better, automatic memory management alghoritm
+	private void sweepContents() {
+		int index;
+		while(!contentsToRemove.isEmpty()) {
+			index = ((Integer)contentsToRemove.pop()).intValue();
+			if(contents.elementAt(index)!=null)
+				Crash.showCrashMessage(getLayout().getMIDlet(), new IllegalAccessException("Canvas: Content to remove is not null"), null, Crash.FRAMEWORK_CRASH);
+			
+			contents.removeElementAt(index);
+		}
 	}
 	
 	private Object downData[];
@@ -576,6 +590,7 @@ public class Canvas extends Content{
 				if(px>=cx && py>=cy && px<=cx+cw && py<=cy+ch) {
 					
 					Content c = ((Content)contents.elementAt(index));
+					if(c==null) continue;
 					
 					MotionEvent checkEvent = new MotionEvent(c.getHistoricalCoords(), e.getPointerCoords().x-cx, e.getPointerCoords().y-cy, e.getAction());
 					downData=new Object[] {
@@ -935,10 +950,24 @@ public class Canvas extends Content{
 	
 	public final boolean removeContent(Content content) {
 		
-		boolean s = contents.removeElement(content);
-		if(!s) return false;
-		contents.trimToSize();
+		int i =contents.indexOf(content);
+		if(i<0) return false;
+		
+		contents.setElementAt(null, i);
+		
+		//Ordered add to remove array
+		int add=contentsToRemove.size();
+		for(int a=add-1; a>0; a--) {
+			if(((Integer)contentsToRemove.elementAt(a)).intValue() < i) {
+				add = a+1;
+				break;
+			}
+		}
+		contentsToRemove.insertElementAt(new Integer(i), add);
+		
+		
 		if(selected==content) selected=null;
+		
 		return true;
 		
 	}
