@@ -11,7 +11,6 @@ import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Command;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
-import pixelyvulpine.api.lcdui.SymbolicCommand;
 import pixelyvulpine.contents.Button;
 import pixelyvulpine.contents.Canvas;
 import pixelyvulpine.contents.ImageView;
@@ -26,7 +25,7 @@ public class ScrollTest extends EmptyScrollLayout{
 	public ScrollTest(App app) {
 		super(app);
 		
-		this.getFocusedCanvas().setContentAlignment(Canvas.ALIGNMENT_CENTER);
+		setContentAlignment(Canvas.ALIGNMENT_CENTER);
 
 		Image logoI = null;
 		

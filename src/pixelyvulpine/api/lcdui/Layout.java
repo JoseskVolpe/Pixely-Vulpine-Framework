@@ -15,6 +15,7 @@ import pixelyvulpine.Config;
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
+import pixelyvulpine.api.lcdui.DimensionAttributes.Scaled;
 import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.GraphicsFix;
 import pixelyvulpine.contents.ImageView;
@@ -57,7 +58,6 @@ public class Layout extends Canvas{
 	protected pixelyvulpine.contents.Canvas canvas, overlay;
 	private Navbar navbar;
 	private Vector commandsMenu = new Vector();
-	private List displayingMenu;
 	private Command menu;
 	private pixelyvulpine.contents.Canvas focused;
 	private boolean fullscreen, painted;
@@ -119,7 +119,7 @@ public class Layout extends Canvas{
 		navbar = new Navbar(this);
 		navbar.setBackgroundColor(navigationBarColor);
 		navbar.setForegroundColor(null);
-		navbar.setZIndex(0);
+		navbar.setZIndex(1);
 		navbar.setPositioning(Content.POSITIONING_ANCHORED);
 		navbar.setVerticalAnchor(Content.VERTICAL_ANCHOR_BOTTOM);
 		overlay.addContent(navbar);
@@ -364,6 +364,10 @@ public class Layout extends Canvas{
 		
 	}
 	
+	public final void setContentAlignment(int alignment) {
+		canvas.setContentAlignment(alignment);
+	}
+	
 	public final void setBackgroundColor(Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
 	}
@@ -382,6 +386,31 @@ public class Layout extends Canvas{
 	
 	public final byte getNavbarVisibility() {
 		return navbar_visibility;
+	}
+	
+	public final void openMenu() {
+		openMenu(commandsMenu);
+	}
+	
+	public final void openMenu(Vector menu) {
+		
+		CommandsMenu displayingMenu = new CommandsMenu(this, menu);
+		displayingMenu.setZIndex(0);
+		overlay.addContent(displayingMenu);
+		setFocusedCanvas(displayingMenu);
+		
+	}
+	
+	public final boolean closeMenu() {
+		if(focused instanceof CommandsMenu) {
+			overlay.removeContent(focused);
+			cancelCommandList(((CommandsMenu) focused).blocker);
+			cancelCommandList(((CommandsMenu) focused).cl);
+			setFocusedCanvas(((CommandsMenu) focused).lastFocused);
+			return true;
+		}
+			
+		return false;
 	}
 	
 	public final static Layout getCurrent() {
@@ -529,7 +558,7 @@ public class Layout extends Canvas{
 	private final void keyEvent(KeyEvent event, boolean symbolic) {
 		
 		if(symbolic || !navbar.dispatchKeyEvent(event.getKeycode(), event)) {
-			if(!getFocusedCanvas().dispatchKeyEvent(event.getKeycode(), event)) {
+			if(!focused.dispatchKeyEvent(event.getKeycode(), event)) {
 				
 			}
 		}
@@ -544,17 +573,12 @@ public class Layout extends Canvas{
 		return false;
 	}
 	
-	public void setFocusedCanvas(pixelyvulpine.contents.Canvas canvas) {
+	private void setFocusedCanvas(pixelyvulpine.contents.Canvas canvas) {
 		focused=canvas;
 	}
 	
-	public pixelyvulpine.contents.Canvas getFocusedCanvas() {
-		if(focused==null) focused=canvas;
-		return focused;
-	}
-	
 	public Content getSelectedView() {
-		return getFocusedCanvas().getSelected();
+		return focused.getSelected();
 	}
 	
 	public final boolean isLoaded() {
@@ -841,6 +865,11 @@ public class Layout extends Canvas{
 				return;
 			}
 			
+			if(arg0 == menu) {
+				openMenu();
+				return;
+			}
+			
 			if(arg0 instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) arg0).getCommandListenerBypass()!=null) {
 				((pixelyvulpine.api.lcdui.Command) arg0).getCommandListenerBypass().commandAction(arg0, arg1);
 				return;
@@ -1110,28 +1139,34 @@ public class Layout extends Canvas{
 
 	private class CommandsMenu extends pixelyvulpine.contents.Canvas implements CommandListener{
 		
+		private CommandList cl, blocker;
+		private pixelyvulpine.api.lcdui.Command back;
+		private pixelyvulpine.contents.Canvas lastFocused;
 		private List l;
-		private CommandList cl;
-		private pixelyvulpine.api.lcdui.Command back, select;
 		
 		CommandsMenu(Layout layout, Vector commands){
-			super(layout, new DimensionAttributes());
-			
-			cl = new CommandList(CommandList.PRIORITY_MAIN_COMMANDS);
-			back = new pixelyvulpine.api.lcdui.Command("Back", Config.getIcon(Config.ICON_BACK), Command.BACK, 0);
-			back.setCommandListenerBypass(this);
-			cl.addCommand(back);
-			select = new pixelyvulpine.api.lcdui.Command("Select", Config.getIcon(Config.ICON_SELECT), pixelyvulpine.api.lcdui.Command.CENTER, 0);
-			select.setSymbolic(true);
-			cl.addCommand(select);
-			
+			super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100)));
 			
 			l = new List(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,100)), commands);
 			this.addContent(l);
+			
+			lastFocused = focused;
+			
+			blocker = new CommandList(CommandList.PRIORITY_APPLICATION);
+			blocker.setExclusive(CommandList.EXCLUSIVE_STOPPABLE);
+			addCommandList(blocker);
+			
+			cl = new CommandList(CommandList.PRIORITY_POPUP);
+			back = new pixelyvulpine.api.lcdui.Command("Back", Config.getIcon(Config.ICON_BACK), Command.BACK, 0);
+			back.setCommandListenerBypass(this);
+			cl.addElement(back);
+			addCommandList(cl);
 		}
 
 		public void commandAction(Command arg0, Displayable arg1) {
-			
+			if(arg0==back) {
+				closeMenu();
+			}
 		}
 	}
 	
