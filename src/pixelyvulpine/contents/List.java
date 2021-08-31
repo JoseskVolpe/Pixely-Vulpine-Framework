@@ -113,7 +113,7 @@ public class List extends Content implements CommandListener{
 		cList = new CommandList(CommandList.PRIORITY_VIEW);
 		select = new pixelyvulpine.api.lcdui.Command("Select", Config.getIcon(Config.ICON_SELECT), pixelyvulpine.api.lcdui.Command.CENTER, 0);
 		select.setCommandListenerBypass(this);
-		cList.addCommand(select);
+		cList.addElement(select);
 		
 		getLayout().addCommandList(cList);
 		canvas.onSelect();
@@ -131,9 +131,9 @@ public class List extends Content implements CommandListener{
 
 	public void commandAction(Command arg0, Displayable arg1) {
 		if(arg0==select) {
-			if(listener!=null)
-				listener.commandAction(((ListItem)canvas.getSelected()).command, arg1);
+			
 			((ListItem)canvas.getSelected()).selectionEvent();
+			
 		}
 	}
 	
@@ -222,7 +222,9 @@ public class List extends Content implements CommandListener{
 		};
 		
 		public void selectionEvent() {
-				
+			
+			if(listener!=null)
+				listener.commandAction(command, getLayout());
 			getLayout().dispatchCommand(command, list);
 		}
 		
