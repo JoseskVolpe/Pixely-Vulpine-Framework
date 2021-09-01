@@ -36,5 +36,10 @@ It might be compatible with legacy LCDUI APIs
 <img src="https://cdn.discordapp.com/attachments/807655972763729971/846164547860562000/Color_chooser_design.png">
 
 # Actual look for now:<br>
-<img src="https://i.imgur.com/e1M1bxg.png"><img src="https://i.imgur.com/V8q5W6a.png"><img src="https://user-images.githubusercontent.com/78318343/126109545-742ee4c9-f6d5-4221-bd9f-31bdd5f3ed54.png">
+![2021 08 31_23 15 31_2](https://user-images.githubusercontent.com/78318343/131601426-1221bb8f-00f0-4137-adbb-86cc7fa920b7.png)
+![2021 08 31_23 15 31_4](https://user-images.githubusercontent.com/78318343/131601402-7623e671-012b-4f75-8be2-232aaeb38700.png)
+![2021 08 31_23 18 55_1](https://user-images.githubusercontent.com/78318343/131601447-3d60aa19-4cc8-4ddb-abc0-dc76194a56f2.png)
+![2021 08 31_23 20 10_1](https://user-images.githubusercontent.com/78318343/131601470-0538c9c6-acef-472d-a8a0-7f766df0cd38.png)
+
+
 
