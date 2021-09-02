@@ -120,7 +120,7 @@ public class Canvas extends Content{
 				clipW = (int)(lw*(cw[0]/100.f))+cw[1];
 				clipH = (int)(lh*(ch[0]/100.f))+ch[1];
 				
-				newSize = c.prepaint(clipW, clipH);
+				newSize = c.dispatchPrepaint(clipW, clipH);
 				
 				clipW = newSize[0];
 				clipH = newSize[1];
@@ -281,7 +281,7 @@ public class Canvas extends Content{
 					
 					addToRender(renderData, i, rX, rY, clipW, clipH);
 				}else {
-					c.noPaint();
+					c.dispatchNoPaint();
 				}
 				
 				if(c==selected) {
@@ -422,7 +422,7 @@ public class Canvas extends Content{
 		if(renderData==null) return;
 		
 		while(!renderData[0].empty()){
-			((Content)contents.elementAt(((Short)renderData[0].pop()).shortValue())).noPaint();
+			((Content)contents.elementAt(((Short)renderData[0].pop()).shortValue())).dispatchNoPaint();
 			renderData[1].pop();
 			renderData[2].pop();
 			renderData[3].pop();

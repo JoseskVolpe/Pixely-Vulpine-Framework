@@ -211,7 +211,7 @@ public class List extends Content implements CommandListener{
 		public int[] prepaint(int w, int h) {
 			
 			iconDim = icon.prepaint(w, h-4);
-			label.prepaint(w-iconDim[0], h-4);
+			label.dispatchPrepaint(w-iconDim[0], h-4);
 			
 			return new int[] {w, h};
 		}

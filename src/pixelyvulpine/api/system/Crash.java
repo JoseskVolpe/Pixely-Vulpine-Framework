@@ -9,6 +9,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.MIDlet;
 
 import pixelyvulpine.Config;
+import pixelyvulpine.api.lcdui.Debug;
 
 public class Crash implements CommandListener{
 	
@@ -44,27 +45,42 @@ public class Crash implements CommandListener{
 		Command exit = new Command("Close", Command.EXIT, 0);
 		
 		Crash crash = new Crash(midlet, exit);
+		StringBuffer sb = new StringBuffer();
 		
-		String error="";
 		if(e!=null) {
-			error=e.toString()+" ("+e.hashCode()+")\n"+e.getMessage()+"\n\n";
+			sb.append(e.toString());
+			sb.append(" (");
+			sb.append(e.hashCode());
+			sb.append(")\n");
+			sb.append(e.getMessage());
+			sb.append("\n\n\n");
 		}
-		
-		String device=null;
+		sb.append("Device: ");
 		try {
-			device=System.getProperty("microedition.platform");
+			sb.append(System.getProperty("microedition.platform"));
 		}catch(NullPointerException e2) {
-			device="Unknown";
+			sb.append("Unknown");
 		}
+		sb.append("\nFramework version: ");
+		sb.append(Config.framework_version);
+		sb.append(" (");
+		sb.append(Config.framework_version_tag);
+		sb.append(")\nMIDlet version: ");
+		sb.append(midlet.getAppProperty("MIDlet-Version"));
+		sb.append("\n\n");
+		sb.append(message);
+		sb.append("\n\n");
+		sb.append(reportMessage[CrashType]);
 		
-		String framework_version = Config.framework_version+" ("+Config.framework_version_tag+")";
-		
-		Alert log = new Alert(titles[CrashType], error+"Device: "+device+"\nFramework version: "+framework_version+"\nMIDlet version: "+midlet.getAppProperty("MIDlet-Version")+"\n\n"+message+"\n\n"+reportMessage[CrashType], null, AlertType.ERROR);
+		Alert log = new Alert(titles[CrashType], sb.toString(), null, AlertType.ERROR);
 		log.setTimeout(Alert.FOREVER);
 		log.setCommandListener(crash);
 		log.addCommand(exit);
 		
 		Display.getDisplay(midlet).setCurrent(log);
+		
+		Debug.getThreadTrace(sb);
+		System.err.println(sb.toString());
 		
 	}
 

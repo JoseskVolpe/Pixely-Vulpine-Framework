@@ -183,7 +183,7 @@ public class Layout extends Canvas{
 	
 	public final void preloadLayout(int w, int h) {
 		try {
-			canvas.prepaint(w, h);
+			canvas.dispatchPrepaint(w, h);
 		}catch(Exception e) {
 			Crash.showCrashMessage(app, e, "There was an exception trying to preload activity "+getTitle(), Crash.FRAMEWORK_CRASH);
 		}catch(Error e) {
@@ -193,6 +193,9 @@ public class Layout extends Canvas{
 	
 	private long lastT;
 	protected final void paint(Graphics g) {
+		
+		Debug.setTask("Render");
+		int TraceID;
 		
 		navHeight = (short)Config.getNavbarFont().getHeight();
 		if(this.hasPointerEvents()) {
@@ -237,12 +240,12 @@ public class Layout extends Canvas{
 				g.translate(xToAnimation(0), yToAnimation(0));
 					
 				try {
-					canvas.prepaint(tw, th);
-					overlay.prepaint(getWidth(), getHeight());
+					canvas.dispatchPrepaint(tw, th);
+					overlay.dispatchPrepaint(getWidth(), getHeight());
 				}catch(Exception e) {
-					Crash.showCrashMessage(app, e, "There was an exception trying to prepaint activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+					Crash.showCrashMessage(app, e, "There was an exception trying to dispatchPrepaint activity "+getTitle(), Crash.FRAMEWORK_CRASH);
 				}catch(Error e) {
-					Crash.showCrashMessage(app, e, "There was an error trying to prepaint activity "+getTitle(), Crash.FRAMEWORK_CRASH);
+					Crash.showCrashMessage(app, e, "There was an error trying to dispatchPrepaint activity "+getTitle(), Crash.FRAMEWORK_CRASH);
 				}
 					
 				if(!started) {
@@ -267,7 +270,9 @@ public class Layout extends Canvas{
 				}
 				
 				try {
+					TraceID = Debug.traceObject(this, "paintLayout");
 					paintLayout(g);
+					Debug.returnToTrace(TraceID);
 				}catch(Exception e) {
 					Crash.showCrashMessage(app, e, "Couldn't paint activity "+getTitle(), Crash.APPLICATION_CRASH);
 					return;
@@ -283,7 +288,7 @@ public class Layout extends Canvas{
 					
 					g.translate(0, th);
 					g.setClip(0, 0, getWidth(), navHeight);
-					navbar.prepaint(getWidth(), g.getClipHeight());
+					navbar.dispatchPrepaint(getWidth(), g.getClipHeight());
 					navbar.dispatchPaint(gf);
 					g.translate(0, -th);
 					g.setClip(0, 0, getWidth(), getHeight());
@@ -320,6 +325,8 @@ public class Layout extends Canvas{
 		}
 		
 		paintThread.askRepaint();
+		
+		Debug.cleanThreadTrace();
 		
 	}
 	
@@ -623,24 +630,34 @@ public class Layout extends Canvas{
 	
 	protected final void pointerPressed(int x, int y){
 		
+		Debug.setTask("pointerPressed");
+		
 		MotionEvent e = new MotionEvent(historicalCoords, x, y, MotionEvent.ACTION_DOWN);
 		pointerEvent(e);
+		
+		Debug.cleanThreadTrace();
 
 	}
 
 	protected final void pointerReleased(int x, int y){
 		
+		Debug.setTask("pointerReleased");
+		
 		MotionEvent e = new MotionEvent(historicalCoords, x, y, MotionEvent.ACTION_UP);
 		pointerEvent(e);
 		
-		
+		Debug.cleanThreadTrace();
 
 	}
 
 	protected final void pointerDragged(int x, int y){
 		
+		Debug.setTask("pointerDragged");
+		
 		MotionEvent e = new MotionEvent(historicalCoords, x, y, MotionEvent.ACTION_MOVE);
 		pointerEvent(e);
+		
+		Debug.cleanThreadTrace();
 		
 	}
 	
@@ -727,6 +744,8 @@ public class Layout extends Canvas{
 	private Stack displayCommands = new Stack();
 	public final void updateCommands() {
 		
+		int ThreadID = Debug.traceObject(this," updateCommands");
+		
 		while(!displayCommands.isEmpty())
 			super.removeCommand((Command)displayCommands.pop());
 		navbar.setBarButton(null, Navbar.LEFT);
@@ -759,6 +778,8 @@ public class Layout extends Canvas{
 			}
 			
 		}
+		
+		Debug.returnToTrace(ThreadID);
 		
 	}
 	
@@ -1033,13 +1054,13 @@ public class Layout extends Canvas{
 						if(((ImageView)view).getImage()!=((pixelyvulpine.api.lcdui.Command)command).getIcon()) {
 							((ImageView)view).setImage(((pixelyvulpine.api.lcdui.Command)command).getIcon());
 						}
-						vW = view.prepaint(w, h)[0];
+						vW = view.dispatchPrepaint(w, h)[0];
 						if(((pixelyvulpine.api.lcdui.Command)command).getIcon()==null)
 							updateView();
 					}else {
 						if(command instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command)command).getIcon()!=null) {
 							updateView();
-							vW = view.prepaint(w, h)[0];
+							vW = view.dispatchPrepaint(w, h)[0];
 						}
 					}
 					if(view instanceof Label) {

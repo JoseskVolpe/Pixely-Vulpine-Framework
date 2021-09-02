@@ -61,9 +61,25 @@ public class Content{
 		
 	}
 	
-	public void noPaint() {}
+	public final void dispatchNoPaint() {
+		int TraceID = Debug.traceObject(this, "noPaint");
+		noPaint();
+		Debug.returnToTrace(TraceID);
+	}
 	
-	public int[] prepaint(int width, int height) {
+	protected void noPaint() {}
+	
+	public final int[] dispatchPrepaint(int width, int height) {
+		
+		int TraceID = Debug.traceObject(this, "prepaint");
+		int r[] = prepaint(width, height);
+		Debug.returnToTrace(TraceID);
+		
+		return r;
+	
+	}
+	
+	protected int[] prepaint(int width, int height) {
 		
 		return new int[] {width, height};
 		
@@ -71,33 +87,46 @@ public class Content{
 	
 	public final void dispatchPaint(GraphicsFix g) {
 		
+		int TraceID = Debug.traceObject(this, "paint");
 		if(!Config.getXRayMode() || forcePaint)
 			paint(g);
 		
+		Debug.returnToTrace(TraceID);
+		TraceID = Debug.traceObject(this, "debug.paint");
 		debug.paint(g);
+		Debug.returnToTrace(TraceID);
 	}
 	
-	protected void paint(GraphicsFix g) {
-		
-		
-		
-	}
+	protected void paint(GraphicsFix g) {}
 	
 	private Vector historicalCoords = new Vector(0,1);
 	public final boolean dispatchTouchEvent(MotionEvent event) {
 		
-		if(onTouchListener!=null && onTouchListener.onTouch(this, event)) {
-			return true;
-		}
+		int TraceID = Debug.traceObject(this, "onTouch");
 		
-		return onTouch(event);
+		boolean r;
+		
+		if(onTouchListener!=null && onTouchListener.onTouch(this, event)) 
+			r=true;
+		else
+			r=onTouch(event);
+		
+		Debug.returnToTrace(TraceID);
+		return r;
 	}
 	
 	public final boolean dispatchKeyEvent(int keyCode, KeyEvent event) {
 		
-		if(layout.onKey(this, keyCode, event)) return true;
+		int TraceID = Debug.traceObject(this, "onKey");
+		boolean r;
 		
-		return onKey(keyCode, event);
+		if(layout.onKey(this, keyCode, event))
+			r=true;
+		else
+			r=onKey(keyCode, event);
+		
+		Debug.returnToTrace(TraceID);
+		return r;
 	}
 	
 	public final Vector getHistoricalCoords() {
