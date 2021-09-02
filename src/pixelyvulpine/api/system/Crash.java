@@ -82,7 +82,17 @@ public class Crash implements CommandListener{
 		
 		Debug.getThreadTrace(sb);
 		sb.append(" <~~");
-		sb.append(e.toString());
+		try { 
+			sb.append(e.getClass().getName().substring(e.getClass().getName().lastIndexOf('.')+1, e.getClass().getName().length()));
+		}catch(Throwable t) {
+			sb.append(e.toString());
+		}
+		
+		
+		sb.append("\n\nLog:");
+		Debug.getTraceLog(sb);
+		sb.append("\n\n");
+		Debug.watchLastTrace(sb);
 		System.err.println(sb.toString());
 		
 	}

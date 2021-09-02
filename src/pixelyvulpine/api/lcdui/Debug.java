@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.Vector;
 
 import pixelyvulpine.Config;
+import pixelyvulpine.api.lcdui.Debug.Attributes.Attribute;
 import pixelyvulpine.api.util.GraphicsFix;
 
 public class Debug {
@@ -24,12 +25,13 @@ public class Debug {
 	
 	private static class ObjectTrace{
 		Object object;
-		String message;
+		String name;
 	}
 	
-	private static class Log{ //TODO: Get log
+	private static class Log{
 		Object object;
 		short TraceID;
+		String traceName;
 		String message;
 	}
 	
@@ -45,6 +47,22 @@ public class Debug {
 		
 		public void showAttribute(String name, Object value) {
 			attributes.addElement(new Attribute(name, value));
+		}
+		
+		public void showAttribute(String name, boolean value) {
+			showAttribute(name, String.valueOf(value));
+		}
+		
+		public void showAttribute(String name, long value) {
+			showAttribute(name, String.valueOf(value));
+		}
+		
+		public void showAttribute(String name, double value) {
+			showAttribute(name, String.valueOf(value));
+		}
+		
+		public void showAttribute(String name, char value) {
+			showAttribute(name, String.valueOf(value));
 		}
 		
 		public static class Attribute{
@@ -97,11 +115,11 @@ public class Debug {
 		return addObjectTrace(object, message, t);
 	}
 	
-	private static int addObjectTrace(Object object, String message, ThreadStackTrace t) {
+	private static int addObjectTrace(Object object, String name, ThreadStackTrace t) {
 		
 		ObjectTrace ot = new ObjectTrace();
 		ot.object=object;
-		ot.message=message;
+		ot.name=name;
 		
 		t.traces.addElement(ot);
 		return t.traces.size()-1;
@@ -150,9 +168,10 @@ public class Debug {
 	public static void logd(Object message) {
 		ThreadStackTrace t = getThreadStackTrace();
 		Log log = new Log();
-		log.object = t.traces.lastElement();
+		log.object = ((ObjectTrace)t.traces.lastElement()).object;
 		log.message = message.toString();
 		log.TraceID = (short)(t.traces.size()-1);
+		log.traceName = ((ObjectTrace)t.traces.elementAt(log.TraceID)).name;
 		t.log.addElement(log);
 	}
 	
@@ -165,17 +184,20 @@ public class Debug {
 		sb.append("Task: ");
 		sb.append(t.task);
 		sb.append("\n");
+		sb.append("Traces:");
 		ObjectTrace trace;
 		int sbSize = sb.length();
 		
 		try {
 			for(int i=0; i<t.traces.size(); i++) {
 				sb.append("\n");
+				sb.append(i);
+				sb.append(" - ");
 				trace = (ObjectTrace)t.traces.elementAt(i);
 				sb.append(trace.object.getClass().getName());
-				if(trace.message!=null && !trace.message.equals("")) {
+				if(trace.name!=null && !trace.name.equals("")) {
 					sb.append(" - ");
-					sb.append(trace.message);
+					sb.append(trace.name);
 				}
 			}
 		}catch(OutOfMemoryError e) {
@@ -188,13 +210,13 @@ public class Debug {
 			sb.append("Last trace: ");
 			trace = (ObjectTrace)t.traces.elementAt(t.traces.size()-1);
 			sb.append(trace.object.getClass().getName());
-			if(trace.message!=null && !trace.message.equals("")) {
+			if(trace.name!=null && !trace.name.equals("")) {
 				sb.append(" - ");
-				sb.append(trace.message);
+				sb.append(trace.name);
 			}
 			sb.append("\n");
 		}catch(Throwable e) {
-			sb.append("\nCould not get Thread Trace log\n");
+			sb.append("\nCould not get full Thread Trace log\n");
 			sb.append(e.toString());
 			sb.append(": ");
 			sb.append(e.getMessage());
@@ -203,15 +225,113 @@ public class Debug {
 			try {
 				trace = (ObjectTrace)t.traces.elementAt(t.traces.size()-1);
 				sb.append(trace.object.getClass().getName());
-				if(trace.message!=null && !trace.message.equals("")) {
+				if(trace.name!=null && !trace.name.equals("")) {
 					sb.append(" - ");
-					sb.append(trace.message);
+					sb.append(trace.name);
 				}
 			}catch(Throwable e2) {
 				sb.append("ERROR");
 			}
 			sb.append("\n");
 		}
+	}
+	
+	public static void getTraceLog(StringBuffer sb) {
+		getLog(sb, getThreadStackTrace().traces);
+	}
+	
+	public static void getThreadLog(StringBuffer sb) {
+		getLog(sb, null);
+	}
+	
+	private static void getLog(StringBuffer sb, Vector trace) {
+		ThreadStackTrace t = getThreadStackTrace();
+		
+		int sbSize = sb.length();
+		int added=0;
+		Log log;
+		try {
+			for(int i=0; i<t.log.size(); i++) {
+				
+				log = (Log)t.log.elementAt(i);
+				
+				if(trace!=null && !traceHasObject(trace, log.object))
+					continue;
+				
+				sb.append("\n* ");
+				sb.append(log.object.getClass().getName());
+				sb.append("from trace \"");
+				sb.append(log.traceName);
+				sb.append("\" (ID ");
+				sb.append(log.TraceID);
+				sb.append("):\n=>     ");
+				sb.append(log.message);
+				added++;
+			}
+			
+			if(added<=0)
+				sb.append("\nLog is empty");
+		}catch(OutOfMemoryError e) {
+			sb.delete(sbSize-1, sb.length());
+			sb.append("\nCould not get log\n");
+			sb.append(e.toString());
+			sb.append(": ");
+			sb.append(e.getMessage());
+			sb.append("\n");
+		}catch(Throwable e) {
+			sb.append("\nCould not get full log\n");
+			sb.append(e.toString());
+			sb.append(": ");
+			sb.append(e.getMessage());
+			sb.append("\n");
+		}
+	}
+	
+	public static void watchLastTrace(StringBuffer sb) {
+		ThreadStackTrace t = getThreadStackTrace();
+		
+		try {
+			ObjectTrace ot = (ObjectTrace) t.traces.elementAt(t.traces.size()-1);
+			sb.append("\nWatching ");
+			sb.append(ot.object.getClass().getName());
+			sb.append(":");
+			if(ot.object instanceof Watcher) {
+				Attributes a = new Attributes();
+				((Watcher) ot.object).watchAttributes(a);
+				
+				if(a.attributes.size()>0) {
+					
+					Attributes.Attribute at;
+					for(int i=0; i<a.attributes.size(); i++) {
+						at = (Attribute) a.attributes.elementAt(i);
+						sb.append("\n* ");
+						sb.append(at.name);
+						sb.append(" = ");
+						sb.append(at.value);
+					}
+					
+					return;
+				}
+			}
+			
+			sb.append("\nObject has no watchable attribute or is not Debug.Watcher implemented");
+			
+		}catch(Throwable e) {
+			sb.append("\nCould not watch last trace\n");
+			sb.append(e.toString());
+			sb.append(": ");
+			sb.append(e.getMessage());
+			sb.append("\n");
+		}
+	}
+	
+	private static boolean traceHasObject(Vector traces, Object obj) {
+		for(int i=0; i<traces.size(); i++) {
+			if(((ObjectTrace)traces.elementAt(i)).object==obj)
+				return true;
+		}
+		
+		return false;
 	}
 	
 	private static int getThreadIndex() {

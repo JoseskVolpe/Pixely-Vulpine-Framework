@@ -144,7 +144,7 @@ public class ScrollTest extends EmptyScrollLayout{
 		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
 		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
 		
-		//this.addContent(new ErrorView(this, new DimensionAttributes(new DimensionAttributes.Offset(0,0,10,10))));
+		this.addContent(new ErrorView(this, new DimensionAttributes(new DimensionAttributes.Offset(0,0,10,10))));
 		
 		
 		Label ml = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0,0,120)), "SO, you have come this far UwU\n¿Don't ya?\nYou may asking what the yiff is this... This is a scroll test page for a WIP UI framework, it's a open-source project, and you may find it at github.com/JoseskVolpe/Pixely-Vulpine-Framework.\n*Licks you* cutie :3");

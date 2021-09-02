@@ -8,10 +8,11 @@ import pixelyvulpine.Config;
 import pixelyvulpine.api.events.GestureDetector;
 import pixelyvulpine.api.events.KeyEvent;
 import pixelyvulpine.api.events.MotionEvent;
+import pixelyvulpine.api.lcdui.Debug.Attributes;
 import pixelyvulpine.api.util.GraphicsFix;
 import pixelyvulpine.contents.Canvas;
 
-public class Content{
+public class Content implements Debug.Watcher{
 
 	protected Debug debug;
 	protected boolean forcePaint;
@@ -263,6 +264,20 @@ public class Content{
 	
 	public static interface OnTouchListener{
 		public boolean onTouch(Content view, MotionEvent event) ;
+	}
+
+	public final void watchAttributes(Attributes attributes) {
+		
+		attributes.showAttribute("layout", layout);
+		attributes.showAttribute("forcePaint", forcePaint);
+		attributes.showAttribute("visible", visible);
+		attributes.showAttribute("ZIndex", ZIndex);
+		
+		watchViewAttributes(attributes);
+	}
+	
+	protected void watchViewAttributes(Attributes attributes) {
+		
 	}
 	
 }
