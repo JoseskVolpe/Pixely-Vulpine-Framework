@@ -71,6 +71,7 @@ public class Crash implements CommandListener{
 		sb.append(message);
 		sb.append("\n\n");
 		sb.append(reportMessage[CrashType]);
+		sb.append("\n");
 		
 		Alert log = new Alert(titles[CrashType], sb.toString(), null, AlertType.ERROR);
 		log.setTimeout(Alert.FOREVER);
@@ -80,6 +81,8 @@ public class Crash implements CommandListener{
 		Display.getDisplay(midlet).setCurrent(log);
 		
 		Debug.getThreadTrace(sb);
+		sb.append(" <~~");
+		sb.append(e.toString());
 		System.err.println(sb.toString());
 		
 	}

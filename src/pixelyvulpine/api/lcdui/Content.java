@@ -64,7 +64,7 @@ public class Content{
 	public final void dispatchNoPaint() {
 		int TraceID = Debug.traceObject(this, "noPaint");
 		noPaint();
-		Debug.returnToTrace(TraceID);
+		Debug.removeFromTrace(TraceID);
 	}
 	
 	protected void noPaint() {}
@@ -73,7 +73,7 @@ public class Content{
 		
 		int TraceID = Debug.traceObject(this, "prepaint");
 		int r[] = prepaint(width, height);
-		Debug.returnToTrace(TraceID);
+		Debug.removeFromTrace(TraceID);
 		
 		return r;
 	
@@ -91,10 +91,10 @@ public class Content{
 		if(!Config.getXRayMode() || forcePaint)
 			paint(g);
 		
-		Debug.returnToTrace(TraceID);
+		Debug.removeFromTrace(TraceID);
 		TraceID = Debug.traceObject(this, "debug.paint");
 		debug.paint(g);
-		Debug.returnToTrace(TraceID);
+		Debug.removeFromTrace(TraceID);
 	}
 	
 	protected void paint(GraphicsFix g) {}
@@ -111,7 +111,7 @@ public class Content{
 		else
 			r=onTouch(event);
 		
-		Debug.returnToTrace(TraceID);
+		Debug.removeFromTrace(TraceID);
 		return r;
 	}
 	
@@ -125,7 +125,7 @@ public class Content{
 		else
 			r=onKey(keyCode, event);
 		
-		Debug.returnToTrace(TraceID);
+		Debug.removeFromTrace(TraceID);
 		return r;
 	}
 	

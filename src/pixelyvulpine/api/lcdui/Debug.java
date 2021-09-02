@@ -104,14 +104,14 @@ public class Debug {
 		ot.message=message;
 		
 		t.traces.addElement(ot);
-		return t.traces.size();
+		return t.traces.size()-1;
 	}
 	
-	public static void returnToTrace(int id) {
+	public static void removeFromTrace(int id) {
+		
 		ThreadStackTrace t = getThreadStackTrace();
-		for(int i=t.traces.size()-1; i>id; i--) {
+		for(int i=t.traces.size()-1; i>=id; i--) 
 			t.traces.removeElementAt(i);
-		}
 	}
 	
 	public static void cleanThreadTrace() {
@@ -132,6 +132,10 @@ public class Debug {
 		ThreadStackTrace t = (ThreadStackTrace)threads.elementAt(index);
 		t.traces.removeAllElements();
 		t.log.removeAllElements();
+		
+		t.task = "unknown";
+		addObjectTrace(Thread.currentThread(), "", t);
+		
 	}
 	
 	public static void cleanInactiveThreads() {

@@ -196,6 +196,7 @@ public class Layout extends Canvas{
 		
 		Debug.setTask("Render");
 		int TraceID;
+		TraceID = Debug.traceObject(this, "paint");
 		
 		navHeight = (short)Config.getNavbarFont().getHeight();
 		if(this.hasPointerEvents()) {
@@ -270,9 +271,10 @@ public class Layout extends Canvas{
 				}
 				
 				try {
+					Debug.removeFromTrace(TraceID);
 					TraceID = Debug.traceObject(this, "paintLayout");
 					paintLayout(g);
-					Debug.returnToTrace(TraceID);
+					Debug.removeFromTrace(TraceID);
 				}catch(Exception e) {
 					Crash.showCrashMessage(app, e, "Couldn't paint activity "+getTitle(), Crash.APPLICATION_CRASH);
 					return;
@@ -567,10 +569,16 @@ public class Layout extends Canvas{
 	
 	private final void keyEvent(KeyEvent event, boolean symbolic) {
 		
-		if(symbolic || !navbar.dispatchKeyEvent(event.getKeycode(), event)) {
-			if(!focused.dispatchKeyEvent(event.getKeycode(), event)) {
-				
-			}
+		try {
+		
+			if(symbolic || !navbar.dispatchKeyEvent(event.getKeycode(), event)) {
+				if(!focused.dispatchKeyEvent(event.getKeycode(), event)) {
+					
+				}
+		}
+		
+		}catch(Throwable t) {
+			Crash.showCrashMessage(app, t, "Error in key event", Crash.FRAMEWORK_CRASH);
 		}
 		
 	}
@@ -604,27 +612,18 @@ public class Layout extends Canvas{
 	private boolean navTouch;
 	private void pointerEvent(MotionEvent e) {
 		
-		touchX=e.getPointerCoords().x;
-		touchY=e.getPointerCoords().y;
-		touchAction = e.getAction();
+		try {
 		
-		/*
-		if(navTouch || (e.getAction()==MotionEvent.ACTION_DOWN && e.getPointerCoords().y>=this.getHeight()-navHeight && navbar.isNavbarVisible())) {
+			touchX=e.getPointerCoords().x;
+			touchY=e.getPointerCoords().y;
+			touchAction = e.getAction();
 			
-			if(e.getAction() == MotionEvent.ACTION_DOWN) 
-				navTouch=true;
-			else if(e.getAction()==MotionEvent.ACTION_UP)
-				navTouch=false;
-			
-			e.getPointerCoords().y -= this.getHeight()-navHeight;
-			
-			navbar.dispatchTouchEvent(e);
-			
-			return;
-		}*/
+			if(!overlay.dispatchTouchEvent(e) && !canvas.dispatchTouchEvent(e)) {
+				onTouchEvent(e);
+			}
 		
-		if(!overlay.dispatchTouchEvent(e) && !canvas.dispatchTouchEvent(e)) {
-			onTouchEvent(e);
+		}catch(Throwable t) {
+			Crash.showCrashMessage(app, t, "Error in pointer event", Crash.FRAMEWORK_CRASH);
 		}
 	}
 	
@@ -779,7 +778,7 @@ public class Layout extends Canvas{
 			
 		}
 		
-		Debug.returnToTrace(ThreadID);
+		Debug.removeFromTrace(ThreadID);
 		
 	}
 	
