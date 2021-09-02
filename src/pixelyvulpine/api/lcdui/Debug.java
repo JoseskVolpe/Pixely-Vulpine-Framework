@@ -260,12 +260,18 @@ public class Debug {
 				
 				sb.append("\n* ");
 				sb.append(log.object.getClass().getName());
-				sb.append("from trace \"");
+				sb.append(" from trace \"");
 				sb.append(log.traceName);
 				sb.append("\" (ID ");
 				sb.append(log.TraceID);
 				sb.append("):\n=>     ");
-				sb.append(log.message);
+				StringBuffer message=new StringBuffer();
+				for(int j=0; j<log.message.length(); j++) {
+					message.append(log.message.charAt(j));
+					if(log.message.charAt(j)=='\n')
+						message.append("       ");
+				}
+				sb.append(message.toString());
 				added++;
 			}
 			
