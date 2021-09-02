@@ -13,7 +13,7 @@ public class ErrorView extends Content{
 	}
 
 	public void paint(GraphicsFix g) {
-		Debug.logd("¡Forcing crash!");
+		Debug.logd("Â¡Forcing crash!");
 		g.drawString(new Integer(0/0).toString(),0,0,0);
 	}
 	
