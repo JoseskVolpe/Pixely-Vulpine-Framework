@@ -350,7 +350,7 @@ public class Debug {
 		
 		if(threads.size()>=threads.capacity()-1) {
 			cleanInactiveThreads();
-			threads.ensureCapacity(threads.size()+1);
+			threads.ensureCapacity(threads.size()+2);
 		}
 		
 		int i;
@@ -363,12 +363,14 @@ public class Debug {
 			t.thread = th;
 			t.task = "unknown";
 			int ni = threads.indexOf(null);
-			if(ni<0)
+			if(ni<0) {
 				threads.addElement(t);
-			else
+				ni=threads.size()-1;
+			}else {
 				threads.setElementAt(t, ni);
+			}
 			addObjectTrace(th, "", t);
-			return threads.size()-1;
+			return ni;
 		}
 		return i;
 	}
