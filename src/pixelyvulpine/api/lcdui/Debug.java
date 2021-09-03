@@ -111,7 +111,7 @@ public class Debug {
 	}
 	
 	public static int traceObject(Object object, String message) {
-		ThreadStackTrace t = getThreadStackTrace();
+		ThreadStackTrace t = getThreadStackTrace(Thread.currentThread());
 		return addObjectTrace(object, message, t);
 	}
 	
@@ -127,7 +127,7 @@ public class Debug {
 	
 	public static void removeFromTrace(int id) {
 		
-		ThreadStackTrace t = getThreadStackTrace();
+		ThreadStackTrace t = getThreadStackTrace(Thread.currentThread());
 		for(int i=t.traces.size()-1; i>=id; i--) 
 			t.traces.removeElementAt(i);
 	}
@@ -142,8 +142,14 @@ public class Debug {
 	}
 	
 	public static void setTask(String task) {
-		ThreadStackTrace t = getThreadStackTrace();
+		ThreadStackTrace t = getThreadStackTrace(Thread.currentThread());
 		t.task=task;
+	}
+	
+	public static void closeThread() {
+		int i=getThreadIndex(Thread.currentThread());
+		cleanThreadTrace(i);
+		threads.setElementAt(null, i);
 	}
 	
 	private static void cleanThreadTrace(int index) {
@@ -166,7 +172,7 @@ public class Debug {
 	}
 	
 	public static void logd(Object message) {
-		ThreadStackTrace t = getThreadStackTrace();
+		ThreadStackTrace t = getThreadStackTrace(Thread.currentThread());
 		Log log = new Log();
 		log.object = ((ObjectTrace)t.traces.lastElement()).object;
 		log.message = message.toString();
@@ -175,8 +181,8 @@ public class Debug {
 		t.log.addElement(log);
 	}
 	
-	public static void getThreadTrace(StringBuffer sb) {
-		ThreadStackTrace t = getThreadStackTrace();
+	public static void getThreadTrace(StringBuffer sb, Thread th) {
+		ThreadStackTrace t = getThreadStackTrace(th);
 		sb.append("\n");
 		sb.append("Thread: ");
 		sb.append(t.thread);
@@ -236,16 +242,16 @@ public class Debug {
 		}
 	}
 	
-	public static void getTraceLog(StringBuffer sb) {
-		getLog(sb, getThreadStackTrace().traces);
+	public static void getTraceLog(StringBuffer sb, Thread th) {
+		getLog(sb, getThreadStackTrace(th).traces, th);
 	}
 	
-	public static void getThreadLog(StringBuffer sb) {
-		getLog(sb, null);
+	public static void getThreadLog(StringBuffer sb, Thread th) {
+		getLog(sb, null, th);
 	}
 	
-	private static void getLog(StringBuffer sb, Vector trace) {
-		ThreadStackTrace t = getThreadStackTrace();
+	private static void getLog(StringBuffer sb, Vector trace, Thread th) {
+		ThreadStackTrace t = getThreadStackTrace(th);
 		
 		int sbSize = sb.length();
 		int added=0;
@@ -293,8 +299,8 @@ public class Debug {
 		}
 	}
 	
-	public static void watchLastTrace(StringBuffer sb) {
-		ThreadStackTrace t = getThreadStackTrace();
+	public static void watchLastTrace(StringBuffer sb, Thread th) {
+		ThreadStackTrace t = getThreadStackTrace(th);
 		
 		try {
 			ObjectTrace ot = (ObjectTrace) t.traces.elementAt(t.traces.size()-1);
@@ -340,29 +346,35 @@ public class Debug {
 		return false;
 	}
 	
-	private static int getThreadIndex() {
+	private static int getThreadIndex(Thread th) {
+		
+		if(threads.size()>=threads.capacity()-1) {
+			cleanInactiveThreads();
+			threads.ensureCapacity(threads.size()+1);
+		}
+		
 		int i;
 		for(i=threads.size()-1; i>=0; i--)
-			if(threads.elementAt(i)!=null && ((ThreadStackTrace)threads.elementAt(i)).thread==Thread.currentThread())
+			if(threads.elementAt(i)!=null && ((ThreadStackTrace)threads.elementAt(i)).thread==th)
 				break;
 			
 		if(i<0) {
 			ThreadStackTrace t = new ThreadStackTrace();
-			t.thread = Thread.currentThread();
+			t.thread = th;
 			t.task = "unknown";
 			int ni = threads.indexOf(null);
 			if(ni<0)
 				threads.addElement(t);
 			else
 				threads.setElementAt(t, ni);
-			addObjectTrace(Thread.currentThread(), "", t);
+			addObjectTrace(th, "", t);
 			return threads.size()-1;
 		}
 		return i;
 	}
 	
-	private static ThreadStackTrace getThreadStackTrace() {
-		return (ThreadStackTrace)threads.elementAt(getThreadIndex());
+	private static ThreadStackTrace getThreadStackTrace(Thread th) {
+		return (ThreadStackTrace)threads.elementAt(getThreadIndex(th));
 	}
 
 }

@@ -35,6 +35,7 @@ public class Crash implements CommandListener{
 	private byte CrashType;
 	private Form display;
 	private StringItem messageDisplay;
+	private Thread thread;
 	
 	private Crash(MIDlet midlet, Throwable e, String message, byte CrashType) {
 		close = new Command("Close", Command.EXIT, 0);
@@ -43,6 +44,7 @@ public class Crash implements CommandListener{
 		this.e = e;
 		this.message = message;
 		this.CrashType = CrashType;
+		thread=Thread.currentThread();
 		
 		StringBuffer disM = new StringBuffer();
 		
@@ -80,9 +82,11 @@ public class Crash implements CommandListener{
 		display.addCommand(close);
 		display.addCommand(report);
 		
-		Alert alert = new Alert(titles[CrashType], disM.toString(), null, AlertType.ERROR);
-		alert.getType().playSound(Display.getDisplay(midlet));
-		
+		try {
+			Alert alert = new Alert(titles[CrashType], disM.toString(), null, AlertType.ERROR);
+			alert.getType().playSound(Display.getDisplay(midlet));
+		}catch(Throwable e2) {}
+			
 		Display.getDisplay(midlet).setCurrent(display);
 	}
 	
@@ -91,7 +95,6 @@ public class Crash implements CommandListener{
 	}
 	
 	public static void showCrashMessage(MIDlet midlet, Throwable e, String message, byte CrashType) {
-		
 		e.printStackTrace();
 		
 		new Crash(midlet, e, message, CrashType);
@@ -132,7 +135,7 @@ public class Crash implements CommandListener{
 		sb.append("\nMIDlet name: ");
 		sb.append(midlet.getAppProperty("MIDlet-Name"));
 		
-		Debug.getThreadTrace(sb);
+		Debug.getThreadTrace(sb, thread);
 		sb.append(" <~~");
 		try { 
 			sb.append(e.getClass().getName().substring(e.getClass().getName().lastIndexOf('.')+1, e.getClass().getName().length()));
@@ -142,9 +145,9 @@ public class Crash implements CommandListener{
 		
 		
 		sb.append("\n\nLog:");
-		Debug.getTraceLog(sb);
+		Debug.getTraceLog(sb, thread);
 		sb.append("\n\n");
-		Debug.watchLastTrace(sb);
+		Debug.watchLastTrace(sb, thread);
 	}
 
 	public void commandAction(Command arg0, Displayable arg1) {
