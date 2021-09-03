@@ -5,22 +5,26 @@ import java.util.Vector;
 
 import pixelyvulpine.Config;
 import pixelyvulpine.api.lcdui.Debug.Attributes.Attribute;
+import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.GraphicsFix;
 
 public class Debug {
 	
+	private static byte THREADS_CAPACITY=5;
 	private static int lid;
 	
 	private int id;
 	private Object represents;
 	
-	private static Vector threads = new Vector(5);
+	private static Vector threads = new Vector(THREADS_CAPACITY);
+	private static short savedThreads=0;
 	
 	private static class ThreadStackTrace{
 		Thread thread;
 		Vector traces = new Vector(10);
 		String task;
 		Vector log = new Vector(20);
+		boolean free;
 	}
 	
 	private static class ObjectTrace{
@@ -111,6 +115,10 @@ public class Debug {
 	}
 	
 	public static int traceObject(Object object, String message) {
+		
+		if(Crash.hasCrashed())
+			return -1; //Do not trace it, you'll confuse everything
+		
 		ThreadStackTrace t = getThreadStackTrace(Thread.currentThread());
 		return addObjectTrace(object, message, t);
 	}
@@ -127,6 +135,9 @@ public class Debug {
 	
 	public static void removeFromTrace(int id) {
 		
+		if(Crash.hasCrashed())
+			return; //Do not remove anything, we need that
+		
 		ThreadStackTrace t = getThreadStackTrace(Thread.currentThread());
 		for(int i=t.traces.size()-1; i>=id; i--) 
 			t.traces.removeElementAt(i);
@@ -142,17 +153,38 @@ public class Debug {
 	}
 	
 	public static void setTask(String task) {
+		
+		if(Crash.hasCrashed())
+			return; //Do not change task name, you'll confuse everything
+		
 		ThreadStackTrace t = getThreadStackTrace(Thread.currentThread());
 		t.task=task;
 	}
 	
 	public static void closeThread() {
-		int i=getThreadIndex(Thread.currentThread());
+		
+		if(Crash.hasCrashed())
+			return; //Do not close it, we need that
+		
+		int i;
+		for(i=threads.size()-1; i>=0; i--)
+			if(threads.elementAt(i)!=null && ((ThreadStackTrace)threads.elementAt(i)).thread==Thread.currentThread())
+				break;
+		
+		if(i<0) return;
 		cleanThreadTrace(i);
-		threads.setElementAt(null, i);
+		((ThreadStackTrace)threads.elementAt(i)).log.trimToSize();
+		((ThreadStackTrace)threads.elementAt(i)).traces.trimToSize();
+		((ThreadStackTrace)threads.elementAt(i)).free=true;
+		savedThreads--;
+		freeNullThreads();
 	}
 	
 	private static void cleanThreadTrace(int index) {
+		
+		if(Crash.hasCrashed())
+			return; //Do not clean, we need that trace uwu
+		
 		ThreadStackTrace t = (ThreadStackTrace)threads.elementAt(index);
 		t.traces.removeAllElements();
 		t.log.removeAllElements();
@@ -163,11 +195,34 @@ public class Debug {
 	}
 	
 	public static void cleanInactiveThreads() {
+		
+		int ls = savedThreads;
 		for(int i=0; i<threads.size(); i++) {
-			if(threads.elementAt(i)!=null && !((ThreadStackTrace)threads.elementAt(i)).thread.isAlive()) {
-				cleanThreadTrace(i);
-				threads.setElementAt(null, i);
+			try {
+				if(threads.elementAt(i)!=null && !((ThreadStackTrace)threads.elementAt(i)).free && !((ThreadStackTrace)threads.elementAt(i)).thread.isAlive()) {
+					cleanThreadTrace(i);
+					((ThreadStackTrace)threads.elementAt(i)).log.trimToSize();
+					((ThreadStackTrace)threads.elementAt(i)).traces.trimToSize();
+					((ThreadStackTrace)threads.elementAt(i)).free=true;
+					savedThreads--;
+				}
+				
+			}catch(NullPointerException e) {}
+		}
+		
+		if(ls-savedThreads>0)
+			freeNullThreads();
+		
+	}
+	
+	private static void freeNullThreads() {
+		if(threads.capacity()>THREADS_CAPACITY) {
+			for(int i=threads.size()-1; i>=THREADS_CAPACITY; i--) {
+				if(threads.elementAt(i)!=null && !((ThreadStackTrace)threads.elementAt(i)).free)
+					break;
+				threads.removeElementAt(i);
 			}
+			threads.trimToSize();
 		}
 	}
 	
@@ -182,10 +237,13 @@ public class Debug {
 	}
 	
 	public static void getThreadTrace(StringBuffer sb, Thread th) {
-		ThreadStackTrace t = getThreadStackTrace(th);
+		int id = getThreadIndex(th);
+		ThreadStackTrace t = (ThreadStackTrace)threads.elementAt(id);
 		sb.append("\n");
 		sb.append("Thread: ");
 		sb.append(t.thread);
+		sb.append(" ID ");
+		sb.append(id);
 		sb.append("\n");
 		sb.append("Task: ");
 		sb.append(t.task);
@@ -347,11 +405,8 @@ public class Debug {
 	}
 	
 	private static int getThreadIndex(Thread th) {
-		
-		if(threads.size()>=threads.capacity()-1) {
-			cleanInactiveThreads();
-			threads.ensureCapacity(threads.size()+2);
-		}
+		 
+		cleanInactiveThreads();
 		
 		int i;
 		for(i=threads.size()-1; i>=0; i--)
@@ -362,14 +417,24 @@ public class Debug {
 			ThreadStackTrace t = new ThreadStackTrace();
 			t.thread = th;
 			t.task = "unknown";
-			int ni = threads.indexOf(null);
+			int ni=threads.size()-1;
+			if(ni>=THREADS_CAPACITY)
+				ni=THREADS_CAPACITY-1;
+			while(ni>=0) {
+				if(((ThreadStackTrace)threads.elementAt(ni)) ==null || ((ThreadStackTrace)threads.elementAt(ni)).free)
+					break;
+				ni--;
+			}
+			
 			if(ni<0) {
 				threads.addElement(t);
 				ni=threads.size()-1;
 			}else {
 				threads.setElementAt(t, ni);
 			}
+			t.free=false;
 			addObjectTrace(th, "", t);
+			savedThreads++;
 			return ni;
 		}
 		return i;

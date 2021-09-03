@@ -194,6 +194,9 @@ public class Layout extends Canvas{
 	private long lastT;
 	protected final void paint(Graphics g) {
 		
+		if(Crash.hasCrashed())
+			return;
+		
 		Debug.setTask("Render");
 		int TraceID;
 		TraceID = Debug.traceObject(this, "paint");
@@ -543,21 +546,32 @@ public class Layout extends Canvas{
 	
 	protected final void keyPressed(int keyCode){
 		
+		Debug.setTask("keyPressed");
+		
 		pressed=true;
 		
 		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_DOWN, keyCode);
 		keyEvent(event,false);
+		
+		Debug.closeThread();
 	}
 	
 	protected final void keyRepeated(int keyCode) {
+		
+		Debug.setTask("keyRepeated");
 		
 		if(!pressed) return;
 		
 		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_REPEAT, keyCode);
 		keyEvent(event,false);
+		
+		Debug.closeThread();
+		
 	}
 
 	protected final void keyReleased(int keyCode){
+		
+		Debug.setTask("keyReleased");
 		
 		if(!pressed) return;
  		
@@ -565,6 +579,8 @@ public class Layout extends Canvas{
 		
 		KeyEvent event = new KeyEvent(this, KeyEvent.ACTION_UP, keyCode);
 		keyEvent(event, false);
+		
+		Debug.cleanThreadTrace();
 	}
 	
 	private final void keyEvent(KeyEvent event, boolean symbolic) {

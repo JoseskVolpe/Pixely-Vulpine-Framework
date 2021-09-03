@@ -28,6 +28,7 @@ public class Crash implements CommandListener{
 		"Please contact the developer"
 	};
 	
+	private static boolean crash;
 	private Command close, report;
 	private MIDlet midlet;
 	private Throwable e;
@@ -95,10 +96,13 @@ public class Crash implements CommandListener{
 	}
 	
 	public static void showCrashMessage(MIDlet midlet, Throwable e, String message, byte CrashType) {
+		crash=true;
 		e.printStackTrace();
-		
 		new Crash(midlet, e, message, CrashType);
-		
+	}
+	
+	public static boolean hasCrashed() {
+		return crash;
 	}
 	
 	private void generateLog(StringBuffer sb) {
@@ -122,7 +126,7 @@ public class Crash implements CommandListener{
 		}
 		sb.append("\nTotal heap size: ");
 		sb.append(Runtime.getRuntime().totalMemory());
-		sb.append("Bytes\nCconfiguration: ");
+		sb.append(" Bytes\nCconfiguration: ");
 		sb.append(System.getProperty("microedition.configuration"));
 		sb.append("\nProfile: ");
 		sb.append(System.getProperty("microedition.profiles"));
@@ -166,9 +170,10 @@ public class Crash implements CommandListener{
 			try {
 				StringBuffer log = new StringBuffer();
 				generateLog(log);
-				messageDisplay.setText(log.toString());
+				messageDisplay.setText(log.toString()); //TODO: Create file/Internet upload
 			}catch(Throwable e) {
 				messageDisplay.setText("We're sorry, there was an unexpected error generating logs\n"+e.toString()+": "+e.getMessage());
+				display.addCommand(close);
 			}
 			
 			return;
