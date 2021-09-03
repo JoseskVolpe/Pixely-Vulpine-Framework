@@ -19,6 +19,7 @@ import pixelyvulpine.contents.ScrollableCanvas;
 import pixelyvulpine.contents.TextBox;
 import pixelyvulpine.layouts.EmptyScrollLayout;
 import pixelyvulpine.test.App;
+import pixelyvulpine.test.views.ErrorButton;
 import pixelyvulpine.test.views.ErrorView;
 
 public class ScrollTest extends EmptyScrollLayout{
@@ -55,6 +56,7 @@ public class ScrollTest extends EmptyScrollLayout{
 		label.setBackgroundColor(new Color(150,150,150));
 		label.impact();
 		this.addContent(label);
+		this.addContent(new ErrorButton(this));
 		Canvas canvas = new ScrollableCanvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 0, 0), new DimensionAttributes.Offset(0,0,90,30)));
 		canvas.setBackgroundColor(new Color(150,25,25,25));
 		canvas.setForegroundColor(new Color(150,255,0,0));
@@ -144,7 +146,7 @@ public class ScrollTest extends EmptyScrollLayout{
 		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
 		this.addContent(new Button(this, new Button.ButtonPadding(0, 0, 0, 2), "Button "+(b++)));
 		
-		this.addContent(new ErrorView(this, new DimensionAttributes(new DimensionAttributes.Offset(0,0,10,10))));
+		//this.addContent(new ErrorView(this, new DimensionAttributes(new DimensionAttributes.Offset(0,0,10,10))));
 		
 		
 		Label ml = new Label(this, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 0), new DimensionAttributes.Offset(0,0,0,120)), "SO, you have come this far UwU\n¿Don't ya?\nYou may asking what the yiff is this... This is a scroll test page for a WIP UI framework, it's a open-source project, and you may find it at github.com/JoseskVolpe/Pixely-Vulpine-Framework.\n*Licks you* cutie :3");

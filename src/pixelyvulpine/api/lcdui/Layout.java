@@ -408,23 +408,30 @@ public class Layout extends Canvas{
 	
 	public final void openMenu(Vector menu) {
 		
+		int TraceID = Debug.traceObject(this, "openMenu");
+		
 		CommandsMenu displayingMenu = new CommandsMenu(this, menu);
 		displayingMenu.setZIndex(0);
 		overlay.addContent(displayingMenu);
 		setFocusedCanvas(displayingMenu);
 		
+		Debug.removeFromTrace(TraceID);
+		
 	}
 	
 	public final boolean closeMenu() {
+		int TraceID = Debug.traceObject(this, "closeMenu");
 		if(focused instanceof CommandsMenu) {
 			focused.dispatchSelected(false);
 			overlay.removeContent(focused);
 			cancelCommandList(((CommandsMenu) focused).blocker);
 			cancelCommandList(((CommandsMenu) focused).cl);
 			setFocusedCanvas(((CommandsMenu) focused).lastFocused);
+			Debug.removeFromTrace(TraceID);
 			return true;
 		}
 			
+		Debug.removeFromTrace(TraceID);
 		return false;
 	}
 	
@@ -585,6 +592,8 @@ public class Layout extends Canvas{
 	
 	private final void keyEvent(KeyEvent event, boolean symbolic) {
 		
+		int TraceID = Debug.traceObject(this, "keyEvent");
+		
 		try {
 		
 			if(symbolic || !navbar.dispatchKeyEvent(event.getKeycode(), event)) {
@@ -596,6 +605,8 @@ public class Layout extends Canvas{
 		}catch(Throwable t) {
 			Crash.showCrashMessage(app, t, "Error in key event", Crash.FRAMEWORK_CRASH);
 		}
+		
+		Debug.removeFromTrace(TraceID);
 		
 	}
 	
@@ -887,6 +898,8 @@ public class Layout extends Canvas{
 
 		public void commandAction(Command arg0, Displayable arg1) {
 			
+			int TraceID = Debug.traceObject(this, "commandAction");
+			
 			if(arg0 instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) arg0).isSymbolic()) {
 				
 				switch(navbar.getSoftPosition(arg0.getCommandType())) {
@@ -901,21 +914,30 @@ public class Layout extends Canvas{
 					break;
 				}
 				
+				Debug.removeFromTrace(TraceID);
 				return;
 			}
 			
 			if(arg0 == menu) {
 				openMenu();
+				Debug.removeFromTrace(TraceID);
 				return;
 			}
 			
 			if(arg0 instanceof pixelyvulpine.api.lcdui.Command && ((pixelyvulpine.api.lcdui.Command) arg0).getCommandListenerBypass()!=null) {
+				Debug.traceObject(((pixelyvulpine.api.lcdui.Command) arg0).getCommandListenerBypass(), "commandAction");
 				((pixelyvulpine.api.lcdui.Command) arg0).getCommandListenerBypass().commandAction(arg0, arg1);
+				Debug.removeFromTrace(TraceID);
 				return;
 			}
 			//No View's command found
-			if(getCommandListener()!=null) 
+			if(getCommandListener()!=null) {
+				int TraceID2 = Debug.traceObject(getCommandListener(), "commandAction");
 				getCommandListener().commandAction(arg0, arg1);
+				Debug.removeFromTrace(TraceID2);
+			}
+			
+			Debug.removeFromTrace(TraceID);
 			
 		}
 		
@@ -935,10 +957,14 @@ public class Layout extends Canvas{
 			public void run() {
 				if(c!=null) {
 					
+					Debug.setTask("dispatchCommand "+c.getLabel());
+					
 					if(c instanceof pixelyvulpine.api.lcdui.Command)
 						((pixelyvulpine.api.lcdui.Command)c).setView(view);
 						
 					activityCommandListener.commandAction(c, me);
+					
+					Debug.closeThread();
 				}
 			}
 		}

@@ -7,6 +7,8 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.List;
+import javax.microedition.lcdui.Screen;
 import javax.microedition.lcdui.StringItem;
 import javax.microedition.midlet.MIDlet;
 
@@ -29,7 +31,8 @@ public class Crash implements CommandListener{
 	};
 	
 	private static boolean crash;
-	private Command close, report;
+	private Command close, report, reportListSelect, FileReport, ViewLog, returnToReportAction;
+	private Command[] reportListCommands;
 	private MIDlet midlet;
 	private Throwable e;
 	private String message;
@@ -37,6 +40,9 @@ public class Crash implements CommandListener{
 	private Form display;
 	private StringItem messageDisplay;
 	private Thread thread;
+	private List reportList;
+	private StringBuffer log;
+	private Screen current;
 	
 	private Crash(MIDlet midlet, Throwable e, String message, byte CrashType) {
 		close = new Command("Close", Command.EXIT, 0);
@@ -49,14 +55,16 @@ public class Crash implements CommandListener{
 		
 		StringBuffer disM = new StringBuffer();
 		
+		try {
 		if(e!=null) {
-			disM.append(e.toString());
-			disM.append(" (");
-			disM.append(e.hashCode());
-			disM.append(")\n");
-			disM.append(e.getMessage());
-			disM.append("\n\n");
-		}
+				disM.append(e.toString());
+				disM.append(" (");
+				disM.append(e.hashCode());
+				disM.append(")\n");
+				disM.append(e.getMessage());
+				disM.append("\n\n");
+			}
+		}catch(Throwable t) {}
 		disM.append(message);
 		disM.append("\n\nDevice: ");
 		try {
@@ -88,7 +96,7 @@ public class Crash implements CommandListener{
 			alert.getType().playSound(Display.getDisplay(midlet));
 		}catch(Throwable e2) {}
 			
-		Display.getDisplay(midlet).setCurrent(display);
+		setCurrent(display);
 	}
 	
 	public static void showCrashMessage(MIDlet midlet, Throwable e, String message) {
@@ -126,7 +134,7 @@ public class Crash implements CommandListener{
 		}
 		sb.append("\nTotal heap size: ");
 		sb.append(Runtime.getRuntime().totalMemory());
-		sb.append(" Bytes\nCconfiguration: ");
+		sb.append(" Bytes\nConfiguration: ");
 		sb.append(System.getProperty("microedition.configuration"));
 		sb.append("\nProfile: ");
 		sb.append(System.getProperty("microedition.profiles"));
@@ -153,6 +161,26 @@ public class Crash implements CommandListener{
 		sb.append("\n\n");
 		Debug.watchLastTrace(sb, thread);
 	}
+	
+	private void showReportListChoice() {
+		reportList = new List("Report "+titles[CrashType], List.IMPLICIT);
+		FileReport = new Command("Save log", Command.ITEM, 0);
+		reportListSelect = new Command("", Command.ITEM, 0);
+		reportList.setSelectCommand(reportListSelect);
+		reportList.setCommandListener(this);
+		ViewLog = new Command("View log", Command.ITEM, 0);
+		reportList.append("Save log", null);
+		reportList.append("View log", null);
+		reportListCommands = new Command[] {FileReport, ViewLog};
+		returnToReportAction = new Command("Return", Command.BACK, 0);
+		setCurrent(reportList);
+		reportList.addCommand(close);
+	}
+	
+	private void setCurrent(Screen current) {
+		Display.getDisplay(midlet).setCurrent(current);
+		this.current=current;
+	}
 
 	public void commandAction(Command arg0, Displayable arg1) {
 		
@@ -168,15 +196,35 @@ public class Crash implements CommandListener{
 			display.removeCommand(report);
 			
 			try {
-				StringBuffer log = new StringBuffer();
+				log = new StringBuffer();
 				generateLog(log);
-				messageDisplay.setText(log.toString()); //TODO: Create file/Internet upload
+				//messageDisplay.setText(log.toString()); //TODO: Create file/Internet upload
+				
 			}catch(Throwable e) {
 				messageDisplay.setText("We're sorry, there was an unexpected error generating logs\n"+e.toString()+": "+e.getMessage());
 				display.addCommand(close);
+				return;
 			}
 			
+			showReportListChoice();
 			return;
+		}
+		
+		if(arg0==reportListSelect) {
+			commandAction(reportListCommands[reportList.getSelectedIndex()], arg1);
+			return;
+		}
+		
+		if(arg0==returnToReportAction) {
+			current.removeCommand(returnToReportAction);
+			showReportListChoice();
+			return;
+		}
+		
+		if(arg0==ViewLog) {
+			messageDisplay.setText(log.toString());
+			setCurrent(display);
+			current.addCommand(returnToReportAction);
 		}
 		
 	}
