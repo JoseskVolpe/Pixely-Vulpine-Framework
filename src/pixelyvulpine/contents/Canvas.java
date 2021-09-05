@@ -379,45 +379,6 @@ public class Canvas extends Content{
 		
 	}
 	
-	private final void paintBackground(GraphicsFix g, boolean saveRam) {
-		if(backgroundColor!=null && backgroundColor.getAlpha()>0) {
-			if(Display.getDisplay(getLayout().getMIDlet()).numAlphaLevels() <=2 || backgroundColor.getAlpha()>=255 || saveRam) {
-				backgroundColor.updateColor(g);
-				g.fillRect(0, 0, g.getDimensionWidth(), g.getDimensionHeight());
-			}else {
-				int color[];
-				/*
-				color = new int[]{backgroundColor.getHex()};
-				for(int y=0; y<g.getClipHeight()-2; y++) {
-					for(int x=0; x<g.getClipWidth()-2; x++) {
-						g.drawRGB(color, 0, 1, x, y, 1, 1, true);
-					}
-				}*/
-				
-				int w=g.getDimensionWidth();
-				int h=g.getDimensionHeight();
-				
-				if(foregroundColor!=null && foregroundColor.getAlpha()>0) {
-					w-=1;
-					h-=1;
-				}
-				
-				int hex = backgroundColor.getHex();
-				color = new int[w*h];
-				for(int i=0; i<color.length; i++)
-					color[i]=hex;
-				
-				try {
-					g.drawRGB(color, 0, w, 0, 0, w, h, true);
-				}catch(Exception e) {}
-				
-				
-				
-				color=null;
-			}
-		}
-	}
-	
 	public void noPaint() {
 		if(renderData==null) return;
 		
@@ -466,57 +427,40 @@ public class Canvas extends Content{
 		int lx=0;
 		int ly=0;
 		
-		if(foregroundColor!=null && foregroundColor.getAlpha()>0) {
-			if(Display.getDisplay(getLayout().getMIDlet()).numAlphaLevels() <=2 || foregroundColor.getAlpha()>=255) {
-				foregroundColor.updateColor(g);
-				g.drawRect(0, 0, lw, lh);
-				g.translate(1, 1);
-				lx=1;
-				ly=1;
-			}else {
-				try {
-					int color[];
-					color = new int[]{foregroundColor.getHex()};
-					for(int x=0; x<lw; x++) {
-						g.drawRGB(color, 0, 1, x, 0, 1, 1, true);
-						g.drawRGB(color, 0, 1, x, lh-1, 1, 1, true);
-					}
-					for(int y=1; y<lh-1; y++) {
-						g.drawRGB(color, 0, 1, 0, y, 1, 1, true);
-						g.drawRGB(color, 0, 1, lw-1, y, 1, 1, true);
-					}
-					g.translate(1, 1);
-					lx=1;
-					ly=1;
-					color=null;
-				}catch(Exception e) {
-					foregroundColor.updateColor(g);
-					g.drawRect(0, 0, lw, lh);
-					g.translate(1, 1);
-					lx=1;
-					ly=1;
-				}
-			}
+		int inc=0;
+		
+		if (paintFrame(foregroundColor, g, 0, 1, 1, lh-1)) {
+			inc=1;
+			paintFrame(foregroundColor, g, lw, 1, 1, lh-1);
+			paintFrame(foregroundColor, g, 0, 0, lw, 1);
+			paintFrame(foregroundColor, g, 0, lh, lw, 1);
 		}
-		
-		try {
-			paintBackground(g, false);
-		}catch(OutOfMemoryError e) {
-			System.gc();
-			try {
-				paintBackground(g, false);
-			}catch(OutOfMemoryError e2) {
-				paintBackground(g, true);
-			}
-		}catch(Exception e) {
-			paintBackground(g, true);
-		}
-		
-		
+		paintFrame(backgroundColor, g, 0+inc, 0+inc, lw-inc, lh-inc);
 		
 		g.clipRect(0, 0, lw-lx*2, lh-ly*2);
 		
 		paintContent(g);
+	}
+	
+	private boolean paintFrame(Color color, GraphicsFix g, int x, int y, int w, int h) {
+		if(color==null || color.getAlpha()<=0) return false;
+		if(color.getAlpha()>=255 || Display.getDisplay(getLayout().getMIDlet()).numAlphaLevels()<=2) {
+			color.updateColor(g);
+			g.fillRect(x, y, w, h);
+			return true;
+		}
+		
+		int hex = color.getHex();
+		int temp[] = new int[w];
+		for(int i=0; i<w; i++)
+			temp[i]=hex;
+		
+		g.drawRGB(temp, 0, 0, x, y, w, h, true);
+		
+		temp=null;
+		
+		return true;
+		
 	}
 
 	int sx, sy;
