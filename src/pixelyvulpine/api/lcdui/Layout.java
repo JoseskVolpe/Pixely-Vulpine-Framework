@@ -818,20 +818,20 @@ public class Layout extends Canvas{
 					if(right==null || right.getPriority()>=list.getCommand(i).getPriority()) {
 						if(right!=null) {
 							if(left!=menu) {
-								commandsMenu.addElement(left);
+								commandsMenu.insertElementAt(left, 0);
 								menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
 								left = menu;
 							}
-							commandsMenu.addElement(right);
+							commandsMenu.insertElementAt(right, 0);
 						}
 						right=list.getCommand(i);
 					}else {
 						if(left!=menu) {
-							commandsMenu.addElement(left);
+							commandsMenu.insertElementAt(left, 0);
 							menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
 							left = menu;
 						}
-						commandsMenu.addElement(list.getCommand(i));
+						commandsMenu.insertElementAt(list.getCommand(i), 0);
 					}
 					break;
 				case Navbar.LEFT:
@@ -839,28 +839,28 @@ public class Layout extends Canvas{
 						left=list.getCommand(i);
 					else {
 						if(left!=menu) {
-							commandsMenu.addElement(left);
+							commandsMenu.insertElementAt(left, 0);
 							menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
 							left = menu;
 						}
-						commandsMenu.addElement(list.getCommand(i));
+						commandsMenu.insertElementAt(list.getCommand(i), 0);
 					}
 					break;
 				case Navbar.CENTER:
 					if(center==null || center.getPriority()>=list.getCommand(i).getPriority()) {
 						if(center!=null){
 							if(left!=menu) {
-								commandsMenu.addElement(left);
+								commandsMenu.insertElementAt(left, 0);
 								menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
 								left = menu;
 							}
-							commandsMenu.addElement(center);
+							commandsMenu.insertElementAt(center, 0);
 						}
 						center=list.getCommand(i);
 					}else {
-						commandsMenu.addElement(list.getCommand(i));
+						commandsMenu.insertElementAt(list.getCommand(i), 0);
 						if(left!=menu) {
-							commandsMenu.addElement(left);
+							commandsMenu.insertElementAt(left, 0);
 							menu = new pixelyvulpine.api.lcdui.Command("Menu", Config.getIcon(Config.ICON_MENU), Command.ITEM, 0);
 							left = menu;
 						}
@@ -1214,7 +1214,7 @@ public class Layout extends Canvas{
 		private List l;
 		
 		CommandsMenu(Layout layout, Vector commands){
-			super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100)));
+			super(layout, new DimensionAttributes(new DimensionAttributes.Scaled(0, 0, 100, 100), new DimensionAttributes.Offset(0, 0, 0, -navHeight)));
 			
 			this.setBackgroundColor(new Color(200, 0,0,0)); //TODO: Allow developer to change menu's background color
 			
