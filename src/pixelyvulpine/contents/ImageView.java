@@ -15,7 +15,7 @@ public class ImageView extends Content{
 	private final static byte ERRORSIZE=60;
 	
 	private Image imagePointer;
-	private int[] renderData;
+	private Image cache;
 	private int width, height;
 	private boolean fit, error;
 	
@@ -43,7 +43,7 @@ public class ImageView extends Content{
 	}
 	
 	public void noPaint() {
-		renderData=null;
+		cache=null;
 	}
 	
 	public int[] prepaint(int width, int height) {
@@ -62,17 +62,17 @@ public class ImageView extends Content{
 		
 		if(width<=0 || height<=0) return;
 		
-		if(renderData==null) {
+		if(cache==null) {
 			try {
-				renderData = ImageTransform.resize(imagePointer, this.width, this.height);
+				cache = ImageTransform.createResizedImage(imagePointer, this.width, this.height);
 				error=false;
 			}catch(OutOfMemoryError e) {
-					renderData=null;
+					cache=null;
 					error=true; //Can't show this ImageView :c
 			}
 		}
 		
-		if(error || renderData==null || renderData.length<=0) {
+		if(error || cache==null) {
 			g.setColor(0xffffff);
 			g.drawRect(0, 0, imagePointer.getWidth(), imagePointer.getHeight());
 			g.setColor(0xff0000);
@@ -89,7 +89,7 @@ public class ImageView extends Content{
 			return;
 		}
 		
-		g.drawRGB(renderData, 0, width, 0, 0, width, height, true);
+		g.drawImage(cache, 0, 0, 0);
 		
 	}
 	
@@ -110,7 +110,7 @@ public class ImageView extends Content{
 		if(imagePointer==null) {
 			this.width=0;
 			this.height=0;
-			renderData=null;
+			cache=null;
 			return;
 		}
 		
@@ -135,12 +135,12 @@ public class ImageView extends Content{
 			}
 			
 			if(width==this.width && height==this.height) return;
-			renderData=null;
+			cache=null;
 		}catch(Exception e0) {
 			this.width=width;
 			this.height=height;
 			error=true;
-			renderData=null;
+			cache=null;
 			return;
 		}
 		
