@@ -6,84 +6,18 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
-import javax.microedition.midlet.MIDlet;
-import javax.microedition.midlet.MIDletStateChangeException;
+import pixelyvulpine.api.MIDlet;
 
 import pixelyvulpine.Config;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Layout;
 import pixelyvulpine.api.lcdui.LayoutLoader;
-import pixelyvulpine.layouts.Logo;
 import pixelyvulpine.test.scenes.*;
 
 public class App extends MIDlet implements CommandListener, LayoutLoader {
 
 	private static final String layoutName="scrollTest";
 	//private static final String layoutName="listTest2";
-	
-	private boolean started = false;
-	
-	public App() {
-		
-		
-		
-		
-	}
-
-	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
-		
-		
-
-	}
-
-	protected void pauseApp() {
-		
-		
-
-	}
-
-	protected void startApp() throws MIDletStateChangeException {
-	
-		if(!started){
-			//User open this app
-			
-			
-			Image logoI = null;
-			Image iconBack = null;
-			Image iconSelec = null;
-			Image iconW = null;
-			Image iconM = null;
-			
-			try {
-				logoI=Image.createImage("/joseskvolpe.png");
-				iconBack=Image.createImage("/icons/dark/navbar/back.png");
-				iconSelec=Image.createImage("/icons/dark/navbar/select.png");
-				iconW=Image.createImage("/icons/dark/navbar/pencil.png");
-				iconM=Image.createImage("/icons/dark/navbar/menu.png");
-			}catch(IOException e) {
-				e.printStackTrace();
-			}
-			
-			Config.setIcon(iconBack, Config.ICON_BACK);
-			Config.setIcon(iconSelec, Config.ICON_SELECT);
-			Config.setIcon(iconW, Config.ICON_WRITE);
-			Config.setIcon(iconM, Config.ICON_MENU);
-			Logo logo = new Logo(this, logoI, layoutName, new Color(0,0,0));
-			logo.loadLayout(this);
-			//Layout.setCurrent(this, logo);
-			
-			//new Loading(this).loadLayout(logo);
-			
-			//Layout.setCurrent(this, new CircularProgressBarTest(this));
-			
-			
-		}else {
-			//User resume this app
-		}
-		
-		started = true;
-
-	}
 
 	public void commandAction(Command arg0, Displayable arg1) {}
 
@@ -129,6 +63,54 @@ public class App extends MIDlet implements CommandListener, LayoutLoader {
 		}
 		
 		return null;
+	}
+
+	protected void onCreate() {
+		Image logoI = null;
+		try {
+			logoI=Image.createImage("/joseskvolpe.png");
+			this.setLogo(logoI, new Color(0,0,0));
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void onStart() {
+		Image iconBack = null;
+		Image iconSelec = null;
+		Image iconW = null;
+		Image iconM = null;
+		
+		try {
+			iconBack=Image.createImage("/icons/dark/navbar/back.png");
+			iconSelec=Image.createImage("/icons/dark/navbar/select.png");
+			iconW=Image.createImage("/icons/dark/navbar/pencil.png");
+			iconM=Image.createImage("/icons/dark/navbar/menu.png");
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		Config.setIcon(iconBack, Config.ICON_BACK);
+		Config.setIcon(iconSelec, Config.ICON_SELECT);
+		Config.setIcon(iconW, Config.ICON_WRITE);
+		Config.setIcon(iconM, Config.ICON_MENU);
+		
+		Layout.setCurrent(this, loadLayout(layoutName));
+	}
+
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
