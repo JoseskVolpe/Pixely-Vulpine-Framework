@@ -11,10 +11,9 @@ import pixelyvulpine.api.MIDlet;
 import pixelyvulpine.Config;
 import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Layout;
-import pixelyvulpine.api.lcdui.LayoutLoader;
 import pixelyvulpine.test.scenes.*;
 
-public class App extends MIDlet implements CommandListener, LayoutLoader {
+public class App extends MIDlet implements CommandListener{
 
 	private static final String layoutName="scrollTest";
 	//private static final String layoutName="listTest2";

@@ -7,7 +7,6 @@ import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
-import pixelyvulpine.api.lcdui.LayoutLoader;
 import pixelyvulpine.api.system.Crash;
 import pixelyvulpine.api.util.Sleep;
 import pixelyvulpine.contents.CircularProgressBar;
