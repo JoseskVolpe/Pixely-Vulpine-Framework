@@ -31,7 +31,7 @@ public class TouchTest extends Layout{
 	public TouchTest(App app) {
 		super(app);
 		
-		animation = ANIMATION_SLIDE_LEFT;
+		//animation = ANIMATION_SLIDE_LEFT;
 		
 		this.setTitle("¡Boop your phone!");
 		
@@ -69,12 +69,16 @@ public class TouchTest extends Layout{
 		
 	}
 	
-	public void Setup() {
-		
+	protected void onOpen() {
 		Config.setShowTouch(true);
 		setFullScreenMode(true);
-		
 	}
+	protected void onDisplay() {}
+	protected void onPause() {}
+	protected void onResume() {}
+	protected void onClose() {}
+	protected void onHidden() {}
+	protected void onDestroy() {}
 	
 	public void paintLayout(Graphics g) {
 		

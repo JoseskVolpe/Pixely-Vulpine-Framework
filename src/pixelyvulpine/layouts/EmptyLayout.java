@@ -7,7 +7,13 @@ public class EmptyLayout extends Layout {
 
 	public EmptyLayout(App app) {
 		super(app);
-		// TODO Auto-generated constructor stub
 	}
 
+	protected void onOpen() {}
+	protected void onDisplay() {}
+	protected void onPause() {}
+	protected void onResume() {}
+	protected void onClose() {}
+	protected void onHidden() {}
+	protected void onDestroy() {}
 }

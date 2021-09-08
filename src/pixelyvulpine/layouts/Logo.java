@@ -7,8 +7,6 @@ import pixelyvulpine.api.lcdui.Color;
 import pixelyvulpine.api.lcdui.Content;
 import pixelyvulpine.api.lcdui.DimensionAttributes;
 import pixelyvulpine.api.lcdui.Layout;
-import pixelyvulpine.api.system.Crash;
-import pixelyvulpine.api.util.Sleep;
 import pixelyvulpine.contents.CircularProgressBar;
 import pixelyvulpine.contents.ImageView;
 
@@ -22,7 +20,7 @@ public class Logo extends Layout{
 		
 		super(app);
 		
-		animation = Layout.ANIMATION_SMOOTH_SLIDE_UP;
+		//animation = Layout.ANIMATION_SMOOTH_SLIDE_UP;
 		this.logo = new ImageView(this, logoI, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,60), new DimensionAttributes.Offset(0, 0, 0, 0)), true);
 		this.logo.setPositioning(Content.POSITIONING_ANCHORED);
 		this.logo.setHorizontalAnchor(Content.HORIZONTAL_ANCHOR_CENTER);
@@ -40,26 +38,29 @@ public class Logo extends Layout{
 		
 	}
 	
-	public void Setup() {
-		
+	protected void onOpen() {
 		setFullScreenMode(true);
-		
 	}
-	
 	private boolean timedUp;
-	protected void posSetup() {
-		
+	protected void onDisplay() {
 		new Thread(new Runnable() {
 			public void run() {
 				try {
 					Thread.sleep(1300);
 					timedUp=true;
+					Thread.sleep(300);
 					spinner.setVisible(true);
 				} catch (InterruptedException e) {}
 			}
 		}).start();
-		
 	}
+	protected void onPause() {}
+	protected void onResume() {}
+	protected void onClose() {
+		waitTimeUp();
+	}
+	protected void onHidden() {}
+	protected void onDestroy() {}
 	
 	public boolean isTimedUp() {
 		return timedUp;

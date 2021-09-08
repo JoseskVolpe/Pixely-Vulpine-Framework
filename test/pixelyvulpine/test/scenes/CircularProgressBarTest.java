@@ -12,7 +12,7 @@ public class CircularProgressBarTest extends Layout{
 	public CircularProgressBarTest(MIDlet app) {
 		super(app);
 		
-		this.animation = Layout.NO_ANIMATION;
+		//this.animation = Layout.NO_ANIMATION;
 		
 		this.setBackgroundColor(new Color(0,0,0));
 		
@@ -25,6 +25,12 @@ public class CircularProgressBarTest extends Layout{
 		
 	}
 	
-	
+	protected void onOpen() {}
+	protected void onDisplay() {}
+	protected void onPause() {}
+	protected void onResume() {}
+	protected void onClose() {}
+	protected void onHidden() {}
+	protected void onDestroy() {}
 
 }

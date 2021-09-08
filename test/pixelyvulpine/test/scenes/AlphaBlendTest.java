@@ -15,7 +15,7 @@ public class AlphaBlendTest extends Layout{
 	public AlphaBlendTest(MIDlet app) {
 		super(app);
 		
-		this.animation = Layout.ANIMATION_SLIDE_LEFT;
+		//this.animation = Layout.ANIMATION_SLIDE_LEFT;
 		
 		this.setTitle("Alpha blending Test OwO");
 		
@@ -89,9 +89,15 @@ public class AlphaBlendTest extends Layout{
 		
 	}
 	
-	public void Setup() {
+	protected void onOpen() {
 		setFullScreenMode(true);
 	}
+	protected void onDisplay() {}
+	protected void onPause() {}
+	protected void onResume() {}
+	protected void onClose() {}
+	protected void onHidden() {}
+	protected void onDestroy() {}
 	
 	
 

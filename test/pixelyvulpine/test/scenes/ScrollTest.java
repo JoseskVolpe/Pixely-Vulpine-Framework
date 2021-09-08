@@ -35,7 +35,7 @@ public class ScrollTest extends EmptyScrollLayout{
 			logoI=Image.createImage("/joseskvolpe.png");
 		}catch(IOException e) {}
 		
-		animation = ANIMATION_SLIDE_LEFT;
+		//animation = ANIMATION_SLIDE_LEFT;
 		
 		this.setTitle("Scroll test uwu");
 		
@@ -157,7 +157,7 @@ public class ScrollTest extends EmptyScrollLayout{
 		
 	}
 	
-	public void Setup() {
+	protected void onOpen() {
 		
 		new KeyEvent(this,0,0);//TODO: REMOVE ME
 		
@@ -205,23 +205,13 @@ public class ScrollTest extends EmptyScrollLayout{
 		this.addCommand(new Command("Test18", Command.OK, 1));
 		this.addCommand(new Command("Test19", Command.OK, 1));
 		this.addCommand(new Command("Test20", Command.OK, 1));
-		
-	}
-	
-	public void paintLayout(Graphics g) {
-		
-		
-		
-	}
 
-	public boolean onContentLoad(Content content) {
-		// TODO Auto-generated method stub
-		return false;
 	}
-
-	public boolean onContentError(Content content, Throwable e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	protected void onDisplay() {}
+	protected void onPause() {}
+	protected void onResume() {}
+	protected void onClose() {}
+	protected void onHidden() {}
+	protected void onDestroy() {}
 
 }

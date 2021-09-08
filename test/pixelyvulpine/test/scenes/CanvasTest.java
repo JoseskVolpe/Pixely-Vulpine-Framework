@@ -18,7 +18,7 @@ public class CanvasTest extends Layout{
 	public CanvasTest(MIDlet app) {
 		super(app);
 		
-		animation = ANIMATION_SLIDE_LEFT;
+		//animation = ANIMATION_SLIDE_LEFT;
 		
 		this.setTitle("Canvas test uwu");
 		
@@ -128,11 +128,8 @@ public class CanvasTest extends Layout{
 		
 	}
 	
-	public void Setup() {
-		
+	protected void onOpen() {
 		setFullScreenMode(true);
-		//setNavigationBar(true);
-		//setFullScreenMode(false);
 		
 		this.addCommand(new Command("Test1", Command.BACK, 1));
 		this.addCommand(new Command("Test2", Command.BACK, 1));
@@ -140,21 +137,13 @@ public class CanvasTest extends Layout{
 		this.addCommand(new Command("Test4", Command.BACK, 1));
 		this.addCommand(new Command("Test5", Command.BACK, 1));
 		this.addCommand(new Command("Test6", Command.OK, 1));
-		
 	}
-	
-	public void paintLayout(Graphics g) {
-		
-		
-		
-	}
-
-	public boolean contentPressed(Content content) {
-		
-		System.out.println(((Button)content).getText());
-		
-		return false;
-	}
+	protected void onDisplay() {}
+	protected void onPause() {}
+	protected void onResume() {}
+	protected void onClose() {}
+	protected void onHidden() {}
+	protected void onDestroy() {}
 
 	public boolean onContentLoad(Content content) {
 		// TODO Auto-generated method stub

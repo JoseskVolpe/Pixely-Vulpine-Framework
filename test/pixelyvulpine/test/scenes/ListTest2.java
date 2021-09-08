@@ -23,7 +23,7 @@ public class ListTest2 extends Layout implements CommandListener{
 	public ListTest2(MIDlet app) {
 		super(app);
 		
-		animation=Layout.ANIMATION_SLIDE_LEFT;
+		//animation=Layout.ANIMATION_SLIDE_LEFT;
 		
 		Canvas tc = new Canvas(this, new DimensionAttributes(new DimensionAttributes.Scaled(0,0,100,0), new DimensionAttributes.Offset(0, 0, 0, Font.getDefaultFont().getHeight())));
 		tc.setContentAlignment(Canvas.ALIGNMENT_CENTER);
@@ -69,9 +69,15 @@ public class ListTest2 extends Layout implements CommandListener{
 		
 	}
 	
-	public void Setup() {
+	protected void onOpen() {
 		setFullScreenMode(true);
 	}
+	protected void onDisplay() {}
+	protected void onPause() {}
+	protected void onResume() {}
+	protected void onClose() {}
+	protected void onHidden() {}
+	protected void onDestroy() {}
 
 	public void commandAction(javax.microedition.lcdui.Command arg0, Displayable arg1) {
 		

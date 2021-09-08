@@ -11,5 +11,13 @@ public class EmptyScrollLayout extends Layout{
 		
 		canvas.setScrollable(true);
 	}
+	
+	protected void onOpen() {}
+	protected void onDisplay() {}
+	protected void onPause() {}
+	protected void onResume() {}
+	protected void onClose() {}
+	protected void onHidden() {}
+	protected void onDestroy() {}
 
 }

@@ -22,7 +22,7 @@ public class Vibrator extends Layout implements CommandListener{
 	public Vibrator(MIDlet app) {
 		super(app);
 		
-		animation = Layout.ANIMATION_SLIDE_LEFT;
+		//animation = Layout.ANIMATION_SLIDE_LEFT;
 		setBackgroundColor(new Color(150,10, 37));
 		
 		vibrate = new Button(this, new Button.ButtonPadding(0,10,0,0), "¡Vibrate lewd! x3", Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE));
@@ -40,9 +40,15 @@ public class Vibrator extends Layout implements CommandListener{
 		
 	}
 	
-	public void Setup() {
-		this.setFullScreenMode(true);
+	protected void onOpen() {
+		setFullScreenMode(true);
 	}
+	protected void onDisplay() {}
+	protected void onPause() {}
+	protected void onResume() {}
+	protected void onClose() {}
+	protected void onHidden() {}
+	protected void onDestroy() {}
 
 	public void commandAction(Command arg0, Displayable arg1) {
 		if(arg0 == vib) {
